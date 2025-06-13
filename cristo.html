@@ -42,43 +42,6 @@
       padding: 0 20px;
     }
 
-  .post {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-
-  .post h2 {
-    color: #0066cc;
-    margin-bottom: 5px;
-  }
-
-  .post .date {
-    font-size: 0.9em;
-    color: #888;
-    margin-bottom: 10px;
-  }
-
-  .post img {
-    max-width: 100%;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-
-  .post-content {
-    color: #333;
-    font-size: 1em;
-    line-height: 1.5em;
-  }
-
-  .container {
-    padding: 20px;
-    max-width: 700px;
-    margin: auto;
-  }
-
     .post {
       background: white;
       border-radius: 10px;
@@ -127,76 +90,73 @@
   </header>
 
   <div class="container">
-
     <div class="post">
       <h2>A Paz que Excede Todo Entendimento</h2>
       <p class="date">13 de Junho de 2025</p>
       <div class="post-content">
-        <p>Vivemos em um mundo conturbado, onde as más notícias parecem nunca parar. No entanto, a Palavra de Deus nos lembra: <strong>"E a paz de Deus, que excede todo o entendimento, guardará os vossos corações e os vossos pensamentos em Cristo Jesus." (Filipenses 4:7)</strong>
-              </div>
-      <img src="https://i.imgur.com/hUpisV6.jpeg" alt="Paisagem de paz com Bíblia"> </p>
+        <p>Vivemos em um mundo conturbado, onde as más notícias parecem nunca parar. No entanto, a Palavra de Deus nos lembra: <strong>"E a paz de Deus, que excede todo o entendimento, guardará os vossos corações e os vossos pensamentos em Cristo Jesus." (Filipenses 4:7)</strong></p>
         <p>Essa paz não depende das circunstâncias externas, mas de um relacionamento verdadeiro com o Pai. Mesmo nos momentos mais difíceis, podemos encontrar consolo na presença de Deus.</p>
         <p>Confie nEle. Busque-o em oração. E experimente essa paz sobrenatural que só Jesus pode oferecer.</p>
+      </div>
+      <img src="https://i.imgur.com/hUpisV6.jpeg" alt="Paisagem de paz com Bíblia">
+    </div>
+  </div>
 
-<div class="container" id="posts-container">
-  <!-- Os posts vão aparecer aqui -->
-</div>
+  <div class="container" id="posts-container">
+    <!-- Os posts vão aparecer aqui -->
   </div>
 
   <footer>
     © 2025 - Blog Cristão. Feito com fé.
   </footer>
-<!-- Firebase SDK compatível com HTML puro -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<script>
-  // Configuração do Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyBuZRpFk7zikoLmKLM4ArBZeJpPQOsrRBo",
-    authDomain: "blogcristao-5ad5e.firebaseapp.com",
-    databaseURL: "https://blogcristao-5ad5e-default-rtdb.firebaseio.com",
-    projectId: "blogcristao-5ad5e",
-    storageBucket: "blogcristao-5ad5e.firebasestorage.app",
-    messagingSenderId: "509326412804",
-    appId: "1:509326412804:web:66a7c914e24c127599f951"
-  };
+  <!-- Firebase SDK compatível com HTML puro -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-  // Inicializa Firebase
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+  <script>
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuZRpFk7zikoLmKLM4ArBZeJpPQOsrRBo",
+      authDomain: "blogcristao-5ad5e.firebaseapp.com",
+      databaseURL: "https://blogcristao-5ad5e-default-rtdb.firebaseio.com",
+      projectId: "blogcristao-5ad5e",
+      storageBucket: "blogcristao-5ad5e.appspot.com",
+      messagingSenderId: "509326412804",
+      appId: "1:509326412804:web:66a7c914e24c127599f951"
+    };
 
-  // Teste: gravação simples no banco
-  database.ref("teste").set({
-    mensagem: "Blog aeeee!"
-  });
-</script>
-<script>
-  const postsContainer = document.getElementById("posts-container");
+    // Inicializa Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+  </script>
 
-  // Função para criar um post visualmente no HTML
-  function criarPost(titulo, conteudo, imagem, data) {
-    const post = document.createElement("div");
-    post.className = "post"; // Classe CSS que você pode estilizar depois
-    post.innerHTML = `
-      <h2>${titulo}</h2>
-      <p class="date">${data}</p>
-      <div class="post-content">
-        <p>${conteudo}</p>
-      </div>
-      <img src="${imagem}" alt="${titulo}">
-    `;
-    postsContainer.appendChild(post);
-  }
+  <script>
+    const postsContainer = document.getElementById("posts-container");
 
-  // Conectando com o Firebase para pegar os posts
-  database.ref("posts").on("value", function(snapshot) {
-    postsContainer.innerHTML = ""; // Limpa tudo antes de mostrar os posts
-    snapshot.forEach(function(childSnapshot) {
-      const post = childSnapshot.val(); // Aqui ele pega os dados do Firebase
-      criarPost(post.titulo, post.conteudo, post.imagem, post.data); // Cria e mostra
+    // Função para criar um post visualmente no HTML
+    function criarPost(titulo, conteudo, imagem, data) {
+      const post = document.createElement("div");
+      post.className = "post";
+      post.innerHTML = `
+        <h2>${titulo}</h2>
+        <p class="date">${data}</p>
+        <div class="post-content">
+          <p>${conteudo}</p>
+        </div>
+        <img src="${imagem}" alt="${titulo}">
+      `;
+      postsContainer.appendChild(post);
+    }
+
+    // Conectando com o Firebase para pegar os posts
+    database.ref("posts").on("value", function(snapshot) {
+      postsContainer.innerHTML = "";
+      snapshot.forEach(function(childSnapshot) {
+        const post = childSnapshot.val();
+        criarPost(post.titulo, post.conteudo, post.imagem, post.data);
+      });
     });
-  });
-</script>
+  </script>
 </body>
 </html>
