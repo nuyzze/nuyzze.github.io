@@ -144,7 +144,7 @@
   <footer>
     © 2025 - Blog Cristão. Feito com fé.
   </footer>
-<!-- Firebase SDK compatível com HTML puro -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
@@ -160,39 +160,62 @@
     appId: "1:509326412804:web:66a7c914e24c127599f951"
   };
 
-  // Inicializa Firebase
+  // Inicializar Firebase
   firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+  const db = firebase.database();
 
-  // Teste: gravação simples no banco
-  database.ref("teste").set({
-    mensagem: "Blog aeeee!"
-  });
-</script>
-<script>
   const postsContainer = document.getElementById("posts-container");
 
-  // Função para criar um post visualmente no HTML
-  function criarPost(titulo, conteudo, imagem, data) {
+  function criarPost(id, titulo, conteudo, imagem, data) {
     const post = document.createElement("div");
-    post.className = "post"; // Classe CSS que você pode estilizar depois
+    post.className = "post";
     post.innerHTML = `
       <h2>${titulo}</h2>
       <p class="date">${data}</p>
-      <div class="post-content">
-        <p>${conteudo}</p>
-      </div>
+      <div class="post-content">${conteudo}</div>
       <img src="${imagem}" alt="${titulo}">
+      <div class="comments" id="comments-${id}">
+        <h3>Comentários</h3>
+        <div class="comments-list" id="comments-list-${id}"></div>
+        <form onsubmit="adicionarComentario(event, '${id}')">
+          <textarea placeholder="Escreva um comentário..." id="comentario-${id}" required></textarea>
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
     `;
     postsContainer.appendChild(post);
+    carregarComentarios(id);
   }
 
-  // Conectando com o Firebase para pegar os posts
-  database.ref("posts").on("value", function(snapshot) {
-    postsContainer.innerHTML = ""; // Limpa tudo antes de mostrar os posts
-    snapshot.forEach(function(childSnapshot) {
-      const post = childSnapshot.val(); // Aqui ele pega os dados do Firebase
-      criarPost(post.titulo, post.conteudo, post.imagem, post.data); // Cria e mostra
+  function carregarComentarios(postId) {
+    const lista = document.getElementById("comments-list-" + postId);
+    db.ref("comentarios/" + postId).on("value", snapshot => {
+      lista.innerHTML = "";
+      snapshot.forEach(child => {
+        const comentario = child.val();
+        const div = document.createElement("div");
+        div.className = "comment";
+        div.innerText = comentario.texto;
+        lista.appendChild(div);
+      });
+    });
+  }
+
+  function adicionarComentario(event, postId) {
+    event.preventDefault();
+    const textarea = document.getElementById("comentario-" + postId);
+    const texto = textarea.value.trim();
+    if (texto) {
+      db.ref("comentarios/" + postId).push({ texto });
+      textarea.value = "";
+    }
+  }
+
+  db.ref("posts").on("value", snapshot => {
+    postsContainer.innerHTML = "";
+    snapshot.forEach(child => {
+      const post = child.val();
+      criarPost(child.key, post.titulo, post.conteudo, post.imagem, post.data);
     });
   });
 </script>
