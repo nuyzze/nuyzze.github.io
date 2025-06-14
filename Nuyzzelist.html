@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuyzze – Lista de Tarefas Inteligente</title>
+
+  <!-- Fontes Profissionais -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --azul-escuro: #0f172a;
+      --azul: #2563eb;
+      --ciano: #22d3ee;
+      --branco: #f1f5f9;
+      --cinza: #94a3b8;
+      --borda: #334155;
+      --gradiente: linear-gradient(135deg, #0f172a, #1e3a8a, #22d3ee);
+      --font-titulo: 'Orbitron', sans-serif;
+      --font-texto: 'Poppins', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-texto);
+      background: var(--azul-escuro);
+      color: var(--branco);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--gradiente);
+      opacity: 0.08;
+      z-index: -1;
+    }
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+    header {
+      width: 100%;
+      padding: 20px;
+      background-color: rgba(15, 23, 42, 0.7);
+      border-bottom: 2px solid var(--borda);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-family: var(--font-titulo);
+      font-size: 1.8rem;
+      color: var(--ciano);
+      text-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+    }
+
+    header span {
+      font-size: 0.9rem;
+      color: var(--cinza);
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Nuyzze</h1>
+    <span>Feito por Alírio Neto</span>
+  </header>
+  <main>
+    <section id="authSection">
+      <div class="auth-card">
+        <h2 id="authTitle">Entrar</h2>
+
+        <input type="text" id="username" placeholder="Seu nome de usuário" autocomplete="off">
+        <input type="password" id="password" placeholder="Sua senha">
+
+        <button onclick="entrar()">Entrar</button>
+        <p id="alternarModo" onclick="trocarModo()">Não tem conta? <span>Criar</span></p>
+      </div>
+      </main>
+    </section>
+<main></main>
+    <section id="areaLogada" style="display: none;">
+      <h2>Olá, <span id="userAtivo"></span> 👋</h2>
+      <p>Você está logado com sucesso no sistema Nuyzze.</p>
+      <button onclick="sair()">Sair</button>
+    </section>
+  </main>
+
+  <style>
+    #authSection, #areaLogada {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      margin-top: 40px;
+      gap: 15px;
+      animation: fade 0.4s ease-in-out;
+    }
+
+    .auth-card {
+      background-color: rgba(15, 23, 42, 0.6);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px var(--sombra, rgba(0,0,0,0.5));
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid var(--borda);
+    }
+
+    .auth-card input {
+      padding: 12px;
+      border: 1px solid var(--borda);
+      border-radius: 8px;
+      background-color: #1e293b;
+      color: var(--branco);
+      font-size: 1rem;
+    }
+
+    .auth-card button {
+      padding: 12px;
+      background-color: var(--azul);
+      border: none;
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .auth-card button:hover {
+      background-color: var(--ciano);
+    }
+
+    #alternarModo {
+      font-size: 0.9rem;
+      color: var(--cinza);
+      text-align: center;
+      cursor: pointer;
+    }
+
+    #alternarModo span {
+      color: var(--ciano);
+      text-decoration: underline;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <script>
+    let modoLogin = true;
+
+    function trocarModo() {
+      modoLogin = !modoLogin;
+      document.getElementById("authTitle").textContent = modoLogin ? "Entrar" : "Criar Conta";
+      document.querySelector("#alternarModo").innerHTML = modoLogin
+        ? 'Não tem conta? <span>Criar</span>'
+        : 'Já tem conta? <span>Entrar</span>';
+    }
+
+    function entrar() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value;
+
+      if (user === "" || pass === "") {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      const dadosSalvos = JSON.parse(localStorage.getItem("nuyzzeUser")) || {};
+
+      if (modoLogin) {
+        if (dadosSalvos.username === user && dadosSalvos.password === pass) {
+          localStorage.setItem("nuyzzeAtivo", user);
+          mostrarAreaLogada(user);
+        } else {
+          alert("Usuário ou senha inválidos.");
+        }
+      } else {
+        localStorage.setItem("nuyzzeUser", JSON.stringify({ username: user, password: pass }));
+        alert("Conta criada com sucesso! Agora entre.");
+        trocarModo();
+      }
+    }
+
+    function mostrarAreaLogada(user) {
+      document.getElementById("authSection").style.display = "none";
+      document.getElementById("areaLogada").style.display = "flex";
+      document.getElementById("userAtivo").textContent = user;
+    }
+
+    function sair() {
+      localStorage.removeItem("nuyzzeAtivo");
+      location.reload();
+    }
+
+    // Ao carregar, verificar se há usuário ativo
+    window.onload = () => {
+      const ativo = localStorage.getItem("nuyzzeAtivo");
+      if (ativo) mostrarAreaLogada(ativo);
+    };
+  </script>
+  <section id="todoSection" style="display: none;">
+  <div class="todo-card">
+    <h2>Sua Lista de Tarefas</h2>
+
+    <div class="input-area">
+      <input type="text" id="novaTarefa" placeholder="Digite uma nova tarefa...">
+      <button onclick="adicionarTarefa()">Adicionar</button>
+    </div>
+
+    <ul id="listaTarefas"></ul>
+  </div>
+</section>
+
+<style>
+  #todoSection {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fade 0.5s ease-in-out;
+  }
+
+  .todo-card {
+    background-color: rgba(15, 23, 42, 0.6);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px var(--sombra, rgba(0,0,0,0.5));
+    max-width: 600px;
+    width: 100%;
+    border: 1px solid var(--borda);
+  }
+
+  .todo-card h2 {
+    margin-bottom: 20px;
+    color: var(--ciano);
+  }
+
+  .input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .input-area input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--borda);
+    background-color: #1e293b;
+    color: var(--branco);
+    font-size: 1rem;
+  }
+
+  .input-area button {
+    padding: 12px 18px;
+    background-color: var(--azul);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .input-area button:hover {
+    background-color: var(--ciano);
+  }
+
+  #listaTarefas {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  #listaTarefas li {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+  }
+
+  #listaTarefas li.concluida {
+    text-decoration: line-through;
+    color: var(--cinza);
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  #listaTarefas button {
+    background: transparent;
+    border: none;
+    color: var(--ciano);
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+
+  #listaTarefas button:hover {
+    color: red;
+  }
+</style>
+
+<script>
+  const inputTarefa = document.getElementById("novaTarefa");
+  const listaTarefas = document.getElementById("listaTarefas");
+
+  function mostrarTarefas() {
+    const user = localStorage.getItem("nuyzzeAtivo");
+    if (!user) return;
+
+    const dados = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+    listaTarefas.innerHTML = "";
+
+    dados.forEach((tarefa, i) => {
+      const li = document.createElement("li");
+      if (tarefa.feita) li.classList.add("concluida");
+      li.innerHTML = `
+        <span onclick="alternarFeita(${i})">${tarefa.texto}</span>
+        <div>
+          <button onclick="alternarFeita(${i})">✔</button>
+          <button onclick="removerTarefa(${i})">🗑</button>
+        </div>
+      `;
+      listaTarefas.appendChild(li);
+    });
+  }
+
+  function salvarTarefas(dados) {
+    const user = localStorage.getItem("nuyzzeAtivo");
+    if (!user) return;
+    localStorage.setItem("tarefas_" + user, JSON.stringify(dados));
+  }
+
+  function adicionarTarefa() {
+    const texto = inputTarefa.value.trim();
+    if (texto === "") return;
+    const user = localStorage.getItem("nuyzzeAtivo");
+    const dados = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+    dados.push({ texto, feita: false });
+    salvarTarefas(dados);
+    inputTarefa.value = "";
+    mostrarTarefas();
+  }
+
+  function removerTarefa(i) {
+    const user = localStorage.getItem("nuyzzeAtivo");
+    const dados = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+    dados.splice(i, 1);
+    salvarTarefas(dados);
+    mostrarTarefas();
+  }
+
+  function alternarFeita(i) {
+  const user = localStorage.getItem("nuyzzeAtivo");
+  const dados = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+  dados[i].feita = !dados[i].feita;
+  dados[i].dataConclusao = dados[i].feita ? new Date().toISOString() : null;
+  salvarTarefas(dados);
+  mostrarTarefas();
+}
+
+  // Exibir tarefas após login
+  if (localStorage.getItem("nuyzzeAtivo")) {
+    document.getElementById("todoSection").style.display = "flex";
+    mostrarTarefas();
+  }
+</script>
+<!-- Menu Hambúrguer -->
+<nav id="menuHamburguer">
+  <div class="menu-icon" onclick="toggleMenu()">☰</div>
+  <div class="menu-content" id="menuContent">
+    <div class="menu-header">
+      <span>Menu</span>
+      <span class="fechar-menu" onclick="toggleMenu()">✖</span>
+    </div>
+    <button onclick="abrirAba('todoSection')">Tarefas</button>
+    <button onclick="abrirAba('perfilSection')">Perfil</button>
+    <button onclick="abrirAba('configSection')">Configurações</button>
+    <button onclick="sair()">Sair</button>
+  </div>
+</nav>
+
+<style>
+  #menuHamburguer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+
+  .menu-icon {
+    font-size: 28px;
+    background: var(--azul);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--ciano);
+    transition: transform 0.3s ease;
+  }
+
+  .menu-icon:hover {
+    transform: scale(1.1);
+  }
+
+  .menu-content {
+    display: none;
+    flex-direction: column;
+    background-color: rgba(15, 23, 42, 0.95);
+    border: 2px solid var(--ciano);
+    border-radius: 12px;
+    box-shadow: 0 0 30px var(--sombra, rgba(0,0,0,0.5));
+    padding: 20px;
+    margin-top: 10px;
+    min-width: 200px;
+    gap: 15px;
+    animation: fade 0.4s ease;
+    position: absolute;
+    right: 0;
+    top: 50px;
+  }
+
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    color: var(--ciano);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--cinza);
+    padding-bottom: 5px;
+  }
+
+  .menu-content button {
+    background-color: var(--azul);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+
+  .menu-content button:hover {
+    background-color: var(--ciano);
+  }
+
+  @media (max-width: 600px) {
+    .menu-content {
+      right: 0;
+      left: auto;
+      width: 90vw;
+    }
+  }
+  canvas {
+  max-width: 100%;
+  height: auto !important;
+}
+</style>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById("menuContent");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  }
+
+  function abrirAba(id) {
+    const secoes = ["authSection", "areaLogada", "todoSection", "perfilSection", "configSection"];
+    secoes.forEach(sec => {
+      const el = document.getElementById(sec);
+      if (el) el.style.display = "none";
+    });
+    const aba = document.getElementById(id);
+    if (aba) {
+      aba.style.display = "flex";
+      toggleMenu();
+    }
+
+    // Marca a aba como ativa se existir no controle de abas
+    const todasAbas = document.querySelectorAll('.aba');
+    todasAbas.forEach(abaEl => {
+      abaEl.classList.toggle('ativa', abaEl.getAttribute('data-id') === id);
+    });
+  }
+</script>
+<!-- Container das abas dinâmicas -->
+<div id="abasContainer" class="abas-container" aria-label="Abas de conteúdo"></div>
+
+<style>
+  .abas-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 20px;
+    margin-top: 20px;
+  }
+
+  .aba {
+    background-color: #0f172a;
+    color: var(--ciano);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 8px rgba(0, 204, 255, 0.4);
+    user-select: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .aba:hover,
+  .aba.ativa {
+    background-color: var(--ciano);
+    color: #0f172a;
+  }
+
+  .aba .fechar-aba {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    color: inherit;
+    font-weight: 900;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    user-select: none;
+  }
+
+  .aba .fechar-aba:hover {
+    color: #ff4c4c;
+  }
+
+  @media (max-width: 600px) {
+    .abas-container {
+      gap: 6px;
+      padding: 8px 10px;
+    }
+
+    .aba {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+<script>
+  const abasAbertas = new Map();
+
+  function criarAba(id, titulo) {
+    if (abasAbertas.has(id)) {
+      ativarAba(id);
+      return;
+    }
+
+    const container = document.getElementById('abasContainer');
+    const aba = document.createElement('div');
+    aba.classList.add('aba');
+    aba.setAttribute('data-id', id);
+    aba.setAttribute('tabindex', '0');
+    aba.textContent = titulo;
+
+    const btnFechar = document.createElement('button');
+    btnFechar.classList.add('fechar-aba');
+    btnFechar.setAttribute('aria-label', `Fechar aba ${titulo}`);
+    btnFechar.textContent = '×';
+
+    btnFechar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fecharAba(id);
+    });
+
+    aba.addEventListener('click', () => {
+      ativarAba(id);
+    });
+
+    aba.appendChild(btnFechar);
+    container.appendChild(aba);
+    abasAbertas.set(id, aba);
+
+    ativarAba(id);
+  }
+
+  function ativarAba(id) {
+    const container = document.getElementById('abasContainer');
+    container.querySelectorAll('.aba').forEach(aba => {
+      aba.classList.toggle('ativa', aba.getAttribute('data-id') === id);
+    });
+
+    const todasAbasConteudo = document.querySelectorAll('.conteudo-aba, #todoSection, #authSection, #areaLogada');
+    todasAbasConteudo.forEach(sec => {
+      sec.style.display = (sec.id === id) ? 'block' : 'none';
+    });
+  }
+
+  function fecharAba(id) {
+    const aba = abasAbertas.get(id);
+    if (!aba) return;
+
+    const container = document.getElementById('abasContainer');
+    container.removeChild(aba);
+    abasAbertas.delete(id);
+
+    if (aba.classList.contains('ativa')) {
+      const ultimaAba = Array.from(abasAbertas.keys()).pop() || 'todoSection';
+      ativarAba(ultimaAba);
+    }
+  }
+
+  // Carregar abas iniciais
+  document.addEventListener('DOMContentLoaded', () => {
+    criarAba('todoSection', 'Tarefas');
+    criarAba('perfilSection', 'Perfil');
+    criarAba('configSection', 'Configurações');
+  });
+</script>
+<!-- Loader animado simples -->
+<div id="loader" class="loader"></div>
+
+<!-- Mensagem de feedback -->
+<div id="msgFeedback" class="msg-feedback" style="display:none;"></div>
+
+<style>
+  /* Loader giratório */
+  .loader {
+    border: 8px solid #1e293b;
+    border-top: 8px solid var(--ciano);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1.5s linear infinite;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99999;
+    background: transparent;
+    display: block;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+  }
+
+  /* Mensagem de feedback estilo toast */
+  .msg-feedback {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--ciano);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 0 15px var(--ciano);
+    z-index: 10000;
+    opacity: 0.95;
+    user-select: none;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  // Mostra uma mensagem flutuante
+  function mostrarFeedback(msg, duracao = 2500) {
+    const feedback = document.getElementById("msgFeedback");
+    feedback.textContent = msg;
+    feedback.style.display = "block";
+
+    setTimeout(() => {
+      feedback.style.display = "none";
+    }, duracao);
+  }
+
+  // Esconde o loader e mostra seção correta
+  window.addEventListener("load", () => {
+    const loader = document.getElementById("loader");
+    if (loader) loader.style.display = "none";
+
+    const authSection = document.getElementById("authSection");
+    const todoSection = document.getElementById("todoSection");
+
+    if (localStorage.getItem("nuyzzeAtivo")) {
+      if (authSection) authSection.style.display = "none";
+      if (todoSection) todoSection.style.display = "flex";
+    } else {
+      if (authSection) authSection.style.display = "flex";
+      if (todoSection) todoSection.style.display = "none";
+    }
+  });
+
+  // Exemplo simples ao clicar em botão de adicionar
+  document.addEventListener("DOMContentLoaded", () => {
+    const botaoAdicionar = document.querySelector(".input-area button, .nova-tarefa button");
+    const campo = document.querySelector("#novaTarefa, #inputTarefa");
+
+    if (botaoAdicionar && campo) {
+      botaoAdicionar.addEventListener("click", () => {
+        const texto = campo.value.trim();
+        if (texto) {
+          mostrarFeedback("Tarefa adicionada com sucesso!");
+        } else {
+          mostrarFeedback("Digite algo antes de adicionar.", 2000);
+        }
+      });
+    }
+  });
+</script>
+<!-- Container de notificações -->
+<div id="notificacoesContainer" aria-live="polite" aria-atomic="true" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 300px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+"></div>
+
+<style>
+  .notificacao {
+    background-color: var(--ciano);
+    color: #0f172a;
+    padding: 12px 20px;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0, 204, 255, 0.5);
+    font-weight: 600;
+    font-size: 1rem;
+    opacity: 0;
+    transform: translateX(100%);
+    pointer-events: auto;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .notificacao.mostrar {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .notificacao .fecharBtn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    cursor: pointer;
+    margin-left: 15px;
+    transition: color 0.3s ease;
+  }
+
+  .notificacao .fecharBtn:hover {
+    color: #005577;
+  }
+</style>
+
+<script>
+  const containerNotificacoes = document.getElementById('notificacoesContainer');
+
+  // Cria e exibe uma notificação com tipo (info, sucesso, erro)
+  function mostrarNotificacao(texto, tipo = 'info', duracao = 4000) {
+    const notif = document.createElement('div');
+    notif.className = 'notificacao';
+    notif.setAttribute('role', 'alert');
+    notif.textContent = texto;
+
+    // Botão de fechar
+    const btnFechar = document.createElement('button');
+    btnFechar.className = 'fecharBtn';
+    btnFechar.setAttribute('aria-label', 'Fechar notificação');
+    btnFechar.innerHTML = '&times;';
+    btnFechar.addEventListener('click', () => {
+      esconderNotificacao(notif);
+    });
+    notif.appendChild(btnFechar);
+
+    // Cores por tipo
+    switch (tipo) {
+      case 'sucesso':
+        notif.style.backgroundColor = '#00cc44';
+        notif.style.color = '#0f172a';
+        notif.style.boxShadow = '0 4px 10px rgba(0, 204, 68, 0.6)';
+        break;
+      case 'erro':
+        notif.style.backgroundColor = '#ff4444';
+        notif.style.color = '#fff';
+        notif.style.boxShadow = '0 4px 10px rgba(255, 68, 68, 0.7)';
+        break;
+      case 'info':
+      default:
+        // Mantém cor azul padrão
+        break;
+    }
+
+    containerNotificacoes.appendChild(notif);
+
+    // Força animação de entrada
+    setTimeout(() => {
+      notif.classList.add('mostrar');
+    }, 10);
+
+    // Oculta automaticamente após tempo
+    setTimeout(() => {
+      esconderNotificacao(notif);
+    }, duracao);
+  }
+
+  function esconderNotificacao(notif) {
+    notif.classList.remove('mostrar');
+    notif.addEventListener('transitionend', () => {
+      notif.remove();
+    });
+  }
+
+  // Exemplos:
+  // mostrarNotificacao('Login efetuado com sucesso!', 'sucesso');
+  // mostrarNotificacao('Erro ao adicionar tarefa!', 'erro');
+</script>
+<style>
+  .lembrete-btn {
+    background: var(--ciano);
+    border: none;
+    color: #0f172a;
+    padding: 5px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    box-shadow: 0 0 8px var(--ciano);
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+  }
+
+  .lembrete-btn:hover {
+    background-color: #00a3e0;
+  }
+</style>
+
+<script>
+  // Armazena lembretes no localStorage
+  // Chave: 'nuyzze_lembretes' → objeto { idTarefa: timestamp }
+
+  function salvarLembrete(idTarefa, timestamp) {
+    let lembretes = JSON.parse(localStorage.getItem('nuyzze_lembretes')) || {};
+    lembretes[idTarefa] = timestamp;
+    localStorage.setItem('nuyzze_lembretes', JSON.stringify(lembretes));
+    mostrarNotificacao('Lembrete salvo!', 'sucesso');
+  }
+
+  function removerLembrete(idTarefa) {
+    let lembretes = JSON.parse(localStorage.getItem('nuyzze_lembretes')) || {};
+    if (lembretes[idTarefa]) {
+      delete lembretes[idTarefa];
+      localStorage.setItem('nuyzze_lembretes', JSON.stringify(lembretes));
+      mostrarNotificacao('Lembrete removido', 'info');
+    }
+  }
+
+  function obterLembretes() {
+    return JSON.parse(localStorage.getItem('nuyzze_lembretes')) || {};
+  }
+
+  // Cria botão de lembrete para uma tarefa (chamar ao criar tarefa visualmente)
+  function criarBotaoLembrete(containerTarefa, idTarefa) {
+    const btn = document.createElement('button');
+    btn.className = 'lembrete-btn';
+    btn.textContent = 'Lembrete';
+
+    // Se já existe lembrete, muda o botão
+    const lembretes = obterLembretes();
+    if (lembretes[idTarefa]) {
+      btn.textContent = 'Remover Lembrete';
+    }
+
+    btn.addEventListener('click', () => {
+      if (btn.textContent === 'Lembrete') {
+        const inputData = prompt('Digite a data e hora do lembrete (AAAA-MM-DD HH:MM):');
+        if (!inputData) return;
+
+        const timestamp = new Date(inputData).getTime();
+        if (isNaN(timestamp) || timestamp < Date.now()) {
+          alert('Data/hora inválida ou no passado.');
+          return;
+        }
+
+        salvarLembrete(idTarefa, timestamp);
+        btn.textContent = 'Remover Lembrete';
+      } else {
+        removerLembrete(idTarefa);
+        btn.textContent = 'Lembrete';
+      }
+    });
+
+    containerTarefa.appendChild(btn);
+  }
+
+  // Checa se algum lembrete venceu
+  function verificarLembretes() {
+    const lembretes = obterLembretes();
+    const agora = Date.now();
+
+    for (const id in lembretes) {
+      if (lembretes.hasOwnProperty(id)) {
+        if (lembretes[id] <= agora) {
+          mostrarNotificacao(`⏰ Lembrete ativado para tarefa ID: ${id}`, 'info', 7000);
+          removerLembrete(id);
+        }
+      }
+    }
+  }
+
+  // Checa lembretes automaticamente a cada 30 segundos
+  setInterval(verificarLembretes, 30000);
+
+  // Também verifica assim que carregar a página
+  document.addEventListener('DOMContentLoaded', verificarLembretes);
+</script>
+<!-- Botão para alternar tema -->
+<div id="temaContainer" style="text-align: right; margin-bottom: 15px;">
+  <button id="btnToggleTema" aria-label="Alternar tema claro e escuro" title="Alternar tema" style="
+    background: var(--ciano);
+    color: #0f172a;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--ciano);
+    transition: background-color 0.4s ease, color 0.4s ease;
+  ">
+    Tema Escuro
+  </button>
+</div>
+
+<style>
+  /* Tema claro */
+  body.tema-claro {
+    --fundo: #e1e8f7;
+    --texto: #0f172a;
+    --ciano: #0077cc;
+    --ciano-claro: #66b3ff;
+    background-color: var(--fundo);
+    color: var(--texto);
+  }
+
+  body.tema-claro header,
+  body.tema-claro #listaTarefas li {
+    background-color: #ffffff;
+    color: var(--texto);
+  }
+
+  /* Botão no modo claro */
+  body.tema-claro #btnToggleTema {
+    background: var(--ciano);
+    color: #e1e8f7;
+    box-shadow: 0 0 12px var(--ciano-claro);
+  }
+
+  /* Transição suave */
+  body, header, #listaTarefas li {
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+</style>
+
+<script>
+  const btnToggleTema = document.getElementById('btnToggleTema');
+  const body = document.body;
+
+  function carregarTema() {
+    const temaSalvo = localStorage.getItem('nuyzze_tema');
+    if (temaSalvo === 'claro') {
+      body.classList.add('tema-claro');
+      btnToggleTema.textContent = 'Tema Escuro';
+    } else {
+      body.classList.remove('tema-claro');
+      btnToggleTema.textContent = 'Tema Claro';
+    }
+  }
+
+  btnToggleTema.addEventListener('click', () => {
+    body.classList.toggle('tema-claro');
+    const claro = body.classList.contains('tema-claro');
+    btnToggleTema.textContent = claro ? 'Tema Escuro' : 'Tema Claro';
+    localStorage.setItem('nuyzze_tema', claro ? 'claro' : 'escuro');
+  });
+
+  document.addEventListener('DOMContentLoaded', carregarTema);
+</script>
+<script>
+  let db;
+
+// Abrir banco IndexedDB
+function abrirIndexedDB() {
+  const request = indexedDB.open("NuyzzeDB", 1);
+
+  request.onerror = function () {
+    console.error("Erro ao abrir IndexedDB.");
+  };
+
+  request.onsuccess = function (event) {
+    db = event.target.result;
+    console.log("IndexedDB pronto.");
+    sincronizarComIndexedDB();
+  };
+
+  request.onupgradeneeded = function (event) {
+    db = event.target.result;
+    if (!db.objectStoreNames.contains("tarefas")) {
+      const store = db.createObjectStore("tarefas", { keyPath: "id" });
+      store.createIndex("usuario", "usuario", { unique: false });
+    }
+  };
+}
+
+// Salvar tarefa no IndexedDB
+function salvarNoIndexedDB(id, usuario, dados) {
+  if (!db) return;
+  const tx = db.transaction(["tarefas"], "readwrite");
+  const store = tx.objectStore("tarefas");
+  store.put({ id, usuario, dados });
+  tx.oncomplete = () => console.log("Tarefa salva no IndexedDB.");
+}
+
+// Sincronizar localStorage → IndexedDB
+function sincronizarComIndexedDB() {
+  const usuario = localStorage.getItem("nuyzzeAtivo");
+  if (!usuario) return;
+
+  const tarefas = localStorage.getItem("tarefas_" + usuario);
+  if (!tarefas) return;
+
+  const id = "t_" + usuario;
+  salvarNoIndexedDB(id, usuario, tarefas);
+}
+
+// Restaurar do IndexedDB (caso localStorage falhe)
+function restaurarDeIndexedDB(callback) {
+  if (!db) return;
+
+  const usuario = localStorage.getItem("nuyzzeAtivo");
+  const id = "t_" + usuario;
+
+  const tx = db.transaction(["tarefas"], "readonly");
+  const store = tx.objectStore("tarefas");
+  const request = store.get(id);
+
+  request.onsuccess = () => {
+    if (request.result && request.result.dados) {
+      const dados = request.result.dados;
+      localStorage.setItem("tarefas_" + usuario, dados);
+      if (typeof callback === "function") callback();
+      mostrarNotificacao("Dados restaurados do backup 🔄", "info");
+    }
+  };
+}
+</script>
+
+<script>
+  // Inicia o IndexedDB ao carregar a página
+  document.addEventListener("DOMContentLoaded", () => {
+    abrirIndexedDB();
+
+    // Se localStorage estiver vazio, tenta restaurar do IndexedDB
+    const usuario = localStorage.getItem("nuyzzeAtivo");
+    if (usuario && !localStorage.getItem("tarefas_" + usuario)) {
+      setTimeout(() => restaurarDeIndexedDB(mostrarTarefas), 1000);
+    }
+  });
+</script>
+<section id="perfilSection" class="conteudo-aba" style="display: none;">
+  <div class="perfil-card">
+    <h2>👤 Perfil do Usuário</h2>
+    <p><strong>Nome de usuário:</strong> <span id="nomeUsuarioPerfil"></span></p>
+
+    <input type="text" id="novoNomeUsuario" placeholder="Novo nome de usuário">
+    <button onclick="atualizarNomeUsuario()">Atualizar Nome</button>
+  </div>
+</section>
+
+<style>
+  .perfil-card {
+    background-color: rgba(15, 23, 42, 0.7);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 400px;
+    box-shadow: 0 0 12px rgba(0, 204, 255, 0.2);
+    text-align: center;
+    animation: fade 0.3s ease;
+  }
+
+  .perfil-card h2 {
+    margin-bottom: 15px;
+    color: var(--ciano);
+  }
+
+  .perfil-card input {
+    margin-top: 15px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--borda);
+    background-color: #1e293b;
+    color: white;
+  }
+
+  .perfil-card button {
+    margin-top: 10px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--ciano);
+    color: #0f172a;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .perfil-card button:hover {
+    background-color: #00a3e0;
+  }
+</style>
+
+<script>
+  function carregarPerfil() {
+    const userData = JSON.parse(localStorage.getItem("nuyzzeUser"));
+    const userAtivo = localStorage.getItem("nuyzzeAtivo");
+
+    if (userData && userAtivo && userData.username === userAtivo) {
+      document.getElementById("nomeUsuarioPerfil").textContent = userAtivo;
+    }
+  }
+
+  function atualizarNomeUsuario() {
+    const novoNome = document.getElementById("novoNomeUsuario").value.trim();
+    if (!novoNome) {
+      mostrarNotificacao("Digite um nome válido!", "erro");
+      return;
+    }
+
+    let dados = JSON.parse(localStorage.getItem("nuyzzeUser"));
+    const userAtual = localStorage.getItem("nuyzzeAtivo");
+
+    if (dados.username !== userAtual) {
+      mostrarNotificacao("Erro ao atualizar usuário!", "erro");
+      return;
+    }
+
+    dados.username = novoNome;
+    localStorage.setItem("nuyzzeUser", JSON.stringify(dados));
+    localStorage.setItem("nuyzzeAtivo", novoNome);
+
+    mostrarNotificacao("Nome atualizado com sucesso!", "sucesso");
+    document.getElementById("nomeUsuarioPerfil").textContent = novoNome;
+    document.getElementById("userAtivo").textContent = novoNome;
+
+    // Renomeia chave das tarefas
+    const tarefasAntigas = localStorage.getItem("tarefas_" + userAtual);
+    localStorage.removeItem("tarefas_" + userAtual);
+    localStorage.setItem("tarefas_" + novoNome, tarefasAntigas);
+  }
+
+  // Sempre que o perfil for aberto
+  document.addEventListener("DOMContentLoaded", carregarPerfil);
+</script>
+<section id="configSection" class="conteudo-aba" style="display: none;">
+  <div class="config-card">
+    <h2>⚙️ Configurações</h2>
+
+    <button onclick="limparTarefas()">🧹 Limpar Minhas Tarefas</button>
+    <button onclick="resetarConta()">🔁 Resetar Conta</button>
+    <button onclick="apagarTudo()">🔥 Apagar Tudo</button>
+  </div>
+</section>
+
+<style>
+  .config-card {
+    background-color: rgba(15, 23, 42, 0.7);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 400px;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.2);
+    text-align: center;
+    animation: fade 0.3s ease;
+  }
+
+  .config-card h2 {
+    margin-bottom: 20px;
+    color: var(--ciano);
+  }
+
+  .config-card button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #334155;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .config-card button:hover {
+    background-color: var(--azul);
+  }
+
+  .config-card button:last-child {
+    background-color: #dc2626;
+  }
+
+  .config-card button:last-child:hover {
+    background-color: #b91c1c;
+  }
+</style>
+
+<script>
+  function limparTarefas() {
+    const user = localStorage.getItem("nuyzzeAtivo");
+    if (!user) return;
+
+    if (confirm("Tem certeza que deseja limpar todas as suas tarefas?")) {
+      localStorage.removeItem("tarefas_" + user);
+      mostrarNotificacao("Tarefas apagadas.", "info");
+      mostrarTarefas();
+    }
+  }
+
+  function resetarConta() {
+    if (confirm("Tem certeza que deseja resetar sua conta?\nIsso apagará seu login, tarefas e preferências.")) {
+      const user = localStorage.getItem("nuyzzeAtivo");
+      localStorage.removeItem("nuyzzeUser");
+      localStorage.removeItem("nuyzzeAtivo");
+      localStorage.removeItem("tarefas_" + user);
+      localStorage.removeItem("nuyzze_lembretes");
+      localStorage.removeItem("nuyzze_tema");
+      mostrarNotificacao("Conta resetada. Redirecionando...", "erro");
+      setTimeout(() => location.reload(), 2000);
+    }
+  }
+
+  function apagarTudo() {
+    if (confirm("⚠️ Apagar TUDO do app?\nTodos os dados serão excluídos.")) {
+      indexedDB.deleteDatabase("NuyzzeDB");
+      localStorage.clear();
+      mostrarNotificacao("Tudo apagado. Reiniciando...", "erro");
+      setTimeout(() => location.reload(), 1500);
+    }
+  }
+</script>
+<section id="calendarioSection" class="conteudo-aba" style="display: none;">
+  <div class="calendario-card">
+    <h2>📅 Calendário</h2>
+    <input type="date" id="dataCalendario" onchange="filtrarPorData()" />
+    <ul id="tarefasFiltradas"></ul>
+  </div>
+</section>
+
+<style>
+  .calendario-card {
+    background-color: rgba(15, 23, 42, 0.7);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 500px;
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+    text-align: center;
+    animation: fade 0.3s ease;
+  }
+
+  .calendario-card input[type="date"] {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--borda);
+    background-color: #1e293b;
+    color: white;
+    margin: 10px 0 20px 0;
+    font-size: 1rem;
+  }
+
+  #tarefasFiltradas {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+  }
+
+  #tarefasFiltradas li {
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid var(--borda);
+    font-size: 0.95rem;
+  }
+</style>
+
+<script>
+  function filtrarPorData() {
+    const dataSelecionada = document.getElementById("dataCalendario").value;
+    const lista = document.getElementById("tarefasFiltradas");
+    lista.innerHTML = "";
+
+    const lembretes = JSON.parse(localStorage.getItem("nuyzze_lembretes")) || {};
+    const user = localStorage.getItem("nuyzzeAtivo");
+    const tarefas = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+
+    Object.entries(lembretes).forEach(([id, timestamp]) => {
+      const dataLembrete = new Date(timestamp).toISOString().split("T")[0];
+      if (dataLembrete === dataSelecionada) {
+        const tarefa = tarefas[id] ? tarefas[id].texto : "(tarefa não encontrada)";
+        const hora = new Date(timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+        const item = document.createElement("li");
+        item.textContent = `⏰ ${hora} – ${tarefa}`;
+        lista.appendChild(item);
+      }
+    });
+
+    if (lista.children.length === 0) {
+      const nada = document.createElement("li");
+      nada.textContent = "Nenhuma tarefa para essa data.";
+      lista.appendChild(nada);
+    }
+  }
+</script>
+<!-- Seção do gráfico -->
+<section id="graficoSection" class="conteudo-aba" style="display: none;">
+  <div class="grafico-card">
+    <h2>📊 Produtividade</h2>
+    <canvas id="graficoProdutividade" width="300" height="180"></canvas>
+  </div>
+</section>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  .grafico-card {
+    background-color: rgba(15, 23, 42, 0.7);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+    text-align: center;
+    animation: fade 0.3s ease;
+  }
+
+  .grafico-card h2 {
+    margin-bottom: 20px;
+    color: var(--ciano);
+  }
+
+  #graficoProdutividade {
+    max-width: 100%;
+  }
+</style>
+
+<script>
+  function gerarGraficoProdutividade() {
+    const user = localStorage.getItem("nuyzzeAtivo");
+    if (!user) return;
+
+    const tarefas = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+
+    // Agrupar tarefas feitas por data
+    const contagem = {};
+    tarefas.forEach(t => {
+      if (t.feita && t.dataConclusao) {
+        const dia = new Date(t.dataConclusao).toISOString().split("T")[0];
+        contagem[dia] = (contagem[dia] || 0) + 1;
+      }
+    });
+
+    // Pega os últimos 7 dias
+    const hoje = new Date();
+    const labels = [];
+    const dados = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(hoje);
+      d.setDate(d.getDate() - i);
+      const dia = d.toISOString().split("T")[0];
+      labels.push(dia.slice(5)); // MM-DD
+      dados.push(contagem[dia] || 0);
+    }
+
+    // Criar gráfico
+    const ctx = document.getElementById("graficoProdutividade").getContext("2d");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [{
+          label: 'Tarefas concluídas',
+          data: dados,
+          backgroundColor: 'rgba(34, 211, 238, 0.7)',
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: ctx => `${ctx.parsed.y} tarefa(s)`
+          }}
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 }
+          }
+        }
+      }
+    });
+  }
+
+  // Marcar a data de conclusão ao concluir tarefa
+  function alternarFeita(i) {
+    const user = localStorage.getItem("nuyzzeAtivo");
+    const dados = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+    dados[i].feita = !dados[i].feita;
+    dados[i].dataConclusao = dados[i].feita ? new Date().toISOString() : null;
+    salvarTarefas(dados);
+    mostrarTarefas();
+  }
+
+  // Atualiza gráfico ao abrir
+  document.querySelector('[data-id="graficoSection"]')?.addEventListener("click", gerarGraficoProdutividade);
+  
+</script>
+<script>
+  // Função debounce para evitar chamadas repetidas
+  function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
+
+  // Versão otimizada de salvar tarefas com debounce
+  const salvarTarefasDebounced = debounce((dados) => {
+    const user = localStorage.getItem("nuyzzeAtivo");
+    if (!user) return;
+    localStorage.setItem("tarefas_" + user, JSON.stringify(dados));
+    sincronizarComIndexedDB();
+    console.log("Tarefas salvas com debounce.");
+  }, 800); // 800ms
+
+  // Substitui salvarTarefas antigo por essa nova versão
+  function salvarTarefas(dados) {
+    salvarTarefasDebounced(dados);
+  }
+
+  // Melhorar alternarFeita para marcar data de conclusão
+  function alternarFeita(i) {
+    const user = localStorage.getItem("nuyzzeAtivo");
+    const dados = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+    dados[i].feita = !dados[i].feita;
+    dados[i].dataConclusao = dados[i].feita ? new Date().toISOString() : null;
+    salvarTarefas(dados);
+    mostrarTarefas();
+  }
+
+  // Melhora o adicionarTarefa com debounce também
+  function adicionarTarefa() {
+    const texto = document.getElementById("novaTarefa").value.trim();
+    if (texto === "") return;
+    const user = localStorage.getItem("nuyzzeAtivo");
+    const dados = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+    dados.push({ texto, feita: false, dataConclusao: null });
+    salvarTarefas(dados);
+    document.getElementById("novaTarefa").value = "";
+    mostrarTarefas();
+    mostrarNotificacao("Tarefa adicionada com sucesso!", "sucesso");
+  }
+</script>
+<!-- Filtros e busca -->
+<div class="filtros-tarefas">
+  <select id="filtroStatus" onchange="mostrarTarefas()">
+    <option value="todas">Todas</option>
+    <option value="pendentes">Pendentes</option>
+    <option value="feitas">Concluídas</option>
+  </select>
+
+  <input type="text" id="buscaTarefa" placeholder="Buscar tarefa..." oninput="mostrarTarefas()" />
+</div>
+
+<style>
+  .filtros-tarefas {
+    display: flex;
+    gap: 12px;
+    padding: 10px 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .filtros-tarefas select,
+  .filtros-tarefas input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--borda);
+    background-color: #1e293b;
+    color: white;
+    font-size: 0.95rem;
+    min-width: 150px;
+  }
+
+  .filtros-tarefas input::placeholder {
+    color: var(--cinza);
+  }
+</style>
+
+<script>
+  function mostrarTarefas() {
+    const user = localStorage.getItem("nuyzzeAtivo");
+    if (!user) return;
+
+    const dados = JSON.parse(localStorage.getItem("tarefas_" + user)) || [];
+    const lista = document.getElementById("listaTarefas");
+    const filtro = document.getElementById("filtroStatus")?.value || "todas";
+    const termoBusca = document.getElementById("buscaTarefa")?.value.toLowerCase() || "";
+
+    lista.innerHTML = "";
+
+    dados.forEach((tarefa, i) => {
+      const texto = tarefa.texto.toLowerCase();
+      const correspondeBusca = texto.includes(termoBusca);
+
+      if (
+        (filtro === "todas" ||
+        (filtro === "pendentes" && !tarefa.feita) ||
+        (filtro === "feitas" && tarefa.feita)) &&
+        correspondeBusca
+      ) {
+        const li = document.createElement("li");
+        if (tarefa.feita) li.classList.add("concluida");
+        li.innerHTML = `
+          <span onclick="alternarFeita(${i})">${tarefa.texto}</span>
+          <div>
+            <button onclick="alternarFeita(${i})">✔</button>
+            <button onclick="removerTarefa(${i})">🗑</button>
+          </div>
+        `;
+        lista.appendChild(li);
+      }
+    });
+
+    if (lista.children.length === 0) {
+      const vazio = document.createElement("li");
+      vazio.textContent = "Nenhuma tarefa encontrada.";
+      lista.appendChild(vazio);
+    }
+  }
+</script>
+<style>
+  /* Tarefas animadas ao aparecer */
+  #listaTarefas li {
+    animation: aparecerTarefa 0.4s ease;
+  }
+
+  @keyframes aparecerTarefa {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Animação ao alternar abas */
+  .conteudo-aba {
+    animation: fadeSlide 0.4s ease;
+  }
+
+  @keyframes fadeSlide {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+
+  /* Efeito de foco nos botões */
+  button:hover,
+  button:focus {
+    transform: scale(1.03);
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+  }
+
+  button:active {
+    transform: scale(0.97);
+  }
+
+  /* Fade-in geral */
+  .fadein {
+    animation: fadein 0.4s ease-in-out;
+  }
+
+  @keyframes fadein {
+    from { opacity: 0 }
+    to { opacity: 1 }
+  }
+
+  /* Transições suaves nos elementos globais */
+  input, select, button, .aba, .auth-card, .perfil-card, .config-card {
+    transition: all 0.3s ease;
+  }
+</style>
+
+<script>
+  // Adiciona classe fadein em novas abas
+  function ativarAba(id) {
+    const todas = document.querySelectorAll('.conteudo-aba, #todoSection, #authSection, #areaLogada');
+    todas.forEach(sec => {
+      sec.style.display = (sec.id === id) ? 'block' : 'none';
+      if (sec.id === id) sec.classList.add('fadein');
+    });
+
+    document.querySelectorAll('.aba').forEach(aba => {
+      aba.classList.toggle('ativa', aba.getAttribute('data-id') === id);
+    });
+  }
+</script>
+<!-- Container para sugestões -->
+<ul id="sugestoesTarefa" class="sugestoes-box" style="display: none;"></ul>
+
+<style>
+  .sugestoes-box {
+    position: absolute;
+    background-color: #1e293b;
+    color: white;
+    list-style: none;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--borda);
+    max-width: 90%;
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
+    font-size: 0.95rem;
+    margin-top: 4px;
+  }
+
+  .sugestoes-box li {
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+  }
+
+  .sugestoes-box li:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  @media (max-width: 600px) {
+    .sugestoes-box {
+      font-size: 0.85rem;
+    }
+  }
+</style>
+
+<script>
+  const campoInput = document.getElementById("novaTarefa");
+  const listaSugestoes = document.getElementById("sugestoesTarefa");
+
+  const tarefasSugeridas = [
+    "Lavar a louça",
+    "Estudar programação",
+    "Fazer exercícios",
+    "Ir ao mercado",
+    "Organizar agenda",
+    "Responder e-mails",
+    "Alimentar o pet",
+    "Ler 1 capítulo do livro",
+    "Fazer backup dos arquivos",
+    "Limpar a caixa de entrada"
+  ];
+
+  campoInput?.addEventListener("input", () => {
+    const valor = campoInput.value.trim().toLowerCase();
+    if (valor.length < 2) {
+      listaSugestoes.style.display = "none";
+      return;
+    }
+
+    const filtradas = tarefasSugeridas.filter(t =>
+      t.toLowerCase().includes(valor)
+    );
+
+    listaSugestoes.innerHTML = "";
+    filtradas.forEach(s => {
+      const li = document.createElement("li");
+      li.textContent = s;
+      li.addEventListener("click", () => {
+        campoInput.value = s;
+        listaSugestoes.style.display = "none";
+      });
+      listaSugestoes.appendChild(li);
+    });
+
+    listaSugestoes.style.display = filtradas.length > 0 ? "block" : "none";
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!listaSugestoes.contains(e.target) && e.target !== campoInput) {
+      listaSugestoes.style.display = "none";
+    }
+  });
+</script>
+<script>
+  // Atalhos de teclado acessíveis (Alt + tecla)
+  document.addEventListener("keydown", (e) => {
+    if (e.altKey) {
+      switch (e.key.toLowerCase()) {
+        case "1":
+          criarAba("todoSection", "Tarefas");
+          break;
+        case "2":
+          criarAba("perfilSection", "Perfil");
+          break;
+        case "3":
+          criarAba("configSection", "Configurações");
+          break;
+        case "4":
+          criarAba("graficoSection", "Gráfico");
+          break;
+        case "5":
+          criarAba("calendarioSection", "Calendário");
+          break;
+        case "l":
+          document.getElementById("novaTarefa")?.focus();
+          break;
+      }
+    }
+  });
+
+  // Acessibilidade básica em inputs e botões
+  document.querySelectorAll("input, button, select").forEach(el => {
+    el.setAttribute("tabindex", "0");
+    el.setAttribute("aria-label", el.placeholder || el.textContent || "Elemento");
+  });
+
+  // Permite navegação por seta em sugestões
+  let indexSugestao = -1;
+  campoInput?.addEventListener("keydown", (e) => {
+    const itens = listaSugestoes.querySelectorAll("li");
+    if (!itens.length) return;
+
+    if (e.key === "ArrowDown") {
+      indexSugestao = (indexSugestao + 1) % itens.length;
+      itens.forEach((el, i) => el.classList.toggle("ativo", i === indexSugestao));
+      e.preventDefault();
+    }
+
+    if (e.key === "ArrowUp") {
+      indexSugestao = (indexSugestao - 1 + itens.length) % itens.length;
+      itens.forEach((el, i) => el.classList.toggle("ativo", i === indexSugestao));
+      e.preventDefault();
+    }
+
+    if (e.key === "Enter" && indexSugestao >= 0) {
+      campoInput.value = itens[indexSugestao].textContent;
+      listaSugestoes.style.display = "none";
+      indexSugestao = -1;
+      e.preventDefault();
+    }
+  });
+
+  // Estilo visual para foco e seleção em sugestões
+  const styleSugestao = document.createElement("style");
+  styleSugestao.innerHTML = `
+    .sugestoes-box li.ativo {
+      background-color: var(--ciano);
+      color: #0f172a;
+    }
+    button:focus, input:focus, select:focus {
+      outline: 2px solid var(--ciano);
+      outline-offset: 2px;
+    }
+  `;
+  document.head.appendChild(styleSugestao);
+</script>
+<footer class="rodape-nuyzze">
+  <div class="rodape-conteudo">
+    <h3>Nuyzze</h3>
+    <p>Organize sua mente. Simplifique seu dia.</p>
+    <small>Desenvolvido por <strong>Alírio Neto</strong> 💻</small>
+  </div>
+  <div class="selo-seguranca">
+    🔒 100% Local • Seus dados, sua privacidade
+  </div>
+</footer>
+
+<style>
+  .rodape-nuyzze {
+    background-color: #0f172a;
+    color: var(--cinza);
+    padding: 30px 20px;
+    margin-top: 50px;
+    text-align: center;
+    border-top: 2px solid var(--borda);
+    font-size: 0.95rem;
+  }
+
+  .rodape-conteudo h3 {
+    font-family: var(--font-titulo);
+    font-size: 1.6rem;
+    color: var(--ciano);
+    margin-bottom: 8px;
+  }
+
+  .rodape-conteudo p {
+    margin-bottom: 6px;
+    color: var(--branco);
+    font-style: italic;
+  }
+
+  .rodape-conteudo small {
+    display: block;
+    margin-top: 6px;
+  }
+
+  .selo-seguranca {
+    margin-top: 12px;
+    padding-top: 10px;
+    font-size: 0.85rem;
+    color: #38bdf8;
+    border-top: 1px dashed var(--borda);
+  }
+
+  @media (max-width: 600px) {
+    .rodape-nuyzze {
+      font-size: 0.85rem;
+    }
+
+    .rodape-conteudo h3 {
+      font-size: 1.3rem;
+    }
+  }
+</style>
+<!-- Evita deixar elementos invisíveis com display: none no foco -->
+<style>
+  [tabindex="-1"]:focus {
+    outline: none !important;
+  }
+</style>
+
+<!-- Foco automático ao digitar tarefa -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("novaTarefa");
+    if (input && localStorage.getItem("nuyzzeAtivo")) {
+      setTimeout(() => input.focus(), 300);
+    }
+  });
+</script>
+
+</body>
+</html>
