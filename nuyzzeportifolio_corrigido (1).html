@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfólio Alírio Neto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset básico */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0b1e34, #153759);
+      color: #e0f0ff;
+      overflow-x: hidden;
+    }
+    #app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 15px 20px;
+      position: relative;
+    }
+    .topbar {
+      position: fixed;
+      top: 0; right: 0;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 10px 20px;
+      border-bottom-left-radius: 10px;
+      z-index: 1001;
+      font-size: 0.9rem;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar select {
+      background: transparent;
+      color: #e0f0ff;
+      border: 1.5px solid #00ccff;
+      border-radius: 5px;
+      padding: 3px 7px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0 10px 0;
+      position: relative;
+      z-index: 1000;
+    }
+    header .logo {
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: #00ccff;
+      text-shadow: 0 0 8px #00e5ffcc;
+      user-select: none;
+    }
+    .hamburger {
+      width: 15px;
+      height: 25px;
+      cursor: pointer;
+      position: relative;
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hamburger div {
+      background-color: #00ccff;
+      height: 4px;
+      border-radius: 3px;
+      transition: 0.1s;
+    }
+    nav#menu {
+      position: fixed;
+      top: 0; right: -300px;
+      width: 280px;
+      height: 100vh;
+      background: rgba(10, 20, 40, 0.95);
+      box-shadow: -3px 0 15px #00ccffbb;
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+      padding: 60px 30px;
+      transition: right 0.4s ease-in-out;
+      z-index: 1050;
+    }
+    nav#menu.open { right: 0; }
+    nav#menu ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+    nav#menu ul li a {
+      color: #00ccff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    nav#menu ul li a:hover { color: #00ffff; }
+    .close-menu {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      font-size: 2.4rem;
+      color: #00ccff;
+      cursor: pointer;
+      user-select: none;
+    }
+    .intro {
+      margin-top: 110px;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .intro h1 {
+      font-size: 3.2rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px #00ccffaa;
+    }
+    .intro h2 {
+      font-weight: 400;
+      font-size: 1.6rem;
+      color: #a3d9ffcc;
+      margin-bottom: 35px;
+    }
+    #lottie-container {
+      max-width: 500px;
+      margin: 0 auto 60px auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar" aria-label="Seleção de idioma">
+    <label for="lang-select" class="sr-only">Selecionar idioma</label>
+    <select id="lang-select" aria-live="polite" aria-atomic="true" aria-label="Seleção de idioma">
+      <option value="pt" selected>Português</option>
+      <option value="en">English</option>
+    </select>
+    <button id="removerTradutor" style="background: none; border: none; color: #00ccff; cursor: pointer; font-weight: bold;">X</button>
+  </div>
+
+  <header>
+    <div class="logo" aria-label="Nome do desenvolvedor">Alírio Neto</div>
+    <div class="hamburger" id="hamburger" role="button" aria-label="Abrir menu">
+      <div></div><div></div><div></div>
+    </div>
+    <nav id="menu" aria-label="Menu de navegação">
+      <span class="close-menu" id="close-menu" role="button" aria-label="Fechar menu">&times;</span>
+      <ul>
+        <li><a href="#projetos">Projetos</a></li>
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Botão para reabrir o menu -->
+  <div id="abrir-menu" style="display: none; position: fixed; top: 20px; left: 20px; font-size: 2rem; color: #00ccff; cursor: pointer; z-index: 1100;" aria-label="Abrir menu">&lt;</div>
+
+  <div id="app">
+    <section class="intro" aria-label="Introdução do desenvolvedor">
+      <h1>Olá, eu sou Alírio Neto</h1>
+      <h2>Desenvolvedor Web Front-end</h2>
+      <div id="lottie-container" aria-hidden="true"></div>
+    </section>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.2/lottie.min.js"></script>
+  <script>
+    const anim = lottie.loadAnimation({
+      container: document.getElementById('lottie-container'),
+      renderer: 'svg',
+      loop: false,
+      autoplay: true,
+      path: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json'
+    });
+
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+    const closeMenu = document.getElementById('close-menu');
+    const abrirMenu = document.getElementById('abrir-menu');
+
+    hamburger.addEventListener('click', () => {
+      menu.classList.add('open');
+      abrirMenu.style.display = 'none';
+    });
+
+    closeMenu.addEventListener('click', () => {
+      menu.classList.remove('open');
+      abrirMenu.style.display = 'block';
+    });
+
+    abrirMenu.addEventListener('click', () => {
+      menu.classList.add('open');
+      abrirMenu.style.display = 'none';
+    });
+
+    const langSelect = document.getElementById('lang-select');
+    langSelect.addEventListener('change', e => {
+      if (e.target.value === 'en') {
+        document.querySelector('.intro h1').textContent = "Hi, I'm Alírio Neto";
+        document.querySelector('.intro h2').textContent = "Front-end Web Developer";
+        document.querySelector('.logo').textContent = "Alírio Neto";
+      } else {
+        document.querySelector('.intro h1').textContent = "Olá, eu sou Alírio Neto";
+        document.querySelector('.intro h2').textContent = "Desenvolvedor Web Front-end";
+        document.querySelector('.logo').textContent = "Alírio Neto";
+      }
+    });
+
+    // Correção: botão de remover tradutor funcionando sempre
+    const btnRemoverTradutor = document.getElementById('removerTradutor');
+    const topbar = document.querySelector('.topbar');
+    btnRemoverTradutor.addEventListener('click', () => {
+      topbar.remove();
+    });
+  </script>
+<!-- Parte 2: Seção Projetos -->
+
+<style>
+  #projetos {
+    padding: 60px 20px 80px 20px;
+    background: linear-gradient(180deg, #0b1e34 0%, #153759 100%);
+    color: #cceeff;
+    text-align: center;
+  }
+
+  #projetos h2 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 35px;
+    color: #00ccff;
+    text-shadow: 0 0 10px #00e5ffbb;
+  }
+
+  .cards-container {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .card {
+    background: rgba(10, 25, 45, 0.85);
+    border-radius: 16px;
+    width: 320px;
+    box-shadow: 0 0 15px #00ccff66;
+    padding: 20px;
+    color: #e0f0ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 30px #00ffffbb;
+  }
+
+  .card img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 0 15px #00ccff88;
+  }
+
+  .card h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #00ccff;
+  }
+
+  .card p {
+    font-size: 1rem;
+    color: #a3d9ffcc;
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+
+  .btn {
+    background: #00ccff;
+    color: #012b44;
+    font-weight: 700;
+    padding: 10px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    box-shadow: 0 0 10px #00e5ffcc;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn:hover {
+    background-color: #00ffff;
+  }
+
+  /* Animação suave de fade-in dos cards */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card {
+    animation-name: fadeInUp;
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+    opacity: 0;
+  }
+
+  .card:nth-child(1) {
+    animation-delay: 0.2s;
+  }
+  .card:nth-child(2) {
+    animation-delay: 0.4s;
+  }
+  .card:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+
+  /* Responsivo */
+  @media (max-width: 700px) {
+    .cards-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    .card {
+      width: 90vw;
+      max-width: 350px;
+    }
+  }
+</style>
+
+<section id="projetos" aria-label="Seção de projetos">
+  <h2>Meus Projetos</h2>
+  <div class="cards-container">
+
+    <article class="card" tabindex="0" role="region" aria-labelledby="proj1-title" aria-describedby="proj1-desc">
+      <img src="https://cdn-icons-png.flaticon.com/512/888/888859.png" alt="Ícone do projeto ToDo List" loading="lazy">
+      <h3 id="proj1-title">ToDo List Responsiva</h3>
+      <p id="proj1-desc">Aplicativo web para gerenciamento de tarefas com design responsivo e interação simples.</p>
+      <a href="https://nuyzze.github.io/Nuyzzelist.html" class="btn" aria-label="Ver projeto ToDo List">Ver Projeto</a>
+    </article>
+
+    <article class="card" tabindex="0" role="region" aria-labelledby="proj2-title" aria-describedby="proj2-desc">
+      <img src="https://cdn-icons-png.flaticon.com/512/1006/1006547.png" alt="Ícone do projeto Portfólio pessoal" loading="lazy">
+      <h3 id="proj2-title">Portfólio Pessoal</h3>
+      <p id="proj2-desc">Website moderno para mostrar minhas habilidades, projetos e contato profissional.</p>
+      <a href="https://nuyzze.github.io/portifolioprime.html" class="btn" aria-label="Ver projeto Portfólio Pessoal">Ver Projeto</a>
+    </article>
+
+    <article class="card" tabindex="0" role="region" aria-labelledby="proj3-title" aria-describedby="proj3-desc">
+      <img src="https://cdn-icons-png.flaticon.com/512/2721/2721230.png" alt="Ícone do projeto Loja Virtual" loading="lazy">
+      <h3 id="proj3-title">Loja Virtual</h3>
+      <p id="proj3-desc">Sistema simples de e-commerce com carrinho de compras, integração WhatsApp e layout clean.</p>
+      <a href="https://marcenariadefreittas.github.io/marcenariadefreittas.html" class="btn" aria-label="Ver projeto Loja Virtual">Ver Projeto</a>
+    </article>
+
+  </div>
+</section>
+<!-- Parte 3: Seção Sobre -->
+
+<style>
+  #sobre {
+    background: linear-gradient(135deg, #153759, #0b1e34);
+    color: #cceeff;
+    padding: 70px 20px 90px 20px;
+    display: flex;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #sobre h2 {
+    width: 100%;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #00ccff;
+    margin-bottom: 25px;
+    text-align: center;
+    text-shadow: 0 0 12px #00e5ffcc;
+  }
+
+  .sobre-img {
+    flex: 1 1 300px;
+    max-width: 320px;
+    border-radius: 16px;
+    box-shadow: 0 0 25px #00ccffaa;
+    overflow: hidden;
+    animation: fadeInLeft 1s ease forwards;
+    opacity: 0;
+  }
+
+  .sobre-img img {
+    width: 100%;
+    display: block;
+  }
+
+  .sobre-text {
+    flex: 2 1 450px;
+    color: #e0f0ff;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    text-align: justify;
+    animation: fadeInRight 1s ease forwards;
+    opacity: 0;
+  }
+
+  .sobre-text strong {
+    color: #00ccff;
+    font-weight: 700;
+  }
+
+  /* Animações fadeIn */
+  @keyframes fadeInLeft {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+  }
+  @keyframes fadeInRight {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+  }
+
+  /* Responsivo */
+  @media (max-width: 900px) {
+    #sobre {
+      flex-direction: column;
+      padding: 40px 15px 70px 15px;
+      text-align: center;
+    }
+
+    .sobre-text {
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .sobre-img {
+      max-width: 260px;
+      margin-bottom: 30px;
+    }
+  }
+</style>
+
+<section id="sobre" aria-label="Seção sobre Alírio Neto">
+  <h2>Sobre mim</h2>
+  <div class="sobre-img" aria-hidden="true">
+    <img src="https://cdn.pixabay.com/photo/2017/01/31/21/22/avatar-2027364_960_720.png" alt="Foto estilizada de Alírio Neto">
+  </div>
+  <div class="sobre-text" tabindex="0">
+    <p>Olá! Meu nome é <strong>Alírio Neto</strong> e sou <strong>Desenvolvedor Web Front-end</strong> apaixonado por criar interfaces modernas, funcionais e acessíveis. Tenho experiência em HTML, CSS, JavaScript e frameworks como React e Vue.</p>
+
+    <p>Meu foco é transformar ideias em websites e aplicações que encantam e oferecem ótima experiência ao usuário. Gosto de trabalhar com design responsivo, otimização de performance e boas práticas de código.</p>
+
+    <p>Se você busca um profissional dedicado, comunicativo e comprometido com resultados, está no lugar certo!</p>
+  </div>
+</section>
+
+<script>
+  // Delay animações para a seção Sobre aparecer suave
+  window.addEventListener('load', () => {
+    const img = document.querySelector('.sobre-img');
+    const text = document.querySelector('.sobre-text');
+    setTimeout(() => {
+      img.style.opacity = 1;
+      img.style.transform = 'translateX(0)';
+      text.style.opacity = 1;
+      text.style.transform = 'translateX(0)';
+    }, 600);
+  });
+</script>
+<!-- Parte 4: Seção Contato -->
+
+<style>
+  #contato {
+    background: linear-gradient(135deg, #0a1c30, #153759);
+    color: #cceeff;
+    padding: 60px 20px 90px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 20px;
+    box-shadow: 0 0 40px #00ccff88;
+    text-align: center;
+  }
+
+  #contato h2 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+    color: #00ccff;
+    text-shadow: 0 0 12px #00e5ffcc;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 480px;
+    margin: 0 auto 35px auto;
+  }
+
+  input, textarea {
+    background: #0b1f38;
+    border: 2px solid #00ccff;
+    border-radius: 14px;
+    padding: 15px 20px;
+    color: #cceeff;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #00ffff;
+    box-shadow: 0 0 10px #00ffffcc;
+  }
+
+  textarea {
+    min-height: 100px;
+  }
+
+  button[type="submit"] {
+    background: #00ccff;
+    color: #012b44;
+    font-weight: 700;
+    padding: 15px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.15rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px #00e5ffcc;
+    transition: background-color 0.3s ease;
+  }
+
+  button[type="submit"]:hover {
+    background-color: #00ffff;
+  }
+
+  .contato-botoes {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .contato-botoes a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #00ccff;
+    color: #012b44;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 0 15px #00e5ffcc;
+    transition: background-color 0.3s ease;
+    font-size: 1.1rem;
+  }
+
+  .contato-botoes a:hover {
+    background-color: #00ffff;
+  }
+
+  .contato-botoes a img {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Animação fadeIn lenta para o conteúdo */
+  #contato > * {
+    opacity: 0;
+    transform: translateY(30px);
+    animation-fill-mode: forwards;
+    animation-name: fadeInUpContato;
+    animation-duration: 0.8s;
+  }
+  #contato > *:nth-child(1) {
+    animation-delay: 0.2s;
+  }
+  #contato > *:nth-child(2) {
+    animation-delay: 0.4s;
+  }
+  #contato > *:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+
+  @keyframes fadeInUpContato {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+  }
+
+  /* Responsivo */
+  @media (max-width: 600px) {
+    .contato-botoes {
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+</style>
+
+<section id="contato" aria-label="Seção de contato com Alírio Neto">
+  <h2>Contato</h2>
+  
+nuyzze@gmail.com
+</br></br></br>
+  <div class="contato-botoes">
+    <a href="https://instagram.com/nuyzze" target="_blank" rel="noopener" aria-label="Ir para Instagram do Alírio Neto">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Ícone Instagram">
+      Instagram
+    </a>
+    <a href="https://wa.me/5597981027196" target="_blank" rel="noopener" aria-label="Enviar mensagem para WhatsApp do Alírio Neto">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="Ícone WhatsApp">
+      WhatsApp
+    </a>
+  </div>
+</section>
+<!-- Parte 5: Rodapé -->
+
+<style>
+  footer {
+    background: linear-gradient(135deg, #0a1c30, #153759);
+    color: #8fcfff;
+    padding: 25px 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: inset 0 2px 6px #00ccff55;
+    user-select: none;
+  }
+
+  footer a {
+    color: #00ccff;
+    text-decoration: none;
+    margin: 0 8px;
+    transition: color 0.3s ease;
+  }
+
+  footer a:hover,
+  footer a:focus {
+    color: #00ffff;
+    outline: none;
+    text-shadow: 0 0 8px #00e5ffcc;
+  }
+
+  footer .social-icons {
+    margin-top: 10px;
+  }
+
+  footer .social-icons a {
+    display: inline-block;
+    margin: 0 12px;
+  }
+
+  footer .social-icons img {
+    width: 22px;
+    height: 22px;
+    filter: drop-shadow(0 0 1px #00ccffaa);
+    transition: filter 0.3s ease;
+  }
+
+  footer .social-icons a:hover img,
+  footer .social-icons a:focus img {
+    filter: drop-shadow(0 0 6px #00ffffcc);
+  }
+
+  /* Animação suave de brilho */
+  @keyframes brilho {
+    0%, 100% {
+      text-shadow: 0 0 10px #00ccff88;
+    }
+    50% {
+      text-shadow: 0 0 20px #00ffffcc;
+    }
+  }
+
+  footer .highlight {
+    color: #00ccff;
+    font-weight: 700;
+    animation: brilho 3s ease-in-out infinite;
+  }
+
+  /* Responsivo */
+  @media (max-width: 480px) {
+    footer {
+      font-size: 0.85rem;
+      padding: 20px 15px;
+    }
+    footer .social-icons a {
+      margin: 0 8px;
+    }
+  }
+</style>
+
+<footer role="contentinfo">
+  <div>
+    &copy; 2025 <span class="highlight">Alírio Neto</span> - Desenvolvedor Web Front-end.
+  </div>
+  <div>
+    <a href="#projetos" tabindex="0">Projetos</a> |
+    <a href="#sobre" tabindex="0">Sobre</a> |
+    <a href="#contato" tabindex="0">Contato</a>
+  </div>
+  <div class="social-icons" aria-label="Redes sociais de Alírio Neto">
+    <a href="https://instagram.com/nuyzze" target="_blank" rel="noopener" aria-label="Instagram">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Ícone Instagram">
+    </a>
+    <a href="https://wa.me/5597981027196" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="Ícone WhatsApp">
+    </a>
+  </div>
+</footer>
+</body>
+</html>
