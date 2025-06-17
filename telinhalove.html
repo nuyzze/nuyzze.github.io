@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caixinha Surpresa</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: 'Arial', sans-serif;
+    }
+
+    canvas {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    #start-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 1em 2em;
+      font-size: 1.2rem;
+      background-color: #ff5555;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff5555aa;
+      z-index: 2;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #start-btn:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 0 0 25px #ff8888;
+    }
+
+    #mensagem {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 1em 2em;
+      border-radius: 20px;
+      color: white;
+      font-size: 1.5rem;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 3;
+      backdrop-filter: blur(5px);
+      max-width: 90%;
+    }
+
+    #mensagem.mostrar {
+      opacity: 1;
+    }
+
+    .frase-cachoeira {
+      position: absolute;
+      padding: 0.5em 1em;
+      border-radius: 30px;
+      background-color: rgba(0, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+      text-shadow: 0 0 5px white;
+      z-index: 5;
+      pointer-events: none;
+      animation: descer 6s linear forwards;
+    }
+
+    @keyframes descer {
+      from {
+        transform: translateY(-100px);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <button id="start-btn">Abrir Caixinha Surpresa</button>
+  <div id="mensagem"></div>
+  <script>
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  const mensagem = document.getElementById("mensagem");
+  const btn = document.getElementById("start-btn");
+
+  let particles = [];
+  let heartFormed = false;
+  let heartPoints = [];
+
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.radius = Math.random() * 2 + 0.5;
+      this.color = "red";
+      this.vx = (Math.random() - 0.5) * 10;
+      this.vy = (Math.random() - 0.5) * 10;
+      this.tx = null;
+      this.ty = null;
+    }
+
+    update() {
+      if (heartFormed && this.tx !== null && this.ty !== null) {
+        const dx = this.tx - this.x;
+        const dy = this.ty - this.y;
+        this.vx += dx * 0.01;
+        this.vy += dy * 0.01;
+        this.vx *= 0.9;
+        this.vy *= 0.9;
+      } else {
+        if (this.x <= 0 || this.x >= width) this.vx *= -1;
+        if (this.y <= 0 || this.y >= height) this.vy *= -1;
+      }
+
+      this.x += this.vx;
+      this.y += this.vy;
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.fillStyle = this.color;
+      ctx.shadowColor = this.color;
+      ctx.shadowBlur = 10;
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function criarParticulas(qtd) {
+    particles = [];
+    for (let i = 0; i < qtd; i++) {
+      particles.push(new Particle(width / 2, height / 2));
+    }
+  }
+
+  function gerarFormaCoração(qtd) {
+    const pontos = [];
+    const escala = Math.min(width, height) / 32;
+    for (let i = 0; i < qtd; i++) {
+      const t = Math.PI * 2 * (i / qtd);
+      let x = 16 * Math.pow(Math.sin(t), 3);
+      let y =
+        13 * Math.cos(t) -
+        5 * Math.cos(2 * t) -
+        2 * Math.cos(3 * t) -
+        Math.cos(4 * t);
+      pontos.push({
+        x: width / 2 + x * escala,
+        y: height / 2 - y * escala,
+      });
+    }
+    return pontos;
+  }
+
+  function desenharMensagem(txt, delay = 0) {
+    setTimeout(() => {
+      mensagem.innerText = txt;
+      mensagem.classList.add("mostrar");
+      setTimeout(() => {
+        mensagem.classList.remove("mostrar");
+      }, 4000);
+    }, delay);
+  }
+
+  function mostrarSequenciaMensagens() {
+    const mensagens = [
+      "Fica de olho, Minha Amada!",
+      "Eu te amo como Cristo nos amou, minha princesa! 🤍🫶🏼",
+      "Fiz isso para você, espero que goste 💌"
+    ];
+    mensagens.forEach((m, i) => {
+      desenharMensagem(m, i * 5000);
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    for (let p of particles) {
+      p.update();
+      p.draw();
+    }
+    requestAnimationFrame(animate);
+  }
+
+  btn.addEventListener("click", () => {
+    btn.style.display = "none";
+    criarParticulas(1200);
+    animate();
+
+    desenharMensagem("Oi, Júllya!");
+
+    setTimeout(() => {
+      heartFormed = true;
+      heartPoints = gerarFormaCoração(particles.length);
+
+      particles.forEach((p, i) => {
+        p.tx = heartPoints[i].x;
+        p.ty = heartPoints[i].y;
+      });
+
+      mostrarSequenciaMensagens();
+
+      setTimeout(() => {
+        iniciarCachoeira = true;
+      }, 16000); // após todas as mensagens
+    }, 5000);
+  });
+
+  window.addEventListener("resize", () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+</script>
+<style>
+  .emoji, .frase {
+    position: absolute;
+    z-index: 1000;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.9;
+  }
+
+  .emoji {
+    font-size: 1.5rem;
+    animation: flutuar 4s ease-in-out forwards;
+  }
+
+  @keyframes flutuar {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(-50vh) scale(1.2);
+      opacity: 0.9;
+    }
+    100% {
+      transform: translateY(0) scale(1);
+      opacity: 0;
+    }
+  }
+
+  .frase {
+    max-width: 250px;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    margin: 4px;
+    background-color: #00ffff33;
+    border-radius: 25px;
+    color: white;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 0 8px white, 0 0 15px cyan;
+    animation: cair 6s linear forwards;
+  }
+
+  @keyframes cair {
+    0% {
+      top: -40px;
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      top: 100vh;
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  const emojis = ["❤️", "🌹", "💘", "💐", "😍", "💕"];
+  const frasesRomanticas = [
+    "Você é meu porto seguro.",
+    "Amar você é viver em paz.",
+    "Você me completa.",
+    "Com você tudo faz sentido.",
+    "Você é minha poesia favorita.",
+    "Nada é mais lindo que nós dois.",
+    "Você é o presente mais lindo.",
+    "Te amo além da razão.",
+    "Você é meu lar.",
+    "O amor da minha vida tem seu nome.",
+    "Te ter é meu maior presente.",
+    "Você me inspira todos os dias.",
+    "Você é minha luz na escuridão.",
+    "Meu coração bate por você.",
+    "Seu abraço é meu lugar favorito.",
+    "Te quero em todos os meus amanhãs.",
+    "Você é meu sonho vivo.",
+    "Nosso amor é eterno.",
+    "Você é a melhor parte de mim.",
+    "Seu sorriso ilumina meus dias.",
+    "Faria tudo por você.",
+    "Você é minha metade perfeita.",
+    "Com você, sou mais forte.",
+    "Você é meu para sempre.",
+    "Te amo mais que ontem e menos que amanhã.",
+    "Com você até o fim.",
+    "Você é minha escolha diária.",
+    "Juntos somos melhores.",
+    "Você é meu ponto de paz.",
+    "Você é tudo que eu pedi a Deus.",
+    "Te amo de verdade, pra sempre.",
+    "Seu olhar me hipnotiza.",
+    "Você é minha flor mais rara.",
+    "Te amar é simples como respirar.",
+    "Nosso amor é meu lugar seguro.",
+    "Te amo com a força do universo.",
+    "Você é meu sonho bom.",
+    "Você é a minha sorte.",
+    "Te amo sem medida.",
+    "Com você, eu sou inteiro."
+  ];
+
+  let iniciarCachoeira = false;
+  let fraseTop = [];
+
+  function criarEmoji() {
+    if (!iniciarCachoeira) return;
+    const emoji = document.createElement("div");
+    emoji.className = "emoji";
+    emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    emoji.style.left = Math.random() * 100 + "vw";
+    emoji.style.bottom = "0";
+    emoji.style.fontSize = Math.random() * 24 + 18 + "px";
+    document.body.appendChild(emoji);
+    setTimeout(() => emoji.remove(), 4000);
+  }
+
+  function criarFrase() {
+    if (!iniciarCachoeira) return;
+
+    let left;
+    let attempts = 0;
+    let colidiu = true;
+    do {
+      colidiu = false;
+      left = Math.random() * 75 + 10; // margem mínima entre 10vw e 85vw
+      for (let l of fraseTop) {
+        if (Math.abs(l - left) < 10) {
+          colidiu = true;
+          break;
+        }
+      }
+      attempts++;
+    } while (colidiu && attempts < 5);
+
+    const frase = document.createElement("div");
+    frase.className = "frase";
+    frase.innerText = frasesRomanticas[Math.floor(Math.random() * frasesRomanticas.length)];
+    frase.style.left = left + "vw";
+    fraseTop.push(left);
+
+    document.body.appendChild(frase);
+    setTimeout(() => {
+      frase.remove();
+      fraseTop = fraseTop.filter(l => l !== left);
+    }, 6000);
+  }
+
+  setInterval(() => {
+    criarEmoji();
+    criarFrase();
+  }, 350);
+
+  window.iniciarCachoeira = false;
+
+  function ativarCachoeiraFinal() {
+    window.iniciarCachoeira = true;
+  }
+
+  // Parte 2 deve ter: setTimeout(() => ativarCachoeiraFinal(), 16000);
+</script>
+</body>
+</html>
