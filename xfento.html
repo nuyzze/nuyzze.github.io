@@ -1,1 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafios Diários</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translateY(0); }
+            40%, 43% { transform: translateY(-30px); }
+            70% { transform: translateY(-15px); }
+            90% { transform: translateY(-4px); }
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .animate-fade-in { animation: fade-in 0.8s ease-out; }
+        .animate-bounce { animation: bounce 2s infinite; }
+        .animate-spin { animation: spin 2s linear infinite; }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        .container > * {
+            animation: fade-in 0.6s ease-out both;
+        }
+        
+        .container > *:nth-child(1) { animation-delay: 0.1s; }
+        .container > *:nth-child(2) { animation-delay: 0.2s; }
+        .container > *:nth-child(3) { animation-delay: 0.3s; }
+        .container > *:nth-child(4) { animation-delay: 0.4s; }
+        
+        .progress-circle {
+            transition: stroke-dashoffset 1s ease-out;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        
+        .hover-scale-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        
+        .transition-transform {
+            transition: transform 0.2s ease;
+        }
+        
+        .bg-gradient-purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .bg-gradient-indigo {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .backdrop-blur {
+            backdrop-filter: blur(10px);
+        }
+        
+        .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+        
+        .light-mode {
+            background: linear-gradient(135deg, #e3f2fd 0%, #e8eaf6 50%, #f3e5f5 100%);
+        }
+        
+        /* Scrollbar styling */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen dark-mode text-white transition-all duration-500" id="app-body">
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center fixed inset-0 z-50">
+        <div class="text-center animate-pulse">
+            <div class="w-32 h-32 mx-auto mb-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center animate-spin">
+                <!-- Book Icon -->
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4 animate-bounce">
+                Desafios Diários
+            </h1>
+            <div class="w-64 h-2 bg-white bg-opacity-20 rounded-full mx-auto overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse w-full"></div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Main App -->
+    <div id="main-app" class="hidden">
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="fixed top-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg transition-all duration-300 hover-scale-button bg-yellow-500 hover:bg-yellow-400">
+            <svg id="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white mx-auto">
+                <circle cx="12" cy="12" r="5"></circle>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+            </svg>
+            <svg id="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white mx-auto hidden">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+
+        <div class="container mx-auto px-4 py-8 max-w-4xl">
+            <!-- Header Section -->
+            <div class="mb-8 animate-fade-in">
+                <h1 class="text-4xl font-bold text-center mb-8 text-gradient">
+                    Desafios Diários
+                </h1>
+                
+                <!-- Progress Clock and Challenges -->
+                <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Progress Clock -->
+                    <div class="flex flex-col items-center">
+                        <div class="relative w-48 h-48 mb-4">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" class="opacity-20"></circle>
+                                <circle id="progress-circle" cx="50" cy="50" r="45" fill="none" stroke-width="8" class="progress-circle" stroke="#ef4444" stroke-dasharray="282.74" stroke-dashoffset="282.74"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-center">
+                                    <div id="progress-text" class="text-3xl font-bold">0%</div>
+                                    <div class="text-sm opacity-70">Concluído</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Challenges -->
+                    <div class="space-y-3">
+                        <h2 class="text-2xl font-semibold mb-4">Desafios de Hoje</h2>
+                        <div id="daily-challenges" class="max-h-96 overflow-y-auto space-y-2 pr-2 custom-scrollbar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bible Verse Section -->
+            <div id="bible-verse" class="p-6 rounded-xl mb-8 text-center transition-all duration-300 bg-gradient-to-r from-purple-800 from-opacity-50 to-pink-800 to-opacity-50 border border-purple-500 border-opacity-30">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-purple-400">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <p id="verse-text" class="text-lg italic font-medium leading-relaxed"></p>
+            </div>
+
+            <!-- Custom Tasks Section -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-semibold">Minhas Tarefas</h2>
+                    <button id="add-task-btn" class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 hover-scale bg-purple-600 hover:bg-purple-700 text-white">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14M5 12h14"></path>
+                        </svg>
+                        Adicionar Tarefa
+                    </button>
+                </div>
+
+                <!-- Add Task Modal -->
+                <div id="add-task-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-40 hidden">
+                    <div class="bg-gray-800 p-6 rounded-xl max-w-md w-full transition-all duration-300">
+                        <h3 class="text-xl font-semibold mb-4">Nova Tarefa</h3>
+                        <input type="text" id="new-task-input" placeholder="Digite sua tarefa..." class="w-full p-3 rounded-lg border mb-4 transition-all duration-200 bg-gray-700 border-gray-600 text-white placeholder-gray-400">
+                        <div class="flex gap-3">
+                            <button id="confirm-add-task" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg transition-all duration-200">
+                                Adicionar
+                            </button>
+                            <button id="cancel-add-task" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 rounded-lg transition-all duration-200">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Tasks List -->
+                <div id="custom-tasks" class="grid gap-4 md:grid-cols-2"></div>
+
+                <!-- Empty State -->
+                <div id="empty-tasks" class="text-center py-12 text-gray-400">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 opacity-50">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
+                    <p>Nenhuma tarefa personalizada ainda.</p>
+                    <p class="text-sm">Clique em "Adicionar Tarefa" para começar!</p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center text-sm py-4 mt-8 border-t border-white border-opacity-20 text-gray-400">
+                <p>Desenvolvido em um Celular por Alírio Lauriano de Azevedo Neto</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let darkMode = true;
+        let dailyChallenges = [
+            { id: 1, text: "Tomar um banho gelado ao acordar", completed: false },
+            { id: 2, text: "Meditar", completed: false },
+            { id: 3, text: "Orar após a refeição da manhã", completed: false },
+            { id: 4, text: "Entrar em jejum diário", completed: false },
+            { id: 5, text: "Encerrar o jejum com êxito", completed: false },
+            { id: 6, text: "Treinar antes do anoitecer", completed: false },
+            { id: 7, text: "Ler algum livro durante 2 horas ou estudar para a escola", completed: false },
+            { id: 8, text: "Ler 10 capítulos da Bíblia (ore e peça que o espírito santo de Deus te ajude à entender e interpretar)", completed: false },
+            { id: 9, text: "Meditar", completed: false },
+            { id: 10, text: "Orar por 1 hora e ir dormir", completed: false }
+        ];
+        
+        let customTasks = [];
+        
+        const verses = [
+            "Posso todas as coisas naquele que me fortalece. - Filipenses 4:13",
+            "O Senhor é meu pastor; nada me faltará. - Salmos 23:1",
+            "Confie no Senhor de todo o seu coração e não se apoie em seu próprio entendimento. - Provérbios 3:5",
+            "Porque eu bem sei os pensamentos que tenho a vosso respeito, diz o Senhor; pensamentos de paz e não de mal. - Jeremias 29:11",
+            "Mas os que esperam no Senhor renovam as suas forças. - Isaías 40:31",
+            "O amor do Senhor nunca acaba, as suas misericórdias não têm fim. - Lamentações 3:22",
+            "E sabemos que todas as coisas contribuem juntamente para o bem daqueles que amam a Deus. - Romanos 8:28"
+        ];
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show splash screen for 3 seconds
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+            }, 3000);
+
+            // Set daily verse
+            const today = new Date().getDay();
+            document.getElementById('verse-text').textContent = `"${verses[today % verses.length]}"`;
+
+            // Initialize components
+            setupEventListeners();
+            renderDailyChallenges();
+            renderCustomTasks();
+            updateProgress();
+        });
+
+        function setupEventListeners() {
+            // Theme toggle
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+            
+            // Add task functionality
+            document.getElementById('add-task-btn').addEventListener('click', showAddTaskModal);
+            document.getElementById('confirm-add-task').addEventListener('click', addCustomTask);
+            document.getElementById('cancel-add-task').addEventListener('click', hideAddTaskModal);
+            
+            // Enter key for new task
+            document.getElementById('new-task-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addCustomTask();
+                }
+            });
+        }
+
+        function toggleTheme() {
+            darkMode = !darkMode;
+            const body = document.getElementById('app-body');
+            const themeToggle = document.getElementById('theme-toggle');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            
+            if (darkMode) {
+                body.className = 'min-h-screen dark-mode text-white transition-all duration-500';
+                themeToggle.className = 'fixed top-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg transition-all duration-300 hover-scale-button bg-yellow-500 hover:bg-yellow-400';
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                body.className = 'min-h-screen light-mode text-gray-900 transition-all duration-500';
+                themeToggle.className = 'fixed top-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg transition-all duration-300 hover-scale-button bg-indigo-600 hover:bg-indigo-700';
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+            
+            // Update bible verse styling
+            updateBibleVerseStyle();
+        }
+
+        function updateBibleVerseStyle() {
+            const verseSection = document.getElementById('bible-verse');
+            if (darkMode) {
+                verseSection.className = 'p-6 rounded-xl mb-8 text-center transition-all duration-300 bg-gradient-to-r from-purple-800 from-opacity-50 to-pink-800 to-opacity-50 border border-purple-500 border-opacity-30';
+            } else {
+                verseSection.className = 'p-6 rounded-xl mb-8 text-center transition-all duration-300 bg-gradient-to-r from-indigo-100 to-purple-100 border border-indigo-200';
+            }
+        }
+
+        function renderDailyChallenges() {
+            const container = document.getElementById('daily-challenges');
+            container.innerHTML = '';
+            
+            dailyChallenges.forEach((challenge, index) => {
+                const challengeDiv = document.createElement('div');
+                challengeDiv.className = `p-3 rounded-lg border transition-all duration-300 hover-scale ${
+                    darkMode 
+                        ? 'bg-white bg-opacity-10 border-white border-opacity-20 hover:bg-white hover:bg-opacity-20' 
+                        : 'bg-white border-gray-200 hover:bg-gray-50 shadow-sm'
+                } ${challenge.completed ? 'opacity-75' : ''}`;
+                challengeDiv.style.animationDelay = `${index * 0.1}s`;
+                
+                challengeDiv.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <span class="flex-1 text-sm ${challenge.completed ? 'line-through opacity-60' : ''}">
+                            ${challenge.text}
+                        </span>
+                        <button onclick="toggleChallenge(${challenge.id})" class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 hover-scale ${
+                            challenge.completed
+                                ? 'bg-green-500 text-white'
+                                : darkMode 
+                                    ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                                    : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                        }">
+                            ${challenge.completed ? 'Feito!' : 'Feito'}
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(challengeDiv);
+            });
+        }
+
+        function renderCustomTasks() {
+            const container = document.getElementById('custom-tasks');
+            const emptyState = document.getElementById('empty-tasks');
+            
+            container.innerHTML = '';
+            
+            if (customTasks.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            customTasks.forEach((task, index) => {
+                const taskDiv = document.createElement('div');
+                taskDiv.className = `p-4 rounded-lg border transition-all duration-300 hover-scale ${
+                    darkMode 
+                        ? 'bg-white bg-opacity-10 border-white border-opacity-20' 
+                        : 'bg-white border-gray-200 shadow-sm'
+                } ${task.completed ? 'opacity-75' : ''}`;
+                taskDiv.style.animationDelay = `${index * 0.1}s`;
+                
+                taskDiv.innerHTML = `
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <span class="flex-1 ${task.completed ? 'line-through opacity-60' : ''}">
+                            ${task.text}
+                        </span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="toggleCustomTask(${task.id})" class="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 hover-scale ${
+                            task.completed
+                                ? 'bg-green-500 text-white'
+                                : 'bg-blue-600 hover:bg-blue-700 text-white'
+                        }">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20,6 9,17 4,12"></polyline>
+                            </svg>
+                            ${task.completed ? 'Finalizada' : 'Finalizar'}
+                        </button>
+                        <button onclick="removeCustomTask(${task.id})" class="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-600 hover:bg-red-700 text-white transition-all duration-200 hover-scale">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Cancelar
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(taskDiv);
+            });
+        }
+
+        function updateProgress() {
+            const completedChallenges = dailyChallenges.filter(c => c.completed).length;
+            const progress = (completedChallenges / dailyChallenges.length) * 100;
+            
+            // Update progress text
+            document.getElementById('progress-text').textContent = `${Math.round(progress)}%`;
+            
+            // Update progress circle
+            const circle = document.getElementById('progress-circle');
+            const circumference = 2 * Math.PI * 45;
+            const offset = circumference - (progress / 100) * circumference;
+            
+            circle.style.strokeDashoffset = offset;
+            
+            // Update circle color
+            if (progress < 33) {
+                circle.setAttribute('stroke', '#ef4444');
+            } else if (progress < 66) {
+                circle.setAttribute('stroke', '#f97316');
+            } else {
+                circle.setAttribute('stroke', '#22c55e');
+            }
+        }
+
+        function toggleChallenge(id) {
+            dailyChallenges = dailyChallenges.map(challenge => 
+                challenge.id === id 
+                    ? { ...challenge, completed: !challenge.completed }
+                    : challenge
+            );
+            renderDailyChallenges();
+            updateProgress();
+        }
+
+        function showAddTaskModal() {
+            document.getElementById('add-task-modal').classList.remove('hidden');
+        }
+
+        function hideAddTaskModal() {
+            document.getElementById('add-task-modal').classList.add('hidden');
+            document.getElementById('new-task-input').value = '';
+        }
+
+        function addCustomTask() {
+            const input = document.getElementById('new-task-input');
+            const taskText = input.value.trim();
+            
+            if (taskText) {
+                customTasks.push({
+                    id: Date.now(),
+                    text: taskText,
+                    completed: false
+                });
+                
+                renderCustomTasks();
+                hideAddTaskModal();
+            }
+        }
+
+        function toggleCustomTask(id) {
+            customTasks = customTasks.map(task => 
+                task.id === id 
+                    ? { ...task, completed: !task.completed }
+                    : task
+            );
+            renderCustomTasks();
+        }
+
+        function removeCustomTask(id) {
+            customTasks = customTasks.filter(task => task.id !== id);
+            renderCustomTasks();
+        }
+    </script>
+</body>
+  </html>
