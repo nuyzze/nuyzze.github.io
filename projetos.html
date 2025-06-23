@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEUS PROJETOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #1a1a1a;
+            color: #ff7f00;
+            overflow-x: hidden;
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(45deg, #1a1a1a, #2a2a2a, #1a1a1a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: splashGradient 3s ease-in-out infinite;
+        }
+
+        .splash-content {
+            text-align: center;
+            animation: splashPulse 2s ease-in-out infinite;
+        }
+
+        .splash-title {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #ff7f00;
+            text-shadow: 0 0 20px #ff7f00, 0 0 40px #ff7f00, 0 0 60px #ff7f00;
+            animation: glitch 1s ease-in-out infinite alternate;
+        }
+
+        .splash-subtitle {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            opacity: 0.8;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 4px;
+            background: #333;
+            margin: 40px auto;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff7f00, #ffaa00, #ff7f00);
+            width: 0%;
+            animation: loadingProgress 3s ease-in-out forwards;
+        }
+
+        @keyframes splashGradient {
+            0%, 100% { background: linear-gradient(45deg, #1a1a1a, #2a2a2a, #1a1a1a); }
+            50% { background: linear-gradient(45deg, #2a2a2a, #1a1a1a, #2a2a2a); }
+        }
+
+        @keyframes splashPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 0 0 20px #ff7f00, 0 0 40px #ff7f00, 0 0 60px #ff7f00; }
+            25% { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff, 0 0 40px #ff7f00; }
+            50% { text-shadow: 0 0 20px #ff7f00, 0 0 40px #ff7f00, 0 0 60px #ff7f00; }
+            75% { text-shadow: -2px 0 #ff0000, 2px 0 #00ffff, 0 0 40px #ff7f00; }
+            100% { text-shadow: 0 0 20px #ff7f00, 0 0 40px #ff7f00, 0 0 60px #ff7f00; }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+        }
+
+        @keyframes loadingProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Main Content */
+        .main-content {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-out;
+        }
+
+        .main-content.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: #ff7f00;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(255,127,0,0.1), rgba(255,127,0,0.05));
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255,127,0,0.3);
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px #ff7f00;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            letter-spacing: 2px;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 30px #ff7f00, 0 0 60px #ff7f00; }
+            100% { text-shadow: 0 0 40px #ff7f00, 0 0 80px #ff7f00, 0 0 120px #ff7f00; }
+        }
+
+        /* Projects Grid */
+        .projects-container {
+            padding: 80px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .project-card {
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+            border: 2px solid rgba(255,127,0,0.3);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            transform: perspective(1000px);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, #ff7f00, transparent);
+            animation: rotate 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-card::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+            border-radius: 18px;
+            z-index: 1;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            transform: perspective(1000px) rotateX(5deg) rotateY(5deg) translateY(-10px);
+            border-color: #ff7f00;
+            box-shadow: 0 20px 40px rgba(255,127,0,0.3), 0 0 60px rgba(255,127,0,0.2);
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff7f00, #ffaa00);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .card-description {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .card-button {
+            background: linear-gradient(45deg, #ff7f00, #ffaa00);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255,127,0,0.4);
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Scroll Animations */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .scroll-animate.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .splash-title {
+                font-size: 2.5rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <h1 class="splash-title">MEUS PROJETOS</h1>
+            <p class="splash-subtitle">INICIANDO SISTEMA...</p>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <header class="header">
+            <h1 class="main-title">MEUS PROJETOS</h1>
+            <p class="subtitle">PORTFÓLIO DIGITAL FUTURISTA</p>
+        </header>
+
+        <div class="projects-container">
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Projects will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Projects data
+        const projects = [
+            {
+                title: "OFENTO APK",
+                description: "Aplicativo mobile desenvolvido com tecnologia avançada para otimização de performance.",
+                url: "https://www.mediafire.com/file/uubhpa1nws6n3wf/OFENTO.apk/file",
+                icon: "📱"
+            },
+            {
+                title: "XFENTO",
+                description: "Interface web interativa com design responsivo e funcionalidades inovadoras.",
+                url: "https://nuyzze.github.io/xfento.html",
+                icon: "🚀"
+            },
+            {
+                title: "BIO SITE NUYZZE",
+                description: "Página biografica profissional com design moderno e animações fluidas.",
+                url: "https://servboca.github.io/biositenuyzze.html",
+                icon: "👤"
+            },
+            {
+                title: "TRABALHADORES",
+                description: "Plataforma dedicada à gestão e organização de recursos humanos.",
+                url: "https://servboca.github.io/trabalhadores.html",
+                icon: "👥"
+            },
+            {
+                title: "CRISTO",
+                description: "Website temático com conteúdo religioso e interface contemplativa.",
+                url: "https://nuyzze.github.io/cristo.html",
+                icon: "✝️"
+            },
+            {
+                title: "PRINCIPAL",
+                description: "Portal principal com navegação centralizada e design corporativo.",
+                url: "https://servboca.github.io/principal.html",
+                icon: "🏠"
+            },
+            {
+                title: "PORTFÓLIO PRIME",
+                description: "Showcase premium de projetos com galeria interativa avançada.",
+                url: "https://nuyzze.github.io/portifolioprime.html",
+                icon: "💎"
+            },
+            {
+                title: "NUYZZE LIST",
+                description: "Sistema de listas inteligente com funcionalidades de organização.",
+                url: "https://nuyzze.github.io/Nuyzzelist.html",
+                icon: "📝"
+            },
+            {
+                title: "NUYZZE MAIN",
+                description: "Site principal da marca com identidade visual consolidada.",
+                url: "https://nuyzze.github.io/nuyzze.html",
+                icon: "⭐"
+            },
+            {
+                title: "TELINHA LOVE",
+                description: "Aplicação romântica com interface delicada e funcionalidades especiais.",
+                url: "https://nuyzze.github.io/telinhalove.html",
+                icon: "💖"
+            },
+            {
+                title: "PRATI",
+                description: "Site romntico e engraçado.",
+                url: "https://nuyzze.github.io/prati.html",
+                icon: "❣️"
+            }
+        ];
+
+        // Create animated background particles
+        function createParticles() {
+            const bgAnimation = document.getElementById('bgAnimation');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+                bgAnimation.appendChild(particle);
+            }
+        }
+
+        // Create project cards
+        function createProjectCards() {
+            const projectsGrid = document.getElementById('projectsGrid');
+            
+            projects.forEach((project, index) => {
+                const card = document.createElement('div');
+                card.className = 'project-card scroll-animate';
+                card.style.animationDelay = (index * 0.1) + 's';
+                
+                card.innerHTML = `
+                    <div class="card-content">
+                        <div class="card-icon">${project.icon}</div>
+                        <h3 class="card-title">${project.title}</h3>
+                        <p class="card-description">${project.description}</p>
+                        <button class="card-button" onclick="window.open('${project.url}', '_blank')">
+                            ACESSAR PROJETO
+                        </button>
+                    </div>
+                `;
+                
+                projectsGrid.appendChild(card);
+            });
+        }
+
+        // Scroll animation observer
+        function setupScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.scroll-animate').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Initialize splash screen
+        function initSplashScreen() {
+            setTimeout(() => {
+                const splashScreen = document.getElementById('splashScreen');
+                const mainContent = document.getElementById('mainContent');
+                
+                splashScreen.style.opacity = '0';
+                splashScreen.style.transform = 'scale(0.8)';
+                splashScreen.style.transition = 'all 1s ease-out';
+                
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    mainContent.classList.add('show');
+                }, 1000);
+            }, 4000);
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            createProjectCards();
+            setupScrollAnimations();
+            initSplashScreen();
+        });
+
+        // Add mouse movement parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.project-card');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            cards.forEach((card, index) => {
+                const intensity = (index % 3 + 1) * 0.5;
+                const xMove = (x - 0.5) * intensity;
+                const yMove = (y - 0.5) * intensity;
+                
+                card.style.transform += ` translate3d(${xMove}px, ${yMove}px, 0)`;
+            });
+        });
+    </script>
+</body>
+</html>
