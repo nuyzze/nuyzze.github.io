@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDR TRAINING</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Archive Black', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 3s ease-in-out forwards;
+        }
+
+        .splash-logo {
+            text-align: center;
+            animation: bounceIn 2s ease-out;
+        }
+
+        .splash-logo h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+            margin-bottom: 20px;
+        }
+
+        .splash-logo .subtitle {
+            font-size: 1.2rem;
+            color: #b8c6db;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeOut {
+            0%, 70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in 3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .medals-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .medal {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #b8860b;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .medal-count {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 4px 15px rgba(255,215,0,0.4); }
+            to { box-shadow: 0 4px 25px rgba(255,215,0,0.8); }
+        }
+
+        .body-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .body-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .body-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .body-diagram {
+            position: relative;
+            display: inline-block;
+            margin: 20px auto;
+        }
+
+        .muscle-group {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+        }
+
+        .muscle-group:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+        }
+
+        .muscle-group.trained {
+            fill: #4CAF50 !important;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .muscle-group.double-trained {
+            fill: #FFD700 !important;
+            animation: goldPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes goldPulse {
+            0%, 100% { opacity: 1; filter: brightness(1); }
+            50% { opacity: 0.8; filter: brightness(1.3); }
+        }
+
+        .training-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .training-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.5s ease-out;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .training-card.double {
+            border-left-color: #FFD700;
+            background: linear-gradient(135deg, #b8860b, #daa520);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .motivation-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .motivation-card h4 {
+            margin-bottom: 15px;
+            color: #ffd700;
+            font-size: 1.3rem;
+        }
+
+        .motivation-card p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #e0e0e0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            margin-top: 40px;
+            border-radius: 15px;
+            color: #b8c6db;
+        }
+
+        .countdown {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .header h1 { font-size: 2rem; }
+            .splash-logo h1 { font-size: 2.5rem; }
+            .body-section { padding: 20px; }
+            .countdown { position: relative; top: auto; right: auto; margin: 10px auto; text-align: center; }
+        }
+
+        @media (min-width: 768px) {
+            .body-container {
+                flex-direction: row;
+            }
+            .body-section {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-screen">
+        <div class="splash-logo">
+            <h1>PDR TRAINING</h1>
+            <div class="subtitle">Prepare-se para a transformação</div>
+        </div>
+    </div>
+
+    <div class="countdown" id="countdown"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>PDR TRAINING</h1>
+            <div class="medals-container" id="medalsContainer">
+                <div class="medal-count" id="medalCount">Medalhas: 0</div>
+            </div>
+        </div>
+
+        <div class="body-container">
+            <div class="body-section">
+                <h3>Visão Frontal</h3>
+                <div class="body-diagram">
+                    <svg width="200" height="400" viewBox="0 0 200 400">
+                        <g class="muscle-group" data-muscle="peitoral" fill="#8B4513">
+                            <path d="M70 80 Q85 70 100 80 Q115 70 130 80 Q125 95 115 105 Q100 110 85 105 Q75 95 70 80 Z"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="biceps-direito" fill="#CD853F">
+                            <ellipse cx="65" cy="108" rx="12" ry="25"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="biceps-esquerdo" fill="#CD853F">
+                            <ellipse cx="135" cy="108" rx="12" ry="25"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="abdomen" fill="#DEB887">
+                            <rect x="85" y="110" width="30" height="40" rx="5"/>
+                            <line x1="85" y1="120" x2="115" y2="120" stroke="#8B4513" stroke-width="1"/>
+                            <line x1="85" y1="130" x2="115" y2="130" stroke="#8B4513" stroke-width="1"/>
+                            <line x1="85" y1="140" x2="115" y2="140" stroke="#8B4513" stroke-width="1"/>
+                            <line x1="100" y1="110" x2="100" y2="150" stroke="#8B4513" stroke-width="1"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="antebraco-direito" fill="#F4A460">
+                            <ellipse cx="60" cy="140" rx="8" ry="20"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="antebraco-esquerdo" fill="#F4A460">
+                            <ellipse cx="140" cy="140" rx="8" ry="20"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="quadriceps-direito" fill="#D2691E">
+                            <ellipse cx="85" cy="185" rx="15" ry="35"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="quadriceps-esquerdo" fill="#D2691E">
+                            <ellipse cx="115" cy="185" rx="15" ry="35"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="panturrilha-direita" fill="#A0522D">
+                            <ellipse cx="85" cy="245" rx="12" ry="25"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="panturrilha-esquerda" fill="#A0522D">
+                            <ellipse cx="115" cy="245" rx="12" ry="25"/>
+                        </g>
+                        <circle cx="100" cy="50" r="25" fill="#FDBCB4"/>
+                        <circle cx="95" cy="45" r="2" fill="#000"/>
+                        <circle cx="105" cy="45" r="2" fill="#000"/>
+                        <path d="M95 55 Q100 60 105 55" stroke="#000" stroke-width="1" fill="none"/>
+                        <path d="M90 35 Q100 25 110 35" fill="#8B4513"/>
+                        <ellipse cx="100" cy="75" rx="20" ry="10" fill="#FDBCB4"/>
+                        <rect x="95" y="85" width="10" height="25" fill="#87CEEB"/>
+                        <rect x="80" y="105" width="40" height="5" fill="#87CEEB"/>
+                        <rect x="75" y="180" width="15" height="30" fill="#4169E1"/>
+                        <rect x="110" y="180" width="15" height="30" fill="#4169E1"/>
+                        <rect x="80" y="278" width="15" height="8" fill="#8B4513"/>
+                        <rect x="105" y="278" width="15" height="8" fill="#8B4513"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="body-section">
+                <h3>Visão Traseira</h3>
+                <div class="body-diagram">
+                    <svg width="200" height="400" viewBox="0 0 200 400">
+                        <g class="muscle-group" data-muscle="dorsal" fill="#8B4513">
+                            <path d="M70 85 Q100 70 130 85 Q125 110 115 120 Q100 125 85 120 Q75 110 70 85 Z"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="triceps-direito" fill="#CD853F">
+                            <ellipse cx="65" cy="115" rx="10" ry="20"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="triceps-esquerdo" fill="#CD853F">
+                            <ellipse cx="135" cy="115" rx="10" ry="20"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="lombar" fill="#DEB887">
+                            <rect x="88" y="120" width="24" height="25" rx="3"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="gluteo" fill="#D2691E">
+                            <ellipse cx="100" cy="155" rx="25" ry="20"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="posterior-direito" fill="#A0522D">
+                            <ellipse cx="85" cy="200" rx="12" ry="30"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="posterior-esquerdo" fill="#A0522D">
+                            <ellipse cx="115" cy="200" rx="12" ry="30"/>
+                        </g>
+                        <g class="muscle-group" data-muscle="trapezio" fill="#8B4513">
+                   <ellipse cx="100" cy="83" rx="23" ry="13"/>
+                        </g>
+                        <circle cx="100" cy="58" r="25" fill="#FDBCB4"/>
+                        <path d="M90 35 Q100 25 110 35" fill="#8B4513"/>
+                        <ellipse cx="100" cy="65" rx="20" ry="10" fill="#FDBCB4"/>
+                        <rect x="95" y="85" width="10" height="25" fill="#87CEEB"/>
+                        <rect x="80" y="105" width="40" height="5" fill="#87CEEB"/>
+                        <rect x="75" y="185" width="15" height="30" fill="#4169E1"/>
+                        <rect x="110" y="185" width="15" height="30" fill="#4169E1"/>
+                        <ellipse cx="85" cy="250" rx="12" ry="25" fill="#A0522D"/>
+                        <ellipse cx="115" cy="250" rx="12" ry="25" fill="#A0522D"/>
+                        <rect x="80" y="280" width="15" height="8" fill="#8B4513"/>
+                        <rect x="105" y="280" width="15" height="8" fill="#8B4513"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="training-cards" id="trainingCards"></div>
+
+        <div class="motivation-card">
+            <h4>💪 Motivação do Dia</h4>
+            <p id="motivationText"></p>
+        </div>
+
+        <div class="footer">
+            <p>Desenvolvido por Alírio Lauriano de Azevedo Neto</p>
+        </div>
+    </div>
+
+    <script>
+        const motivationalQuotes = [
+            "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
+            "Seus únicos limites são aqueles que você aceita.",
+            "A força não vem da capacidade física, mas de uma vontade indomável.",
+            "Cada treino é um investimento no seu futuro.",
+            "O corpo alcança o que a mente acredita.",
+            "Disciplina é fazer o que precisa ser feito, mesmo quando não quer.",
+            "Transforme seus sonhos em metas e suas metas em realidade.",
+            "A dor que você sente hoje será a força que sentirá amanhã.",
+            "Não pare quando estiver cansado, pare quando terminar.",
+            "Sua maior competição é quem você foi ontem."
+        ];
+
+        class PDRTraining {
+            constructor() {
+                this.trainedMuscles = this.loadTrainedMuscles();
+                this.medals = this.loadMedals();
+                this.lastReset = this.loadLastReset();
+                this.checkMidnightReset();
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.updateDisplay();
+                this.showMotivation();
+                this.startCountdown();
+            }
+
+            setupEventListeners() {
+                document.querySelectorAll('.muscle-group').forEach(muscle => {
+                    muscle.addEventListener('click', (e) => {
+                        this.trainMuscle(e.target.closest('.muscle-group').dataset.muscle);
+                    });
+                });
+            }
+
+            trainMuscle(muscleName) {
+                const today = new Date().toDateString();
+                if (!this.trainedMuscles[today]) {
+                    this.trainedMuscles[today] = {};
+                }
+
+                if (!this.trainedMuscles[today][muscleName]) {
+                    this.trainedMuscles[today][muscleName] = 0;
+                }
+
+                this.trainedMuscles[today][muscleName]++;
+                this.saveTrainedMuscles();
+                this.updateDisplay();
+                this.showTrainingCard(muscleName, this.trainedMuscles[today][muscleName]);
+                this.checkMedals();
+            }
+
+            showTrainingCard(muscleName, count) {
+                const container = document.getElementById('trainingCards');
+                const card = document.createElement('div');
+                card.className = count === 1 ? 'training-card' : 'training-card double';
+                
+                const muscleNames = {
+                    'peitoral': 'Peitoral',
+                    'biceps-direito': 'Bíceps Direito',
+                    'biceps-esquerdo': 'Bíceps Esquerdo',
+                    'triceps-direito': 'Tríceps Direito',
+                    'triceps-esquerdo': 'Tríceps Esquerdo',
+                    'abdomen': 'Abdômen',
+                    'quadriceps-direito': 'Quadríceps Direito',
+                    'quadriceps-esquerdo': 'Quadríceps Esquerdo',
+                    'dorsal': 'Dorsal',
+                    'trapezio': 'Trapézio',
+                    'lombar': 'Lombar',
+                    'gluteo': 'Glúteo',
+                    'posterior-direito': 'Posterior Direito',
+                    'posterior-esquerdo': 'Posterior Esquerdo',
+                    'panturrilha-direita': 'Panturrilha Direita',
+                    'panturrilha-esquerda': 'Panturrilha Esquerda',
+                    'antebraco-direito': 'Antebraço Direito',
+                    'antebraco-esquerdo': 'Antebraço Esquerdo'
+                };
+
+                const displayName = muscleNames[muscleName] || muscleName;
+                card.innerHTML = count === 1 
+                    ? `${displayName} treinado hoje!`
+                    : `${displayName} treinado ${count} vezes hoje!`;
+                
+                container.insertBefore(card, container.firstChild);
+                
+                setTimeout(() => {
+                    if (container.children.length > 10) {
+                        container.removeChild(container.lastChild);
+                    }
+                }, 100);
+            }
+
+            checkMedals() {
+                const today = new Date().toDateString();
+                const todayMuscles = this.trainedMuscles[today] || {};
+                const uniqueMuscles = Object.keys(todayMuscles).length;
+                const totalTrainings = Object.values(todayMuscles).reduce((sum, count) => sum + count, 0);
+
+                let newMedals = 0;
+                newMedals += Math.floor(uniqueMuscles / 3) * 3;
+                
+                if (Object.values(todayMuscles).some(count => count >= 2)) {
+                    newMedals += 5;
+                }
+
+                if (newMedals > 0) {
+                    this.medals += newMedals;
+                    this.saveMedals();
+                    this.updateMedalsDisplay();
+                }
+            }
+
+            updateDisplay() {
+                const today = new Date().toDateString();
+                const todayMuscles = this.trainedMuscles[today] || {};
+
+                document.querySelectorAll('.muscle-group').forEach(muscle => {
+                    const muscleName = muscle.dataset.muscle;
+                    muscle.classList.remove('trained', 'double-trained');
+                    
+                    if (todayMuscles[muscleName]) {
+                        if (todayMuscles[muscleName] >= 2) {
+                            muscle.classList.add('double-trained');
+                        } else {
+                            muscle.classList.add('trained');
+                        }
+                    }
+                });
+
+                this.updateMedalsDisplay();
+            }
+
+            updateMedalsDisplay() {
+                const medalCount = document.getElementById('medalCount');
+                const medalsContainer = document.getElementById('medalsContainer');
+                
+                medalCount.textContent = `Medalhas: ${this.medals}`;
+                
+                medalsContainer.innerHTML = '';
+                medalsContainer.appendChild(medalCount);
+                
+                if (this.medals > 0) {
+                    const medal = document.createElement('div');
+                    medal.className = 'medal';
+                    medal.innerHTML = '🏅';
+                    medalsContainer.appendChild(medal);
+                    
+                    if (this.medals > 1) {
+                        const count = document.createElement('div');
+                        count.className = 'medal-count';
+                        count.textContent = `x${this.medals}`;
+                        medalsContainer.appendChild(count);
+                    }
+                }
+            }
+
+            showMotivation() {
+                const motivationText = document.getElementById('motivationText');
+                const today = new Date().getDate();
+                const quote = motivationalQuotes[today % motivationalQuotes.length];
+                motivationText.textContent = quote;
+            }
+
+            startCountdown() {
+                const countdownElement = document.getElementById('countdown');
+                
+                const updateCountdown = () => {
+                    const now = new Date();
+                    const midnight = new Date(now);
+                    midnight.setHours(24, 0, 0, 0);
+                    
+                    const diff = midnight - now;
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    
+                    countdownElement.textContent = `Reset em: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                };
+                
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+                setInterval(() => this.checkMidnightReset(), 60000);
+            }
+
+            checkMidnightReset() {
+                const today = new Date().toDateString();
+                if (this.lastReset !== today) {
+                    this.resetDaily();
+                    this.lastReset = today;
+                    this.saveLastReset();
+                }
+            }
+
+            resetDaily() {
+                const today = new Date().toDateString();
+                if (this.trainedMuscles[today]) {
+                    delete this.trainedMuscles[today];
+                    this.saveTrainedMuscles();
+                    this.updateDisplay();
+                    document.getElementById('trainingCards').innerHTML = '';
+                    this.showMotivation();
+                }
+            }
+
+            loadTrainedMuscles() {
+                try {
+                    return JSON.parse(localStorage.getItem('pdr-trained-muscles')) || {};
+                } catch (e) {
+                    return {};
+                }
+            }
+
+            saveTrainedMuscles() {
+                try {
+                    localStorage.setItem('pdr-trained-muscles', JSON.stringify(this.trainedMuscles));
+                } catch (e) {
+                    console.error('Erro ao salvar músculos treinados');
+                }
+            }
+
+            loadMedals() {
+                try {
+                    return parseInt(localStorage.getItem('pdr-medals')) || 0;
+                } catch (e) {
+                    return 0;
+                }
+            }
+
+            saveMedals() {
+                try {
+                    localStorage.setItem('pdr-medals', this.medals.toString());
+                } catch (e) {
+                    console.error('Erro ao salvar medalhas');
+                }
+            }
+
+            loadLastReset() {
+                try {
+                    return localStorage.getItem('pdr-last-reset') || '';
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            saveLastReset() {
+                try {
+                    localStorage.setItem('pdr-last-reset', this.lastReset);
+                } catch (e) {
+                    console.error('Erro ao salvar último reset');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new PDRTraining();
+        });
+    </script>
+</body>
+</html>
