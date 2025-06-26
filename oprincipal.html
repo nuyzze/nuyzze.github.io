@@ -426,35 +426,25 @@
     }
 }
 
-/* ===== CONFIGURAÇÕES EDITÁVEIS ===== */
+
 :root {
-    /* Dimensões do carrossel */
     --carousel-height: 80px;
     --carousel-margin: 40px 0;
-    
-    /* Dimensões dos logos */
     --logo-height: 50px;
     --logo-spacing: 15px;
     --logo-border-radius: 8px;
-    
-    /* Velocidade da animação (em segundos) */
     --scroll-duration: 60s;
-    
-    /* Responsividade - breakpoints */
     --mobile-logo-height: 40px;
     --mobile-carousel-height: 60px;
     --tablet-logo-height: 45px;
     --tablet-carousel-height: 70px;
 }
-
-/* ===== CARROSSEL PRINCIPAL ===== */
 .floating-logos {
     position: relative;
     width: 100%;
     height: var(--carousel-height);
     overflow: hidden;
     margin: var(--carousel-margin);
-    /* Habilita scroll horizontal para touch devices */
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
 }
@@ -463,29 +453,21 @@
     display: flex;
     align-items: center;
     animation: scroll var(--scroll-duration) linear infinite;
-    /* Garante que não quebra em telas pequenas */
     min-width: max-content;
-    /* Pausa animação ao hover */
     animation-play-state: running;
-}
-
-.logo-track:hover {
-    animation-play-state: paused;
 }
 
 .logo-item {
     height: var(--logo-height);
-    width: auto; /* Permite que o width seja automático */
-    aspect-ratio: auto; /* Mantém proporção original */
+    width: auto
+    aspect-ratio: auto; 
     margin-right: var(--logo-spacing);
     border-radius: var(--logo-border-radius);
     overflow: hidden;
     flex-shrink: 0;
-    /* Remove qualquer background, borda ou sombra */
     background: none;
     border: none;
     box-shadow: none;
-    /* Garante que a imagem não distorça */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -494,18 +476,14 @@
 .logo-item img {
     height: 100%;
     width: auto;
-    object-fit: contain; /* Mantém proporção sem cortar */
+    object-fit: contain
     border-radius: var(--logo-border-radius);
-    /* Remove qualquer estilo indesejado */
     border: none;
     box-shadow: none;
     background: transparent;
-    /* Garante renderização suave */
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
 }
-
-/* ===== ANIMAÇÃO INFINITA ===== */
 @keyframes scroll {
     0% { 
         transform: translateX(0); 
@@ -515,14 +493,21 @@
     }
 }
 
-/* Para suporte a touch devices */
+
 .floating-logos {
     touch-action: pan-x;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none; 
 }
 
-/* ===== RESPONSIVIDADE ===== */
 
-/* Tablets */
+.floating-logos::-webkit-scrollbar {
+    display: none;
+}
+
+
 @media screen and (max-width: 1024px) {
     .floating-logos {
         height: var(--tablet-carousel-height);
@@ -532,8 +517,6 @@
         height: var(--tablet-logo-height);
     }
 }
-
-/* Mobile - Landscape */
 @media screen and (max-width: 768px) {
     .floating-logos {
         height: var(--mobile-carousel-height);
@@ -545,13 +528,11 @@
         margin-right: 12px;
     }
     
-    /* Acelera um pouco a animação em mobile */
     .logo-track {
         animation-duration: calc(var(--scroll-duration) * 0.8);
     }
 }
 
-/* Mobile - Portrait */
 @media screen and (max-width: 480px) {
     :root {
         --mobile-logo-height: 35px;
@@ -560,9 +541,7 @@
     
     .floating-logos {
         margin: 20px 0;
-        /* Adiciona padding lateral para evitar cortes */
         padding: 0 10px;
-        /* Garante que funciona bem em telas muito pequenas */
         min-height: var(--mobile-carousel-height);
     }
     
@@ -570,32 +549,26 @@
         margin-right: 10px;
     }
 }
-
-/* Correções específicas para iOS */
 @supports (-webkit-touch-callout: none) {
     .floating-logos {
-        /* Força hardware acceleration no iOS */
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
-        /* Otimiza rendering */
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
     }
     
     .logo-track {
-        /* Garante animação suave no iOS */
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
     }
     
     .logo-item img {
-        /* Melhora qualidade da imagem no iOS */
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
     }
 }
 
-/* Para telas muito pequenas (< 320px) */
+
 @media screen and (max-width: 320px) {
     :root {
         --mobile-logo-height: 30px;
@@ -612,6 +585,8 @@
 }
 
 
+
+
 .floating-logos::before,
 .floating-logos::after {
     content: '';
@@ -623,19 +598,11 @@
     pointer-events: none;
 }
 
-.floating-logos::before {
-    left: 0;
-}
-
-.floating-logos::after {
-    right: 0;
-}
 
 .logo-item:hover {
     transform: scale(1.05);
     transition: transform 0.3s ease;
 }
-
 
         .carousel-section {
             margin: 60px 0;
@@ -1199,6 +1166,342 @@
 
     <div class="floating-logos">
         <div class="logo-track">
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+         <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+         <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+         <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+         <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+         <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+         <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+        <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
+             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_3ba15d952cb94cee8f583f0090f0d632~mv2.png" alt="Content 4"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_ae947d98a15b48f0b447a020cc88a722~mv2.png" alt="Content 5"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_7626c6e679034f0a8c5b083d8977bd3e~mv2.png" alt="Content 6"></div>
+            <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_1b0373cae2e54d25854e506240f3f67a~mv2.png" alt="Content 7"></div>
             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_32b36840dcc54decb2523115e6f660e3~mv2.png" alt="Content 1"></div>
             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_fc4426db1a5f47a68818a73878829880~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_fc4426db1a5f47a68818a73878829880~mv2.png" alt="Content 2"></div>
             <div class="logo-item"><img src="https://static.wixstatic.com/media/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png/v1/fit/w_480,h_291,q_90,enc_avif,quality_auto/12a749_b1b67ae07da54ffc9d8a1a693e05fa58~mv2.png" alt="Content 3"></div>
