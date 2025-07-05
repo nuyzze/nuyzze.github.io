@@ -4,742 +4,957 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfólio Alírio Neto</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     /* Reset básico */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
-      font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #0b1e34, #153759);
-      color: #e0f0ff;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0a1628, #1a2b3d);
+      color: #e8f4f8;
       overflow-x: hidden;
+      line-height: 1.6;
     }
-    #app {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 15px 20px;
-      position: relative;
+
+    /* =================================
+       SPLASH SCREEN
+    ================================= */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a1628, #1a2b3d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.8s ease-out;
     }
+
+    .splash-content {
+      text-align: center;
+      animation: slideInUp 1s ease-out;
+    }
+
+    .splash-logo {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #00d4ff;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      margin-bottom: 20px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .splash-subtitle {
+      font-size: 1.2rem;
+      color: #a0c4d4;
+      font-weight: 300;
+      animation: fadeIn 1.5s ease-out;
+    }
+
+    .loading-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 30px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00d4ff;
+      animation: bounce 1.4s ease-in-out infinite both;
+    }
+
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+    .dot:nth-child(3) { animation-delay: 0s; }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+      to { text-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.3); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* =================================
+       NAVEGAÇÃO
+    ================================= */
     .topbar {
       position: fixed;
-      top: 0; right: 0;
-      background: rgba(15, 23, 42, 0.8);
-      padding: 10px 20px;
-      border-bottom-left-radius: 10px;
+      top: 0;
+      right: 0;
+      background: rgba(10, 22, 40, 0.9);
+      padding: 15px 20px;
+      border-bottom-left-radius: 12px;
       z-index: 1001;
-      font-size: 0.9rem;
-      user-select: none;
+      backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
     }
+
     .topbar select {
       background: transparent;
-      color: #e0f0ff;
-      border: 1.5px solid #00ccff;
-      border-radius: 5px;
-      padding: 3px 7px;
-      font-weight: 700;
+      color: #e8f4f8;
+      border: 1px solid #00d4ff;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-weight: 500;
       cursor: pointer;
+      transition: all 0.3s ease;
     }
+
+    .topbar select:hover {
+      border-color: #00b8e6;
+      box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+    }
+
+    .close-topbar {
+      background: none;
+      border: none;
+      color: #00d4ff;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.2rem;
+      transition: color 0.3s ease;
+    }
+
+    .close-topbar:hover {
+      color: #00b8e6;
+    }
+
     header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 22, 40, 0.95);
+      backdrop-filter: blur(15px);
+      padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 0 10px 0;
-      position: relative;
       z-index: 1000;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.1);
     }
-    header .logo {
-      font-size: 2.4rem;
-      font-weight: 900;
-      letter-spacing: 3px;
-      color: #00ccff;
-      text-shadow: 0 0 8px #00e5ffcc;
-      user-select: none;
-    }
-    .hamburger {
-      width: 15px;
-      height: 25px;
-      cursor: pointer;
-      position: relative;
-      z-index: 1100;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .hamburger div {
-      background-color: #00ccff;
-      height: 4px;
-      border-radius: 3px;
-      transition: 0.1s;
-    }
-    nav#menu {
-      position: fixed;
-      top: 0; right: -300px;
-      width: 280px;
-      height: 100vh;
-      background: rgba(10, 20, 40, 0.95);
-      box-shadow: -3px 0 15px #00ccffbb;
-      border-top-left-radius: 15px;
-      border-bottom-left-radius: 15px;
-      padding: 60px 30px;
-      transition: right 0.4s ease-in-out;
-      z-index: 1050;
-    }
-    nav#menu.open { right: 0; }
-    nav#menu ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-    }
-    nav#menu ul li a {
-      color: #00ccff;
-      font-size: 1.4rem;
-      font-weight: 700;
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #00d4ff;
       text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      gap: 30px;
+    }
+
+    nav a {
+      color: #e8f4f8;
+      text-decoration: none;
+      font-weight: 500;
       transition: color 0.3s ease;
+      position: relative;
     }
-    nav#menu ul li a:hover { color: #00ffff; }
-    .close-menu {
+
+    nav a:hover {
+      color: #00d4ff;
+    }
+
+    nav a::after {
+      content: '';
       position: absolute;
-      top: 18px;
-      right: 20px;
-      font-size: 2.4rem;
-      color: #00ccff;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #00d4ff;
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Menu móvel */
+    .menu-mobile {
+      display: none;
       cursor: pointer;
-      user-select: none;
+      flex-direction: column;
+      gap: 4px;
     }
-    .intro {
-      margin-top: 110px;
+
+    .menu-mobile span {
+      width: 25px;
+      height: 3px;
+      background: #00d4ff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        display: none;
+      }
+      
+      .menu-mobile {
+        display: flex;
+      }
+    }
+
+    /* =================================
+       SEÇÃO HERO
+    ================================= */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      padding: 0 20px;
+      padding: 100px 20px 60px;
+      background: linear-gradient(135deg, #0a1628, #1a2b3d);
+      position: relative;
     }
-    .intro h1 {
-      font-size: 3.2rem;
+
+    .hero-content {
+      max-width: 800px;
+      z-index: 2;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      color: #e8f4f8;
+      margin-bottom: 20px;
+      animation: fadeInUp 1s ease-out 0.5s both;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      color: #a0c4d4;
+      font-weight: 300;
+      margin-bottom: 30px;
+      animation: fadeInUp 1s ease-out 0.7s both;
+    }
+
+    .hero-photo {
+      width: 200px;
+      height: 266px; /* Proporção 3:4 */
+      margin: 0 auto 40px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+      animation: fadeInUp 1s ease-out 0.9s both;
+      position: relative;
+    }
+
+    .hero-photo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+      z-index: 1;
+    }
+
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .hero-photo:hover img {
+      transform: scale(1.05);
+    }
+
+    .cta-button {
+      background: linear-gradient(45deg, #00d4ff, #0099cc);
+      color: #0a1628;
+      padding: 15px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+      transition: all 0.3s ease;
+      animation: fadeInUp 1s ease-out 1.1s both;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(0, 212, 255, 0.4);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =================================
+       SEÇÃO SKILLS
+    ================================= */
+    .skills {
+      padding: 100px 20px;
+      background: linear-gradient(135deg, #1a2b3d, #0a1628);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: #e8f4f8;
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(45deg, #00d4ff, #0099cc);
+      border-radius: 2px;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 80px;
+    }
+
+    .skill-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 212, 255, 0.1);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2);
+      border-color: rgba(0, 212, 255, 0.3);
+    }
+
+    .skill-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .skill-card:hover .skill-icon {
+      transform: scale(1.1);
+    }
+
+    .skill-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #e8f4f8;
       margin-bottom: 10px;
-      text-shadow: 0 0 15px #00ccffaa;
     }
-    .intro h2 {
-      font-weight: 400;
-      font-size: 1.6rem;
-      color: #a3d9ffcc;
-      margin-bottom: 35px;
+
+    .skill-description {
+      color: #a0c4d4;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
-    #lottie-container {
-      max-width: 500px;
-      margin: 0 auto 60px auto;
+
+    /* =================================
+       SEÇÃO PROJETOS
+    ================================= */
+    .projects {
+      padding: 100px 20px;
+      background: linear-gradient(135deg, #0a1628, #1a2b3d);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 40px;
+      margin-top: 80px;
+    }
+
+    .project-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 212, 255, 0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(0, 212, 255, 0.2);
+    }
+
+    .project-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(45deg, #00d4ff, #0099cc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #0a1628;
+    }
+
+    .project-content {
+      padding: 25px;
+    }
+
+    .project-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #e8f4f8;
+      margin-bottom: 15px;
+    }
+
+    .project-description {
+      color: #a0c4d4;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .project-link {
+      display: inline-block;
+      background: linear-gradient(45deg, #00d4ff, #0099cc);
+      color: #0a1628;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .project-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+    }
+
+    /* =================================
+       SEÇÃO SOBRE
+    ================================= */
+    .about {
+      padding: 100px 20px;
+      background: linear-gradient(135deg, #1a2b3d, #0a1628);
+    }
+
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 60px;
+      align-items: center;
+      margin-top: 80px;
+    }
+
+    .about-image {
+      width: 100%;
+      max-width: 300px;
+      aspect-ratio: 3/4;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2);
+      position: relative;
+    }
+
+    .about-image::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+      z-index: 1;
+    }
+
+    .about-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .about-text {
+      color: #e8f4f8;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    .about-text strong {
+      color: #00d4ff;
+    }
+
+    @media (max-width: 768px) {
+      .about-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+      }
+      
+      .about-image {
+        max-width: 250px;
+        margin: 0 auto;
+      }
+    }
+
+    /* =================================
+       SEÇÃO CONTATO
+    ================================= */
+    .contact {
+      padding: 100px 20px;
+      background: linear-gradient(135deg, #0a1628, #1a2b3d);
+    }
+
+    .contact-content {
+      max-width: 600px;
+      margin: 80px auto 0;
+      text-align: center;
+    }
+
+    .contact-info {
+      font-size: 1.2rem;
+      color: #a0c4d4;
+      margin-bottom: 40px;
+    }
+
+    .contact-email {
+      font-size: 1.4rem;
+      color: #00d4ff;
+      font-weight: 600;
+      margin-bottom: 50px;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      color: #e8f4f8;
+      padding: 15px 25px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: rgba(0, 212, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
+    }
+
+    .social-icon {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* =================================
+       RODAPÉ
+    ================================= */
+    footer {
+      background: #0a1628;
+      color: #a0c4d4;
+      text-align: center;
+      padding: 30px 20px;
+      border-top: 1px solid rgba(0, 212, 255, 0.1);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-text {
+      font-size: 0.9rem;
+    }
+
+    .footer-highlight {
+      color: #00d4ff;
+      font-weight: 600;
+    }
+
+    /* =================================
+       UTILITÁRIOS
+    ================================= */
+    .hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .no-scroll {
+      overflow: hidden;
+    }
+
+    /* =================================
+       RESPONSIVO
+    ================================= */
+    @media (max-width: 768px) {
+      .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      
+      .social-links {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .social-link {
+        width: 200px;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Splash Screen -->
+  <div class="splash-screen" id="splashScreen">
+    <div class="splash-content">
+      <div class="splash-logo">Alírio Neto</div>
+      <div class="splash-subtitle">Desenvolvedor Web Front-end</div>
+      <div class="loading-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
 
-  <div class="topbar" aria-label="Seleção de idioma">
-    <label for="lang-select" class="sr-only">Selecionar idioma</label>
-    <select id="lang-select" aria-live="polite" aria-atomic="true" aria-label="Seleção de idioma">
-      <option value="pt" selected>Português</option>
+  <!-- Topbar -->
+  <div class="topbar" id="topbar">
+    <select id="langSelect">
+      <option value="pt">Português</option>
       <option value="en">English</option>
     </select>
-    <button id="removerTradutor" style="background: none; border: none; color: #00ccff; cursor: pointer; font-weight: bold;">X</button>
+    <button class="close-topbar" id="closeTopbar">&times;</button>
   </div>
 
+  <!-- Header -->
   <header>
-    <div class="logo" aria-label="Nome do desenvolvedor">Alírio Neto</div>
-    <div class="hamburger" id="hamburger" role="button" aria-label="Abrir menu">
-      <div></div><div></div><div></div>
-    </div>
-    <nav id="menu" aria-label="Menu de navegação">
-      <span class="close-menu" id="close-menu" role="button" aria-label="Fechar menu">&times;</span>
-      <ul>
-        <li><a href="#projetos">Projetos</a></li>
-        <li><a href="#sobre">Sobre</a></li>
-        <li><a href="#contato">Contato</a></li>
-      </ul>
+    <a href="#" class="logo">Alírio Neto</a>
+    <nav id="mainNav">
+      <a href="#home">Início</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projetos</a>
+      <a href="#about">Sobre</a>
+      <a href="#contact">Contato</a>
     </nav>
+    <div class="menu-mobile" id="menuMobile">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </header>
 
-  <!-- Botão para reabrir o menu -->
-  <div id="abrir-menu" style="display: none; position: fixed; top: 20px; left: 20px; font-size: 2rem; color: #00ccff; cursor: pointer; z-index: 1100;" aria-label="Abrir menu">&lt;</div>
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-photo">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=533&fit=crop&crop=face" alt="Foto de Alírio Neto">
+      </div>
+      <h1 class="hero-title">Olá, eu sou Alírio Neto</h1>
+      <p class="hero-subtitle">Desenvolvedor Web Front-end</p>
+      <a href="#projects" class="cta-button">Ver Projetos</a>
+    </div>
+  </section>
 
-  <div id="app">
-    <section class="intro" aria-label="Introdução do desenvolvedor">
-      <h1>Olá, eu sou Alírio Neto</h1>
-      <h2>Desenvolvedor Web Front-end</h2>
-      <div id="lottie-container" aria-hidden="true"></div>
-    </section>
-  </div>
+  <!-- Skills Section -->
+  <section class="skills" id="skills">
+    <div class="container">
+      <h2 class="section-title">Habilidades</h2>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-icon">🌐</div>
+          <h3 class="skill-name">HTML5</h3>
+          <p class="skill-description">Estruturação semântica e acessível de páginas web modernas</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🎨</div>
+          <h3 class="skill-name">CSS3</h3>
+          <p class="skill-description">Estilização avançada, Flexbox, Grid e animações CSS</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">⚡</div>
+          <h3 class="skill-name">JavaScript</h3>
+          <p class="skill-description">Desenvolvimento interativo e dinâmico com JS moderno</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">📝</div>
+          <h3 class="skill-name">Markdown</h3>
+          <p class="skill-description">Documentação técnica e criação de conteúdo estruturado</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">☕</div>
+          <h3 class="skill-name">Java</h3>
+          <p class="skill-description">Desenvolvimento backend e aplicações robustas</p>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">🐍</div>
+          <h3 class="skill-name">Python</h3>
+          <p class="skill-description">Automação, análise de dados e desenvolvimento web</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.2/lottie.min.js"></script>
+  <!-- Projects Section -->
+  <section class="projects" id="projects">
+    <div class="container">
+      <h2 class="section-title">Meus Projetos</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-image">📋</div>
+          <div class="project-content">
+            <h3 class="project-title">ToDo List Responsiva</h3>
+            <p class="project-description">Aplicativo web para gerenciamento de tarefas com design responsivo e interação simples.</p>
+            <a href="#linkProjeto1" class="project-link">Ver Projeto</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-image">💼</div>
+          <div class="project-content">
+            <h3 class="project-title">Portfólio Pessoal</h3>
+            <p class="project-description">Website moderno para mostrar minhas habilidades, projetos e contato profissional.</p>
+            <a href="#linkProjeto2" class="project-link">Ver Projeto</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-image">🛒</div>
+          <div class="project-content">
+            <h3 class="project-title">Loja Virtual</h3>
+            <p class="project-description">Sistema simples de e-commerce com carrinho de compras, integração WhatsApp e layout clean.</p>
+            <a href="#linkProjeto3" class="project-link">Ver Projeto</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <div class="container">
+      <h2 class="section-title">Sobre Mim</h2>
+      <div class="about-content">
+        <div class="about-image">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=533&fit=crop&crop=face" alt="Foto de Alírio Neto">
+        </div>
+        <div class="about-text">
+          <p>Olá! Meu nome é <strong>Alírio Neto</strong> e sou <strong>Desenvolvedor Web Front-end</strong> apaixonado por criar interfaces modernas, funcionais e acessíveis.</p>
+          
+          <p>Tenho experiência em <strong>HTML5</strong>, <strong>CSS3</strong>, <strong>JavaScript</strong>, <strong>Java</strong> e <strong>Python</strong>, sempre buscando as melhores práticas de desenvolvimento e design responsivo.</p>
+          
+          <p>Meu foco é transformar ideias em websites e aplicações que encantam e oferecem ótima experiência ao usuário. Gosto de trabalhar com otimização de performance e código limpo.</p>
+          
+          <p>Se você busca um profissional dedicado, comunicativo e comprometido com resultados, está no lugar certo!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <h2 class="section-title">Contato</h2>
+      <div class="contact-content">
+        <p class="contact-info">Vamos trabalhar juntos? Entre em contato!</p>
+        <div class="contact-email">nuyzze@gmail.com</div>
+        <div class="social-links">
+          <a href="#link1" class="social-link">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            GitHub
+          </a>
+          <a href="#link2" class="social-link">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+            Instagram
+          </a>
+          <a href="#link3" class="social-link">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819L11.18 14.71c-.38-.196-.656-.596-.656-1.047s.276-.851.656-1.047l7.365-6.292h3.819c.904 0 1.636.732 1.636 1.636z"/>
+              <path d="M1.636 4.184c-.904 0-1.636.732-1.636 1.636v13.909c0 .904.732 1.636 1.636 1.636h16.728c.904 0 1.636-.732 1.636-1.636V5.82c0-.904-.732-1.636-1.636-1.636H1.636zm16.728 1.636L12 10.89 5.636 5.82h12.728zM1.636 5.82h1.91L12 12.726 20.454 5.82v13.909H1.636V5.82z"/>
+            </svg>
+            Email
+          </a>
+          <a href="#link4" class="social-link">
+            <svg class="social-icon" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.485 3.488"/>
+            </svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <p class="footer-text">© 2025 <span class="footer-highlight">Alírio Neto</span> - Desenvolvedor Web Front-end</p>
+    </div>
+  </footer>
+
   <script>
-    const anim = lottie.loadAnimation({
-      container: document.getElementById('lottie-container'),
-      renderer: 'svg',
-      loop: false,
-      autoplay: true,
-      path: 'https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json'
+    // Splash Screen
+    document.addEventListener('DOMContentLoaded', function() {
+      const splashScreen = document.getElementById('splashScreen');
+      
+      setTimeout(() => {
+        splashScreen.style.opacity = '0';
+        setTimeout(() => {
+          splashScreen.style.display = 'none';
+          document.body.classList.remove('no-scroll');
+        }, 800);
+      }, 2500);
     });
 
-    const hamburger = document.getElementById('hamburger');
-    const menu = document.getElementById('menu');
-    const closeMenu = document.getElementById('close-menu');
-    const abrirMenu = document.getElementById('abrir-menu');
-
-    hamburger.addEventListener('click', () => {
-      menu.classList.add('open');
-      abrirMenu.style.display = 'none';
+    // Smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
     });
 
-    closeMenu.addEventListener('click', () => {
-      menu.classList.remove('open');
-      abrirMenu.style.display = 'block';
-    });
-
-    abrirMenu.addEventListener('click', () => {
-      menu.classList.add('open');
-      abrirMenu.style.display = 'none';
-    });
-
-    const langSelect = document.getElementById('lang-select');
-    langSelect.addEventListener('change', e => {
-      if (e.target.value === 'en') {
-        document.querySelector('.intro h1').textContent = "Hi, I'm Alírio Neto";
-        document.querySelector('.intro h2').textContent = "Front-end Web Developer";
-        document.querySelector('.logo').textContent = "Alírio Neto";
+    // Language toggle
+    document.getElementById('langSelect').addEventListener('change', function(e) {
+      const lang = e.target.value;
+      
+      if (lang === 'en') {
+        document.querySelector('.hero-title').textContent = "Hello, I'm Alírio Neto";
+        document.querySelector('.hero-subtitle').textContent = "Front-end Web Developer";
+        document.querySelector('.cta-button').textContent = "View Projects";
+        document.querySelector('#skills .section-title').textContent = "Skills";
+        document.querySelector('#projects .section-title').textContent = "My Projects";
+        document.querySelector('#about .section-title').textContent = "About Me";
+        document.querySelector('#contact .section-title').textContent = "Contact";
+        document.querySelector('.contact-info').textContent = "Let's work together? Get in touch!";
+        document.querySelector('.footer-text').innerHTML = '© 2025 <span class="footer-highlight">Alírio Neto</span> - Front-end Web Developer';
       } else {
-        document.querySelector('.intro h1').textContent = "Olá, eu sou Alírio Neto";
-        document.querySelector('.intro h2').textContent = "Desenvolvedor Web Front-end";
-        document.querySelector('.logo').textContent = "Alírio Neto";
+        document.querySelector('.hero-title').textContent = "Olá, eu sou Alírio Neto";
+        document.querySelector('.hero-subtitle').textContent = "Desenvolvedor Web Front-end";
+        document.querySelector('.cta-button').textContent = "Ver Projetos";
+        document.querySelector('#skills .section-title').textContent = "Habilidades";
+        document.querySelector('#projects .section-title').textContent = "Meus Projetos";
+        document.querySelector('#about .section-title').textContent = "Sobre Mim";
+        document.querySelector('#contact .section-title').textContent = "Contato";
+        document.querySelector('.contact-info').textContent = "Vamos trabalhar juntos? Entre em contato!";
+        document.querySelector('.footer-text').innerHTML = '© 2025 <span class="footer-highlight">Alírio Neto</span> - Desenvolvedor Web Front-end';
       }
     });
 
-    // Correção: botão de remover tradutor funcionando sempre
-    const btnRemoverTradutor = document.getElementById('removerTradutor');
-    const topbar = document.querySelector('.topbar');
-    btnRemoverTradutor.addEventListener('click', () => {
-      topbar.remove();
+    // Close topbar
+    document.getElementById('closeTopbar').addEventListener('click', function() {
+      document.getElementById('topbar').remove();
+    });
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+      const header = document.querySelector('header');
+      if (window.scrollY > 100) {
+        header.style.background = 'rgba(10, 22, 40, 0.98)';
+      } else {
+        header.style.background = 'rgba(10, 22, 40, 0.95)';
+      }
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe skill cards and project cards
+    document.querySelectorAll('.skill-card, .project-card').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(30px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(card);
     });
   </script>
-<!-- Parte 2: Seção Projetos -->
-
-<style>
-  #projetos {
-    padding: 60px 20px 80px 20px;
-    background: linear-gradient(180deg, #0b1e34 0%, #153759 100%);
-    color: #cceeff;
-    text-align: center;
-  }
-
-  #projetos h2 {
-    font-size: 2.8rem;
-    font-weight: 800;
-    margin-bottom: 35px;
-    color: #00ccff;
-    text-shadow: 0 0 10px #00e5ffbb;
-  }
-
-  .cards-container {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .card {
-    background: rgba(10, 25, 45, 0.85);
-    border-radius: 16px;
-    width: 320px;
-    box-shadow: 0 0 15px #00ccff66;
-    padding: 20px;
-    color: #e0f0ff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-  }
-
-  .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 0 30px #00ffffbb;
-  }
-
-  .card img {
-    max-width: 100%;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    box-shadow: 0 0 15px #00ccff88;
-  }
-
-  .card h3 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: #00ccff;
-  }
-
-  .card p {
-    font-size: 1rem;
-    color: #a3d9ffcc;
-    margin-bottom: 20px;
-    flex-grow: 1;
-  }
-
-  .btn {
-    background: #00ccff;
-    color: #012b44;
-    font-weight: 700;
-    padding: 10px 25px;
-    border-radius: 25px;
-    text-decoration: none;
-    box-shadow: 0 0 10px #00e5ffcc;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn:hover {
-    background-color: #00ffff;
-  }
-
-  /* Animação suave de fade-in dos cards */
-  @keyframes fadeInUp {
-    0% {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .card {
-    animation-name: fadeInUp;
-    animation-duration: 0.8s;
-    animation-fill-mode: forwards;
-    opacity: 0;
-  }
-
-  .card:nth-child(1) {
-    animation-delay: 0.2s;
-  }
-  .card:nth-child(2) {
-    animation-delay: 0.4s;
-  }
-  .card:nth-child(3) {
-    animation-delay: 0.6s;
-  }
-
-  /* Responsivo */
-  @media (max-width: 700px) {
-    .cards-container {
-      flex-direction: column;
-      align-items: center;
-    }
-    .card {
-      width: 90vw;
-      max-width: 350px;
-    }
-  }
-</style>
-
-<section id="projetos" aria-label="Seção de projetos">
-  <h2>Meus Projetos</h2>
-  <div class="cards-container">
-
-    <article class="card" tabindex="0" role="region" aria-labelledby="proj1-title" aria-describedby="proj1-desc">
-      <img src="https://cdn-icons-png.flaticon.com/512/888/888859.png" alt="Ícone do projeto ToDo List" loading="lazy">
-      <h3 id="proj1-title">ToDo List Responsiva</h3>
-      <p id="proj1-desc">Aplicativo web para gerenciamento de tarefas com design responsivo e interação simples.</p>
-      <a href="https://nuyzze.github.io/Nuyzzelist.html" class="btn" aria-label="Ver projeto ToDo List">Ver Projeto</a>
-    </article>
-
-    <article class="card" tabindex="0" role="region" aria-labelledby="proj2-title" aria-describedby="proj2-desc">
-      <img src="https://cdn-icons-png.flaticon.com/512/1006/1006547.png" alt="Ícone do projeto Portfólio pessoal" loading="lazy">
-      <h3 id="proj2-title">Portfólio Pessoal</h3>
-      <p id="proj2-desc">Website moderno para mostrar minhas habilidades, projetos e contato profissional.</p>
-      <a href="https://nuyzze.github.io/portifolioprime.html" class="btn" aria-label="Ver projeto Portfólio Pessoal">Ver Projeto</a>
-    </article>
-
-    <article class="card" tabindex="0" role="region" aria-labelledby="proj3-title" aria-describedby="proj3-desc">
-      <img src="https://cdn-icons-png.flaticon.com/512/2721/2721230.png" alt="Ícone do projeto Loja Virtual" loading="lazy">
-      <h3 id="proj3-title">Loja Virtual</h3>
-      <p id="proj3-desc">Sistema simples de e-commerce com carrinho de compras, integração WhatsApp e layout clean.</p>
-      <a href="https://marcenariadefreittas.github.io/marcenariadefreittas.html" class="btn" aria-label="Ver projeto Loja Virtual">Ver Projeto</a>
-    </article>
-
-  </div>
-</section>
-<!-- Parte 3: Seção Sobre -->
-
-<style>
-  #sobre {
-    background: linear-gradient(135deg, #153759, #0b1e34);
-    color: #cceeff;
-    padding: 70px 20px 90px 20px;
-    display: flex;
-    max-width: 1100px;
-    margin: 0 auto;
-    align-items: center;
-    gap: 40px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  #sobre h2 {
-    width: 100%;
-    font-size: 2.8rem;
-    font-weight: 800;
-    color: #00ccff;
-    margin-bottom: 25px;
-    text-align: center;
-    text-shadow: 0 0 12px #00e5ffcc;
-  }
-
-  .sobre-img {
-    flex: 1 1 300px;
-    max-width: 320px;
-    border-radius: 16px;
-    box-shadow: 0 0 25px #00ccffaa;
-    overflow: hidden;
-    animation: fadeInLeft 1s ease forwards;
-    opacity: 0;
-  }
-
-  .sobre-img img {
-    width: 100%;
-    display: block;
-  }
-
-  .sobre-text {
-    flex: 2 1 450px;
-    color: #e0f0ff;
-    font-size: 1.15rem;
-    line-height: 1.6;
-    text-align: justify;
-    animation: fadeInRight 1s ease forwards;
-    opacity: 0;
-  }
-
-  .sobre-text strong {
-    color: #00ccff;
-    font-weight: 700;
-  }
-
-  /* Animações fadeIn */
-  @keyframes fadeInLeft {
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    from {
-      opacity: 0;
-      transform: translateX(-30px);
-    }
-  }
-  @keyframes fadeInRight {
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    from {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-  }
-
-  /* Responsivo */
-  @media (max-width: 900px) {
-    #sobre {
-      flex-direction: column;
-      padding: 40px 15px 70px 15px;
-      text-align: center;
-    }
-
-    .sobre-text {
-      text-align: center;
-      font-size: 1.1rem;
-    }
-
-    .sobre-img {
-      max-width: 260px;
-      margin-bottom: 30px;
-    }
-  }
-</style>
-
-<section id="sobre" aria-label="Seção sobre Alírio Neto">
-  <h2>Sobre mim</h2>
-  <div class="sobre-img" aria-hidden="true">
-    <img src="https://cdn.pixabay.com/photo/2017/01/31/21/22/avatar-2027364_960_720.png" alt="Foto estilizada de Alírio Neto">
-  </div>
-  <div class="sobre-text" tabindex="0">
-    <p>Olá! Meu nome é <strong>Alírio Neto</strong> e sou <strong>Desenvolvedor Web Front-end</strong> apaixonado por criar interfaces modernas, funcionais e acessíveis. Tenho experiência em HTML, CSS, JavaScript e frameworks como React e Vue.</p>
-
-    <p>Meu foco é transformar ideias em websites e aplicações que encantam e oferecem ótima experiência ao usuário. Gosto de trabalhar com design responsivo, otimização de performance e boas práticas de código.</p>
-
-    <p>Se você busca um profissional dedicado, comunicativo e comprometido com resultados, está no lugar certo!</p>
-  </div>
-</section>
-
-<script>
-  // Delay animações para a seção Sobre aparecer suave
-  window.addEventListener('load', () => {
-    const img = document.querySelector('.sobre-img');
-    const text = document.querySelector('.sobre-text');
-    setTimeout(() => {
-      img.style.opacity = 1;
-      img.style.transform = 'translateX(0)';
-      text.style.opacity = 1;
-      text.style.transform = 'translateX(0)';
-    }, 600);
-  });
-</script>
-<!-- Parte 4: Seção Contato -->
-
-<style>
-  #contato {
-    background: linear-gradient(135deg, #0a1c30, #153759);
-    color: #cceeff;
-    padding: 60px 20px 90px 20px;
-    max-width: 900px;
-    margin: 0 auto;
-    border-radius: 20px;
-    box-shadow: 0 0 40px #00ccff88;
-    text-align: center;
-  }
-
-  #contato h2 {
-    font-size: 2.8rem;
-    font-weight: 800;
-    margin-bottom: 40px;
-    color: #00ccff;
-    text-shadow: 0 0 12px #00e5ffcc;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 480px;
-    margin: 0 auto 35px auto;
-  }
-
-  input, textarea {
-    background: #0b1f38;
-    border: 2px solid #00ccff;
-    border-radius: 14px;
-    padding: 15px 20px;
-    color: #cceeff;
-    font-size: 1rem;
-    resize: vertical;
-    transition: border-color 0.3s ease;
-  }
-
-  input:focus, textarea:focus {
-    outline: none;
-    border-color: #00ffff;
-    box-shadow: 0 0 10px #00ffffcc;
-  }
-
-  textarea {
-    min-height: 100px;
-  }
-
-  button[type="submit"] {
-    background: #00ccff;
-    color: #012b44;
-    font-weight: 700;
-    padding: 15px;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.15rem;
-    cursor: pointer;
-    box-shadow: 0 0 15px #00e5ffcc;
-    transition: background-color 0.3s ease;
-  }
-
-  button[type="submit"]:hover {
-    background-color: #00ffff;
-  }
-
-  .contato-botoes {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-  }
-
-  .contato-botoes a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #00ccff;
-    color: #012b44;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-weight: 700;
-    text-decoration: none;
-    box-shadow: 0 0 15px #00e5ffcc;
-    transition: background-color 0.3s ease;
-    font-size: 1.1rem;
-  }
-
-  .contato-botoes a:hover {
-    background-color: #00ffff;
-  }
-
-  .contato-botoes a img {
-    width: 24px;
-    height: 24px;
-  }
-
-  /* Animação fadeIn lenta para o conteúdo */
-  #contato > * {
-    opacity: 0;
-    transform: translateY(30px);
-    animation-fill-mode: forwards;
-    animation-name: fadeInUpContato;
-    animation-duration: 0.8s;
-  }
-  #contato > *:nth-child(1) {
-    animation-delay: 0.2s;
-  }
-  #contato > *:nth-child(2) {
-    animation-delay: 0.4s;
-  }
-  #contato > *:nth-child(3) {
-    animation-delay: 0.6s;
-  }
-
-  @keyframes fadeInUpContato {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-  }
-
-  /* Responsivo */
-  @media (max-width: 600px) {
-    .contato-botoes {
-      flex-direction: column;
-      gap: 20px;
-    }
-  }
-</style>
-
-<section id="contato" aria-label="Seção de contato com Alírio Neto">
-  <h2>Contato</h2>
-  
-nuyzze@gmail.com
-</br></br></br>
-  <div class="contato-botoes">
-    <a href="https://instagram.com/nuyzze" target="_blank" rel="noopener" aria-label="Ir para Instagram do Alírio Neto">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Ícone Instagram">
-      Instagram
-    </a>
-    <a href="https://wa.me/5597981027196" target="_blank" rel="noopener" aria-label="Enviar mensagem para WhatsApp do Alírio Neto">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="Ícone WhatsApp">
-      WhatsApp
-    </a>
-  </div>
-</section>
-<!-- Parte 5: Rodapé -->
-
-<style>
-  footer {
-    background: linear-gradient(135deg, #0a1c30, #153759);
-    color: #8fcfff;
-    padding: 25px 20px;
-    text-align: center;
-    font-size: 0.9rem;
-    font-weight: 500;
-    box-shadow: inset 0 2px 6px #00ccff55;
-    user-select: none;
-  }
-
-  footer a {
-    color: #00ccff;
-    text-decoration: none;
-    margin: 0 8px;
-    transition: color 0.3s ease;
-  }
-
-  footer a:hover,
-  footer a:focus {
-    color: #00ffff;
-    outline: none;
-    text-shadow: 0 0 8px #00e5ffcc;
-  }
-
-  footer .social-icons {
-    margin-top: 10px;
-  }
-
-  footer .social-icons a {
-    display: inline-block;
-    margin: 0 12px;
-  }
-
-  footer .social-icons img {
-    width: 22px;
-    height: 22px;
-    filter: drop-shadow(0 0 1px #00ccffaa);
-    transition: filter 0.3s ease;
-  }
-
-  footer .social-icons a:hover img,
-  footer .social-icons a:focus img {
-    filter: drop-shadow(0 0 6px #00ffffcc);
-  }
-
-  /* Animação suave de brilho */
-  @keyframes brilho {
-    0%, 100% {
-      text-shadow: 0 0 10px #00ccff88;
-    }
-    50% {
-      text-shadow: 0 0 20px #00ffffcc;
-    }
-  }
-
-  footer .highlight {
-    color: #00ccff;
-    font-weight: 700;
-    animation: brilho 3s ease-in-out infinite;
-  }
-
-  /* Responsivo */
-  @media (max-width: 480px) {
-    footer {
-      font-size: 0.85rem;
-      padding: 20px 15px;
-    }
-    footer .social-icons a {
-      margin: 0 8px;
-    }
-  }
-</style>
-
-<footer role="contentinfo">
-  <div>
-    &copy; 2025 <span class="highlight">Alírio Neto</span> - Desenvolvedor Web Front-end.
-  </div>
-  <div>
-    <a href="#projetos" tabindex="0">Projetos</a> |
-    <a href="#sobre" tabindex="0">Sobre</a> |
-    <a href="#contato" tabindex="0">Contato</a>
-  </div>
-  <div class="social-icons" aria-label="Redes sociais de Alírio Neto">
-    <a href="https://instagram.com/nuyzze" target="_blank" rel="noopener" aria-label="Instagram">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Ícone Instagram">
-    </a>
-    <a href="https://wa.me/5597981027196" target="_blank" rel="noopener" aria-label="WhatsApp">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="Ícone WhatsApp">
-    </a>
-  </div>
-</footer>
 </body>
 </html>
