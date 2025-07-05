@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alírio Neto - Portfólio Completo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-orange: #FF6B35;
+            --secondary-orange: #FF8C42;
+            --bg-gray: #2A2D34;
+            --dark-gray: #1E2126;
+            --light-gray: #3A3D44;
+            --text-white: #FFFFFF;
+            --text-gray: #B0B3B8;
+            --neon-cyan: #00FFFF;
+            --neon-green: #39FF14;
+            --neon-purple: #9D4EDD;
+            --neon-pink: #FF006E;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: var(--bg-gray);
+            color: var(--text-white);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Advanced Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--dark-gray) 0%, var(--bg-gray) 50%, var(--dark-gray) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        .splash-content {
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            position: relative;
+        }
+
+        .splash-logo {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 30px;
+            animation: logoSpin 3s ease-in-out infinite, logoGlow 2s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 30px var(--primary-orange));
+        }
+
+        .splash-text {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary-orange);
+            text-shadow: 0 0 30px var(--primary-orange);
+            animation: textTypewriter 4s steps(25) 1s forwards, textGlow 3s ease-in-out infinite alternate;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid var(--primary-orange);
+            width: 0;
+        }
+
+        .splash-subtitle {
+            font-size: 1.2rem;
+            color: var(--neon-cyan);
+            margin-top: 20px;
+            animation: subtitleFade 2s ease-in-out 2s forwards;
+            opacity: 0;
+        }
+
+        .loading-container {
+            margin-top: 40px;
+            position: relative;
+        }
+
+        .loading-bar {
+            width: 400px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 auto;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-orange), var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            background-size: 200% 100%;
+            width: 0;
+            animation: loadingFill 4s ease-in-out forwards, gradientShift 2s ease-in-out infinite;
+            box-shadow: 0 0 20px var(--primary-orange);
+        }
+
+        .loading-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            letter-spacing: 2px;
+        }
+
+        /* Keyframes */
+        @keyframes logoSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 30px var(--primary-orange)); }
+            100% { filter: drop-shadow(0 0 50px var(--neon-cyan)) brightness(1.2); }
+        }
+
+        @keyframes textTypewriter {
+            to { width: 100%; }
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 30px var(--primary-orange); }
+            100% { text-shadow: 0 0 50px var(--neon-cyan), 0 0 80px var(--neon-cyan); }
+        }
+
+        @keyframes subtitleFade {
+            to { opacity: 1; }
+        }
+
+        @keyframes loadingFill {
+            to { width: 100%; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .splash-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Enhanced Background Effects */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: particleFloat 8s infinite linear;
+            filter: blur(1px);
+        }
+
+        .particle:nth-child(odd) {
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .particle:nth-child(even) {
+            background: var(--primary-orange);
+            box-shadow: 0 0 10px var(--primary-orange);
+        }
+
+        .particle:nth-child(3n) {
+            background: var(--neon-purple);
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Enhanced Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-orange) 50%, var(--neon-purple) 100%);
+            padding: 20px 0;
+            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.4);
+            position: relative;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: headerShine 3s ease-in-out infinite;
+        }
+
+        @keyframes headerShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo {
+            height: 70px;
+            filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.4));
+            animation: logoFloat 4s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 8px 25px rgba(255, 107, 53, 0.6));
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Enhanced Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+        }
+
+        .hero-banner {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+            position: relative;
+        }
+
+        .banner-content {
+            text-align: center;
+            z-index: 3;
+            position: relative;
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            margin-bottom: 25px;
+            background: linear-gradient(45deg, var(--primary-orange), var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: heroTextGlow 3s ease-in-out infinite alternate, gradientFlow 4s ease-in-out infinite;
+            position: relative;
+        }
+
+        .hero-title::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(45deg, var(--primary-orange), var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            z-index: -1;
+            animation: glitchEffect 0.3s ease-in-out infinite alternate;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.4rem, 3.5vw, 2.5rem);
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            animation: subtitleSlide 1.5s ease-out 1s both;
+            position: relative;
+        }
+
+        .hero-subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-orange), var(--neon-cyan));
+            animation: lineGrow 2s ease-out 1.5s both;
+        }
+
+        @keyframes heroTextGlow {
+            0% { text-shadow: 0 0 30px var(--primary-orange); }
+            100% { text-shadow: 0 0 50px var(--neon-cyan), 0 0 80px var(--neon-cyan); }
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes glitchEffect {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes subtitleSlide {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes lineGrow {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
+        /* Enhanced Code Animation */
+        .code-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--neon-green);
+            opacity: 0.15;
+            white-space: pre;
+            animation: codeMatrix 25s linear infinite;
+            z-index: 1;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        @keyframes codeMatrix {
+            0% { transform: translate(-50%, -50%) translateY(0) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) translateY(-50px) rotate(90deg); }
+            50% { transform: translate(-50%, -50%) translateY(-100px) rotate(180deg); }
+            75% { transform: translate(-50%, -50%) translateY(-150px) rotate(270deg); }
+            100% { transform: translate(-50%, -50%) translateY(-200px) rotate(360deg); }
+        }
+
+        /* Enhanced Projects Section */
+        .projects {
+            padding: 120px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1s ease;
+            position: relative;
+        }
+
+        .projects.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .projects::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            text-align: center;
+            margin-bottom: 80px;
+            color: var(--primary-orange);
+            text-shadow: 0 0 30px var(--primary-orange);
+            position: relative;
+            animation: sectionTitleGlow 4s ease-in-out infinite alternate;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            animation: lineExpand 2s ease-out;
+        }
+
+        @keyframes sectionTitleGlow {
+            0% { text-shadow: 0 0 30px var(--primary-orange); }
+            100% { text-shadow: 0 0 50px var(--neon-cyan), 0 0 80px var(--neon-cyan); }
+        }
+
+        @keyframes lineExpand {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 40px;
+            margin-bottom: 100px;
+        }
+
+        .project-card {
+            background: linear-gradient(145deg, var(--light-gray) 0%, var(--dark-gray) 100%);
+            border-radius: 25px;
+            padding: 40px 35px;
+            text-align: center;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, var(--primary-orange), var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            background-size: 400% 400%;
+            border-radius: 25px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            animation: gradientRotate 4s ease-in-out infinite;
+        }
+
+        .project-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card:hover::after {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(255, 107, 53, 0.3);
+        }
+
+        .project-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes gradientRotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .project-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            animation: iconRotate 15s linear infinite;
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: iconShine 3s linear infinite;
+        }
+
+        @keyframes iconRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes iconShine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .project-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-white);
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-description {
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .project-btn {
+            background: linear-gradient(45deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 1;
+        }
+
+        .project-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.7s ease;
+            z-index: -1;
+        }
+
+        .project-btn:hover::before {
+            left: 100%;
+        }
+
+        .project-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.5);
+        }
+
+        /* Enhanced About Section */
+        .about {
+            padding: 120px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1s ease;
+            position: relative;
+        }
+
+        .about.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-content {
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--dark-gray) 100%);
+            padding: 80px 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .about-content::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary-orange), var(--neon-cyan), var(--neon-purple));
+            background-size: 400% 400%;
+            border-radius: 30px;
+            z-index: -1;
+            animation: aboutBorderGlow 6s ease-in-out infinite;
+        }
+
+        .about-content::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, var(--primary-orange) 0%, transparent 70%);
+            opacity: 0.08;
+            animation: aboutBgRotate 25s linear infinite;
+        }
+
+        @keyframes aboutBorderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes aboutBgRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .about-text {
+            font-size: 1.3rem;
+            line-height: 2;
+            color: var(--text-gray);
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-text strong {
+            color: var(--primary-orange);
+            text-shadow: 0 0 10px var(--primary-orange);
+        }
+
+        /* Enhanced Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--dark-gray) 0%, var(--bg-gray) 100%);
+            padding: 80px 20px 40px;
+            border-top: 4px solid var(--primary-orange);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 107, 53, 0.05), transparent);
+            animation: footerShine 8s ease-in-out infinite;
+        }
+
+        @keyframes footerShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 35px;
+            background: linear-gradient(45deg, var(--light-gray), var(--dark-gray));
+            border-radius: 60px;
+            text-decoration: none;
+            color: var(--text-white);
+            transition: all 0.4s ease;
+            font-weight: 600;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--primary-orange), var(--neon-cyan));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .social-link:hover::before {
+            opacity: 1;
+        }
+
+        .social-link:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
+            color: var(--dark-gray);
+        }
+
+        .social-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover .social-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .footer-text {
+            color: var(--text-gray);
+            font-size: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero-banner {
+                padding: 30px 20px;
+            }
+
+            .about-content {
+                padding: 50px 30px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 600px) {
+            .hero {
+                min-height: auto;
+                padding: 30px 0;
+            }
+            
+            .hero-banner {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Enhanced Scroll Animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1s ease;
+        }
+
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mouse Parallax Effect */
+        .parallax-element {
+            transition: transform 0.1s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <img src="https://i.imgur.com/cgIoFeK.png" alt="Logo" class="splash-logo">
+            <div class="splash-text" data-text="ALÍRIO NETO">ALÍRIO NETO</div>
+            <div class="splash-subtitle">PORTFÓLIO DIGITAL FUTURISTA</div>
+            <div class="loading-container">
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+                <div class="loading-text">CARREGANDO EXPERIÊNCIA...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-particles" id="particles"></div>
+
+    <header class="header">
+        <div class="header-content">
+            <img src="https://i.imgur.com/cgIoFeK.png" alt="Frontend no Celular" class="logo">
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-banner">
+            <div class="banner-content">
+                <h1 class="hero-title" data-text="ALÍRIO NETO">ALÍRIO NETO</h1>
+                <p class="hero-subtitle">Desenvolvedor Frontend e Java • Criador do Impossível</p>
+            </div>
+            <div class="code-animation">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Frontend no Celular&lt;/title&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="mobile-revolution"&gt;
+        &lt;h1&gt;Criando o Impossível&lt;/h1&gt;
+        &lt;p&gt;Desenvolvendo do Interior do Amazonas&lt;/p&gt;
+        &lt;p&gt;Apenas com um Smartphone&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;script&gt;
+        console.log('Transformando limitações em inovação');
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Projects Section -->
+    <section class="projects scroll-reveal" id="projects">
+        <h2 class="section-title">MEUS PROJETOS</h2>
+        <div class="projects-grid" id="projectsGrid">
+            <!-- Projects will be inserted here by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Enhanced About Section -->
+    <section class="about scroll-reveal" id="about">
+        <h2 class="section-title">SOBRE MIM</h2>
+        <div class="about-content">
+            <p class="about-text">
+                Olá! Sou <strong>Alírio Neto</strong>, tenho 20 anos e sou o criador do perfil <strong>Frontend no Celular</strong>. 
+                Moro no interior do Amazonas e desenvolvo tudo pelo celular. Além de Desenvolvedor Web Júnior, 
+                também sou Escritor e Editor.
+                <br><br>
+                Minha jornada começou em 2019 como afiliado, passei pelo dropshipping, criei minha própria loja 
+                virtual vendendo e-books, até descobrir a programação. Mesmo enfrentando desafios de saúde e 
+                limitações, transformei essas adversidades em motivação para criar soluções inovadoras.
+                <br><br>
+                Acredito que a <strong>tecnologia pode ser acessível para todos</strong>, e provo isso todos os dias criando 
+                projetos incríveis apenas com um smartphone. Cada linha de código é uma prova de que 
+                <strong>limitações são apenas oportunidades disfarçadas</strong>.
+                <br><br>
+                Do interior do Amazonas para o mundo digital, transformando sonhos em realidade, 
+                <strong>um projeto por vez</strong>.
+            </p>
+        </div>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="https://wa.me/5597981027196?text=Olá%2C%20quero%20saber%20sobre%20seu%20trabalho%20Alírio!" class="social-link">
+                    <img src="https://i.imgur.com/CgJtf2f.png" alt="WhatsApp" class="social-icon">
+                    WhatsApp
+                </a>
+                <a href="https://youtube.com/@frontendnocelular" class="social-link">
+                    <img src="https://i.imgur.com/gK1PzpW.png" alt="YouTube" class="social-icon">
+                    YouTube
+                </a>
+                <a href="https://tiktok.com/@frontendnocelular" class="social-link">
+                    <img src="https://i.imgur.com/slD6LCw.png" alt="TikTok" class="social-icon">
+                    TikTok
+                </a>
+                <a href="mailto:frontendnocelular@gmail.com" class="social-link">
+                    <img src="https://i.imgur.com/PaUqyDK.png" alt="Gmail" class="social-icon">
+                    E-mail
+                </a>
+                <a href="https://instagram.com/frontendnocelular" class="social-link">
+                    <img src="https://i.imgur.com/par8LoC.png" alt="Instagram" class="social-icon">
+                    Instagram
+                </a>
+            </div>
+            <p class="footer-text">
+                © 2025 Alírio Neto - Frontend no Celular. Desenvolvido com 💻 no celular.
+                <br>
+                "Transformando limitações em inovação, do Amazonas para o mundo digital."
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced Projects Data
+        const projects = [
+            {
+                title: "OFENTO APK",
+                description: "Aplicativo mobile desenvolvido com tecnologia avançada para otimização de performance e experiência do usuário.",
+                url: "https://www.mediafire.com/file/uubhpa1nws6n3wf/OFENTO.apk/file",
+                icon: "📱"
+            },
+            {
+                title: "LANDING PAGE CINEMA",
+                description: "Landing Page moderna para plataforma de filmes e séries com design responsivo e interface intuitiva.",
+                url: "https://nuyzze.github.io/oprincipal.html",
+                icon: "🎬"
+            },
+            {
+                title: "XFENTO TASKS",
+                description: "Sistema de gerenciamento de tarefas com interface interativa e funcionalidades avançadas de produtividade.",
+                url: "https://nuyzze.github.io/xfento.html",
+                icon: "📋"
+            },
+            {
+                title: "NUYZZE BIO",
+                description: "Página biográfica profissional com design futurista, animações fluidas e apresentação impactante.",
+                url: "https://servboca.github.io/biositenuyzze.html",
+                icon: "👤"
+            },
+            {
+                title: "PORTAL TRABALHADORES",
+                description: "Plataforma completa para gestão de recursos humanos com dashboard intuitivo e funcionalidades avançadas.",
+                url: "https://servboca.github.io/trabalhadores.html",
+                icon: "👥"
+            },
+            {
+                title: "SITE CRISTO",
+                description: "Website temático religioso com design contemplativo, conteúdo inspirador e interface responsiva.",
+                url: "https://nuyzze.github.io/cristo.html",
+                icon: "✝️"
+            },
+            {
+                title: "PORTAL PRINCIPAL",
+                description: "Hub central de navegação com design corporativo, interface limpa e acesso rápido a todas as seções.",
+                url: "https://servboca.github.io/principal.html",
+                icon: "🏠"
+            },
+            {
+                title: "PORTFÓLIO PRIME",
+                description: "Showcase premium de projetos com galeria interativa, animações avançadas e apresentação profissional.",
+                url: "https://nuyzze.github.io/portifolioprime.html",
+                icon: "💎"
+            },
+            {
+                title: "NUYZZE LIST",
+                description: "Sistema inteligente de listas com funcionalidades de organização, filtros e interface moderna.",
+                url: "https://nuyzze.github.io/Nuyzzelist.html",
+                icon: "📝"
+            },
+            {
+                title: "NUYZZE MAIN",
+                description: "Site principal da marca com identidade visual consolidada, design único e experiência imersiva.",
+                url: "https://nuyzze.github.io/nuyzze.html",
+                icon: "⭐"
+            },
+            {
+                title: "TELINHA LOVE",
+                description: "Aplicação romântica especial com interface delicada, animações suaves e funcionalidades personalizadas.",
+                url: "https://nuyzze.github.io/telinhalove.html",
+                icon: "💖"
+            },
+            {
+                title: "PRATI LOVE",
+                description: "Website romântico e divertido com design playful, interações cativantes e conteúdo especial.",
+                url: "https://nuyzze.github.io/prati.html",
+                icon: "❣️"
+            }
+        ];
+
+        // Enhanced Splash Screen
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('splashScreen').classList.add('hidden');
+                document.body.style.overflow = 'visible';
+                
+                // Start main animations after splash
+                setTimeout(() => {
+                    initializeMainAnimations();
+                }, 1000);
+            }, 5000);
+        });
+
+        // Enhanced Particles System
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 100;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 6) + 's';
+                particle.style.width = particle.style.height = Math.random() * 8 + 2 + 'px';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Create Project Cards
+        function createProjectCards() {
+            const projectsGrid = document.getElementById('projectsGrid');
+            
+            projects.forEach((project, index) => {
+                const card = document.createElement('div');
+                card.className = 'project-card parallax-element';
+                card.style.animationDelay = (index * 0.2) + 's';
+                
+                card.innerHTML = `
+                    <div class="project-icon">${project.icon}</div>
+                    <h3 class="project-title">${project.title}</h3>
+                    <p class="project-description">${project.description}</p>
+                    <a href="${project.url}" target="_blank" class="project-btn">
+                        Explorar Projeto
+                    </a>
+                `;
+                
+                // Add click sound effect
+                card.addEventListener('click', () => {
+                    playClickSound();
+                });
+                
+                projectsGrid.appendChild(card);
+            });
+        }
+
+        // Enhanced Scroll Animations
+        function setupScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        // Animate project cards individually
+                        if (entry.target.classList.contains('projects')) {
+                            const cards = entry.target.querySelectorAll('.project-card');
+                            cards.forEach((card, index) => {
+                                setTimeout(() => {
+                                    card.classList.add('visible');
+                                }, index * 200);
+                            });
+                        }
+                    }
+                });
+            }, { 
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Mouse Parallax Effect
+        function setupMouseParallax() {
+            let mouseX = 0;
+            let mouseY = 0;
+            let isMouseMoving = false;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX / window.innerWidth;
+                mouseY = e.clientY / window.innerHeight;
+                isMouseMoving = true;
+                
+                requestAnimationFrame(updateParallax);
+            });
+
+            function updateParallax() {
+                if (!isMouseMoving) return;
+                
+                const parallaxElements = document.querySelectorAll('.parallax-element');
+                
+                parallaxElements.forEach((element, index) => {
+                    const speed = (index % 3 + 1) * 0.5;
+                    const x = (mouseX - 0.5) * speed * 10;
+                    const y = (mouseY - 0.5) * speed * 10;
+                    
+                    element.style.transform = `translate3d(${x}px, ${y}px, 0px)`;
+                });
+                
+                isMouseMoving = false;
+            }
+        }
+
+        // Enhanced Smooth Scroll
+        function setupSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Sound Effects
+        function playClickSound() {
+            // Create audio context for click sound
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        // Interactive Header Effects
+        function setupHeaderEffects() {
+            const header = document.querySelector('.header');
+            const logo = document.querySelector('.logo');
+            
+            let lastScrollY = window.scrollY;
+            
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                
+                if (scrollY > lastScrollY && scrollY > 100) {
+                    header.style.transform = 'translateY(-100%)';
+                } else {
+                    header.style.transform = 'translateY(0)';
+                }
+                
+                lastScrollY = scrollY;
+            });
+            
+            // Logo hover effect
+            logo.addEventListener('mouseenter', () => {
+                logo.style.animation = 'logoSpin 1s ease-in-out';
+            });
+            
+            logo.addEventListener('animationend', () => {
+                logo.style.animation = 'logoFloat 4s ease-in-out infinite';
+            });
+        }
+
+        // Performance Optimizations
+        function optimizePerformance() {
+            // Preload critical images
+            const criticalImages = [
+                'https://i.imgur.com/cgIoFeK.png'
+            ];
+            
+            criticalImages.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+            
+            // Optimize animations for mobile
+            if (window.innerWidth < 768) {
+                document.documentElement.style.setProperty('--animation-duration', '0.5s');
+                
+                // Reduce particle count on mobile
+                const particles = document.querySelectorAll('.particle');
+                particles.forEach((particle, index) => {
+                    if (index > 30) {
+                        particle.remove();
+                    }
+                });
+            }
+        }
+
+        // Initialize Main Animations
+        function initializeMainAnimations() {
+            // Trigger scroll animations for visible elements
+            const scrollElements = document.querySelectorAll('.scroll-reveal');
+            scrollElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.8) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+
+        // Easter Egg - Konami Code
+        function setupKonamiCode() {
+            const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+            let userInput = [];
+            
+            document.addEventListener('keydown', (e) => {
+                userInput.push(e.code);
+                
+                if (userInput.length > konamiCode.length) {
+                    userInput.shift();
+                }
+                
+                if (userInput.join('') === konamiCode.join('')) {
+                    activateEasterEgg();
+                }
+            });
+        }
+
+        function activateEasterEgg() {
+            // Create rainbow effect
+            document.body.style.background = 'linear-gradient(45deg, #ff0000, #ff7700, #ffff00, #00ff00, #0077ff, #0000ff, #7700ff)';
+            document.body.style.backgroundSize = '400% 400%';
+            document.body.style.animation = 'rainbowBg 2s ease-in-out infinite';
+            
+            // Add style for rainbow background
+            const rainbowStyle = document.createElement('style');
+            rainbowStyle.textContent = `
+                @keyframes rainbowBg {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+            `;
+            document.head.appendChild(rainbowStyle);
+            
+            // Reset after 5 seconds
+            setTimeout(() => {
+                document.body.style.background = '';
+                document.body.style.animation = '';
+                rainbowStyle.remove();
+            }, 5000);
+        }
+
+        // Initialize Everything
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            createProjectCards();
+            setupScrollAnimations();
+            setupMouseParallax();
+            setupSmoothScroll();
+            setupHeaderEffects();
+            setupKonamiCode();
+            optimizePerformance();
+            
+            // Prevent scroll during splash screen
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            optimizePerformance();
+        });
+    </script>
+</body>
+</html>
