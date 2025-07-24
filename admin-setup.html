@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoryze - Configuração Admin</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-auth-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-database-compat.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #E06800;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #E06800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            background: #c55a00;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .users-list {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .user-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-email {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .user-type {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .type-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .type-usuario { background: #28a745; }
+        .type-colaborador { background: #dc3545; }
+        .type-promoter { background: #007bff; }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quick-btn {
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #E06800;
+            background: white;
+            color: #E06800;
+        }
+
+        .quick-btn:hover {
+            background: #E06800;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Yoryze - Configuração Admin</h1>
+            <p>Configure tipos de usuário e permissões</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="quick-actions">
+            <div class="quick-btn" onclick="makePromoter()">
+                <h3>👤 Fazer Promoter</h3>
+                <p>alirioonetoo@gmail.com</p>
+            </div>
+            <div class="quick-btn" onclick="createAdmin()">
+                <h3>🛡️ Criar Admin</h3>
+                <p>Conta colaborador</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Email do usuário:</label>
+            <input type="email" id="userEmail" placeholder="Digite o email do usuário">
+        </div>
+
+        <div class="form-group">
+            <label>Novo tipo:</label>
+            <select id="userType">
+                <option value="usuario">Cliente (usuario)</option>
+                <option value="colaborador">Administrador (colaborador)</option>
+                <option value="promoter">Promoter (promoter)</option>
+            </select>
+        </div>
+
+        <button class="btn" onclick="updateUserType()">Atualizar Tipo de Usuário</button>
+        <button class="btn btn-secondary" onclick="loadAllUsers()">Carregar Todos os Usuários</button>
+
+        <div class="users-list">
+            <h3>📋 Usuários Cadastrados</h3>
+            <div id="usersList"></div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhvp8g1rT1PwUcFGo1ZtWQ0xtN68I3y4Q",
+            authDomain: "cliente-teste-app.firebaseapp.com",
+            databaseURL: "https://cliente-teste-app-default-rtdb.firebaseio.com",
+            projectId: "cliente-teste-app",
+            storageBucket: "cliente-teste-app.appspot.com"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        async function findUserByEmail(email) {
+            try {
+                const snapshot = await database.ref('usuarios').once('value');
+                const users = snapshot.val() || {};
+                
+                for (const [uid, userData] of Object.entries(users)) {
+                    if (userData.email === email) {
+                        return { uid, ...userData };
+                    }
+                }
+                return null;
+            } catch (error) {
+                console.error('Erro ao buscar usuário:', error);
+                return null;
+            }
+        }
+
+        async function updateUserType() {
+            const email = document.getElementById('userEmail').value.trim();
+            const newType = document.getElementById('userType').value;
+
+            if (!email) {
+                showAlert('Por favor, digite um email válido.', 'error');
+                return;
+            }
+
+            try {
+                const user = await findUserByEmail(email);
+                
+                if (!user) {
+                    showAlert('Usuário não encontrado. Verifique se o email está correto e se o usuário já se cadastrou no sistema.', 'error');
+                    return;
+                }
+
+                await database.ref(`usuarios/${user.uid}/tipo`).set(newType);
+                showAlert(`✅ Tipo do usuário ${email} alterado para "${newType}" com sucesso!`);
+                
+                document.getElementById('userEmail').value = '';
+                loadAllUsers();
+            } catch (error) {
+                showAlert('Erro ao atualizar tipo do usuário: ' + error.message, 'error');
+            }
+        }
+
+        async function makePromoter() {
+            const email = 'alirioonetoo@gmail.com';
+            try {
+                const user = await findUserByEmail(email);
+                
+                if (!user) {
+                    showAlert('Usuário alirioonetoo@gmail.com não encontrado. Ele precisa se cadastrar primeiro no sistema.', 'error');
+                    return;
+                }
+
+                await database.ref(`usuarios/${user.uid}/tipo`).set('promoter');
+                showAlert(`✅ ${email} agora é um PROMOTER!`);
+                loadAllUsers();
+            } catch (error) {
+                showAlert('Erro ao definir como promoter: ' + error.message, 'error');
+            }
+        }
+
+        async function createAdmin() {
+            const adminEmail = prompt('Digite o email para a conta de administrador:');
+            if (!adminEmail) return;
+
+            try {
+                const user = await findUserByEmail(adminEmail);
+                
+                if (!user) {
+                    showAlert(`Usuário ${adminEmail} não encontrado. Ele precisa se cadastrar primeiro no sistema.`, 'error');
+                    return;
+                }
+
+                await database.ref(`usuarios/${user.uid}/tipo`).set('colaborador');
+                showAlert(`✅ ${adminEmail} agora é um ADMINISTRADOR!`);
+                loadAllUsers();
+            } catch (error) {
+                showAlert('Erro ao criar admin: ' + error.message, 'error');
+            }
+        }
+
+        async function loadAllUsers() {
+            try {
+                const snapshot = await database.ref('usuarios').once('value');
+                const users = snapshot.val() || {};
+                
+                const usersList = document.getElementById('usersList');
+                usersList.innerHTML = '';
+
+                if (Object.keys(users).length === 0) {
+                    usersList.innerHTML = '<p>Nenhum usuário encontrado.</p>';
+                    return;
+                }
+
+                Object.entries(users).forEach(([uid, userData]) => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+                    userItem.innerHTML = `
+                        <div class="user-info">
+                            <div class="user-email">${userData.email}</div>
+                            <div class="user-type">${userData.nome || 'Nome não informado'}</div>
+                        </div>
+                        <span class="type-badge type-${userData.tipo}">
+                            ${userData.tipo || 'usuario'}
+                        </span>
+                    `;
+                    usersList.appendChild(userItem);
+                });
+
+                showAlert(`📋 ${Object.keys(users).length} usuários carregados.`);
+            } catch (error) {
+                showAlert('Erro ao carregar usuários: ' + error.message, 'error');
+            }
+        }
+
+        // Carregar usuários ao iniciar
+        loadAllUsers();
+    </script>
+</body>
+</html>
