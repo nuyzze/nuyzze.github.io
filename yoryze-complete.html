@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoryze - Sistema Completo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-auth-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-database-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #E06800;
+            --primary-dark: #c55a00;
+            --primary-light: #ff8533;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --white: #ffffff;
+            --gray: #6c757d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+        }
+
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: var(--shadow-lg);
+            animation: bounceIn 1s ease-out;
+            margin-bottom: 20px;
+        }
+
+        .splash-text {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .splash-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            background: var(--white);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin: -20px -20px 30px;
+            color: white;
+        }
+
+        .header img {
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(224, 104, 0, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--gray) 0%, #5a6268 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #218838 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #c82333 100%);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            width: auto;
+            display: inline-block;
+            margin: 0 4px;
+        }
+
+        .link-text {
+            text-align: center;
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 16px;
+            display: block;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .link-text:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .card h3 {
+            text-align: center;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .card p {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .mesa-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 12px;
+            padding: 24px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: var(--border-radius);
+            margin: 24px 0;
+        }
+
+        .mesa {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .mesa.livre {
+            background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+            background-image: url('https://i.imgur.com/SyYJs71.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mesa.ocupada,
+        .mesa.reservada {
+            background: linear-gradient(135deg, var(--danger) 0%, #e74c3c 100%);
+            background-image: url('https://i.imgur.com/ESNKFIg.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mesa:hover {
+            transform: scale(1.1);
+            border-color: white;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .mesa-numero {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .table {
+            width: 100%;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .table th,
+        .table td {
+            padding: 16px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table th {
+            background: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .table tr:hover {
+            background: rgba(224, 104, 0, 0.05);
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .badge-success { background: var(--success); }
+        .badge-danger { background: var(--danger); }
+        .badge-warning { background: var(--warning); color: var(--dark); }
+        .badge-info { background: var(--info); }
+
+        .nav-back {
+            color: var(--primary);
+            cursor: pointer;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .nav-back:hover {
+            color: var(--primary-dark);
+            transform: translateX(-4px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+        }
+
+        .promoter-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            margin-bottom: 24px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .promoter-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .promoter-link {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 16px 0;
+            word-break: break-all;
+            backdrop-filter: blur(10px);
+        }
+
+        .commission-card {
+            background: white;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border-top: 4px solid var(--success);
+        }
+
+        .commission-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+
+        .saque-card {
+            background: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            border-left: 4px solid var(--info);
+        }
+
+        .saque-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .saque-valor {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .saque-data {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .carrinho-item {
+            background: var(--light);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .carrinho-item-info {
+            flex: 1;
+        }
+
+        .carrinho-item-valor {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .pix-container {
+            background: white;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            margin: 24px 0;
+            text-align: center;
+            border: 3px solid var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pix-code {
+            background: var(--light);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            word-break: break-all;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+
+        .ingresso-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .qr-container {
+            background: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin: 24px 0;
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .mesa-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 8px;
+                padding: 16px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modal-content {
+                margin: 10px;
+                max-width: calc(100% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <img src="https://i.imgur.com/K9YzkJz.jpeg" alt="Yoryze" class="splash-logo">
+        <div class="splash-text">Yoryze</div>
+        <div class="splash-subtitle">Sistema de Eventos</div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="container hidden">
+        <!-- Login Screen -->
+        <div id="loginScreen">
+            <div class="header">
+                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
+                <h1>Bem-vindo</h1>
+                <p>Entre na sua conta</p>
+            </div>
+            <div id="alertContainer"></div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="Digite seu email">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="loginPassword" placeholder="Digite sua senha">
+            </div>
+            <button class="btn" onclick="login()">Entrar</button>
+            <a class="link-text" onclick="showRegister()">Não tem conta? Cadastre-se</a>
+        </div>
+
+        <!-- Register Screen -->
+        <div id="registerScreen" class="hidden">
+            <div class="nav-back" onclick="showLogin()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
+                <h1>Criar Conta</h1>
+                <p>Cadastre-se no sistema</p>
+            </div>
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" id="registerName" placeholder="Digite seu nome completo">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="registerEmail" placeholder="Digite seu email">
+            </div>
+            <div class="form-group">
+                <label>Telefone</label>
+                <input type="tel" id="registerPhone" placeholder="(11) 99999-9999">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="registerPassword" placeholder="Digite uma senha forte">
+            </div>
+            <div class="form-group">
+                <label>Confirmar Senha</label>
+                <input type="password" id="registerConfirmPassword" placeholder="Confirme sua senha">
+            </div>
+            <button class="btn" onclick="register()">Criar Conta</button>
+        </div>
+
+        <!-- Client Home -->
+        <div id="clientHome" class="hidden">
+            <div class="header">
+                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
+                <h1>Área do Cliente</h1>
+                <p id="clientWelcome">Bem-vindo!</p>
+            </div>
+            <div class="card" onclick="showMesas()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22,10V6a2,2 0 0,0 -2,-2H4A2,2 0 0,0 2,6V10C3.11,10 4,10.9 4,12A2,2 0 0,1 2,14V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V14A2,2 0 0,1 20,12A2,2 0 0,1 22,10Z"/>
+                    </svg>
+                </div>
+                <h3>Comprar Ingressos</h3>
+                <p>Escolha sua mesa e faça sua reserva</p>
+            </div>
+            <div class="card" onclick="showMeusIngressos()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/>
+                    </svg>
+                </div>
+                <h3>Meus Ingressos</h3>
+                <p>Visualize seus QR codes e ingressos</p>
+            </div>
+            <div class="card" onclick="logout()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
+                    </svg>
+                </div>
+                <h3>Sair</h3>
+                <p>Fazer logout da conta</p>
+            </div>
+        </div>
+
+        <!-- Tables Selection -->
+        <div id="mesasScreen" class="hidden">
+            <div class="nav-back" onclick="showClientHome()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <h1>Escolha sua Mesa</h1>
+                <p>Selecione as mesas disponíveis</p>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);"></div>
+                    <span>Disponível</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);"></div>
+                    <span>Ocupada</span>
+                </div>
+            </div>
+            <div id="mesaGrid" class="mesa-grid"></div>
+            <button class="btn" onclick="showCarrinho()">
+                Ver Carrinho (<span id="carrinhoCount">0</span>)
+            </button>
+        </div>
+
+        <!-- Shopping Cart -->
+        <div id="carrinhoScreen" class="hidden">
+            <div class="nav-back" onclick="showMesas()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <h1>Carrinho</h1>
+                <p>Revise sua seleção</p>
+            </div>
+            <div id="carrinhoItens"></div>
+            <div style="text-align: center; margin: 24px 0;">
+                <h2>Total: R$ <span id="totalCarrinho">0,00</span></h2>
+            </div>
+            <button class="btn" onclick="finalizarCompra()">Finalizar Compra</button>
+        </div>
+
+        <!-- PIX Payment -->
+        <div id="pixScreen" class="hidden">
+            <div class="nav-back" onclick="showCarrinho()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <h1>Pagamento PIX</h1>
+                <p>Escaneie o código ou copie</p>
+            </div>
+            <div class="pix-container">
+                <h3>QR Code PIX</h3>
+                <div id="pixQRCode"></div>
+                <h4>Código PIX Copia e Cola</h4>
+                <div id="pixCode" class="pix-code"></div>
+                <button class="btn-secondary" onclick="copyPixCode()">Copiar Código</button>
+            </div>
+            <button class="btn btn-success" onclick="confirmarPagamento()">✓ Já Paguei</button>
+        </div>
+
+        <!-- My Tickets -->
+        <div id="meusIngressosScreen" class="hidden">
+            <div class="nav-back" onclick="showClientHome()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <h1>Meus Ingressos</h1>
+                <p>Seus ingressos e QR codes</p>
+            </div>
+            <div id="ingressosList"></div>
+        </div>
+
+        <!-- Admin Home -->
+        <div id="adminHome" class="hidden">
+            <div class="header">
+                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
+                <h1>Painel Administrativo</h1>
+                <p id="adminWelcome">Dashboard de controle</p>
+            </div>
+            <div class="stats-grid" id="adminStats">
+                <div class="stat-card">
+                    <span class="stat-number" id="totalIngressos">0</span>
+                    <div class="stat-label">Ingressos</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="totalCheckins">0</span>
+                    <div class="stat-label">Check-ins</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="mesasLivres">0</span>
+                    <div class="stat-label">Mesas Livres</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="totalSaques">0</span>
+                    <div class="stat-label">Saques Pendentes</div>
+                </div>
+            </div>
+            <div class="card" onclick="showAdminMesas()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M19,19H5V5H19V19Z"/>
+                    </svg>
+                </div>
+                <h3>Gerenciar Mesas</h3>
+                <p>Editar status e preços das mesas</p>
+            </div>
+            <div class="card" onclick="showAdminIngressos()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22,10V6a2,2 0 0,0 -2,-2H4A2,2 0 0,0 2,6V10C3.11,10 4,10.9 4,12A2,2 0 0,1 2,14V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V14A2,2 0 0,1 20,12A2,2 0 0,1 22,10Z"/>
+                    </svg>
+                </div>
+                <h3>Lista de Ingressos</h3>
+                <p>Gerenciar vendas e check-ins</p>
+            </div>
+            <div class="card" onclick="showAdminSaques()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                    </svg>
+                </div>
+                <h3>Gerenciar Saques</h3>
+                <p>Aprovar ou reprovar saques de afiliados</p>
+            </div>
+            <div class="card" onclick="logout()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
+                    </svg>
+                </div>
+                <h3>Sair</h3>
+                <p>Logout do painel</p>
+            </div>
+        </div>
+
+        <!-- Admin - Manage Tables -->
+        <div id="adminMesasScreen" class="hidden">
+            <div class="nav-back" onclick="showAdminHome()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <h1>Gerenciar Mesas</h1>
+                <p>Controle de status e preços</p>
+            </div>
+            <div id="adminMesasList"></div>
+        </div>
+
+        <!-- Admin - Manage Tickets -->
+        <div id="adminIngressosScreen" class="hidden">
+            <div class="nav-back" onclick="showAdminHome()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <h1>Lista de Ingressos</h1>
+                <p>Gerenciar vendas e check-ins</p>
+            </div>
+            <div id="adminIngressosList"></div>
+        </div>
+
+        <!-- Admin - Manage Withdrawals -->
+        <div id="adminSaquesScreen" class="hidden">
+            <div class="nav-back" onclick="showAdminHome()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <h1>Gerenciar Saques</h1>
+                <p>Aprovar ou reprovar saques</p>
+            </div>
+            <div id="adminSaquesList"></div>
+        </div>
+
+        <!-- Promoter Home -->
+        <div id="promoterHome" class="hidden">
+            <div class="header">
+                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
+                <h1>Painel do Afiliado</h1>
+                <p id="promoterWelcome">Área do vendedor</p>
+            </div>
+            <div class="promoter-card">
+                <div class="promoter-name" id="promoterName">Promoter</div>
+                <div>Seu link de vendas:</div>
+                <div class="promoter-link" id="promoterLink">https://yoryze.app/?ref=</div>
+                <button class="btn-secondary" onclick="copyPromoterLink()">📋 Copiar Link</button>
+                <button class="btn-secondary" onclick="sharePromoterLink()">📤 Compartilhar</button>
+            </div>
+            <div class="commission-card">
+                <div class="commission-value" id="commissionValue">R$ 0,00</div>
+                <div>Comissão Disponível (10%)</div>
+                <button class="btn btn-success" onclick="showSolicitarSaque()" id="saqueBtn">💰 Solicitar Saque</button>
+            </div>
+            <div class="card" onclick="showVendasAfiliadas()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                    </svg>
+                </div>
+                <h3>Vendas Realizadas</h3>
+                <p>Histórico de vendas e comissões</p>
+            </div>
+            <div class="card" onclick="showMeusSaques()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M17,13H13V17H11V13H7L12,8L17,13Z"/>
+                    </svg>
+                </div>
+                <h3>Meus Saques</h3>
+                <p>Histórico de saques solicitados</p>
+            </div>
+            <div class="card" onclick="logout()">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
+                    </svg>
+                </div>
+                <h3>Sair</h3>
+                <p>Logout da conta</p>
+            </div>
+        </div>
+
+        <!-- Promoter - Sales -->
+        <div id="vendasAfiliadasScreen" class="hidden">
+            <div class="nav-back" onclick="showPromoterHome()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <h1>Vendas Realizadas</h1>
+                <p>Suas vendas e comissões</p>
+            </div>
+            <div id="vendasList"></div>
+        </div>
+
+        <!-- Promoter - Withdrawals -->
+        <div id="meusSaquesScreen" class="hidden">
+            <div class="nav-back" onclick="showPromoterHome()">
+                ← Voltar
+            </div>
+            <div class="header">
+                <h1>Meus Saques</h1>
+                <p>Histórico de saques</p>
+            </div>
+            <div id="saquesList"></div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="mesaModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="modalMesaTitle">Mesa</h2>
+            <div id="modalMesaInfo" style="margin: 20px 0;"></div>
+            <button class="btn" onclick="addToCarrinho()">Adicionar ao Carrinho</button>
+            <button class="btn-secondary" onclick="closeMesaModal()">Fechar</button>
+        </div>
+    </div>
+
+    <div id="qrModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>QR Code do Ingresso</h2>
+            <div class="qr-container">
+                <div id="qrCodeDisplay"></div>
+            </div>
+            <button class="btn-secondary" onclick="closeQRModal()">Fechar</button>
+        </div>
+    </div>
+
+    <div id="saqueModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Solicitar Saque</h2>
+            <div class="form-group">
+                <label>Valor a sacar</label>
+                <input type="number" id="saqueValor" placeholder="0.00" step="0.01" readonly>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Chave PIX</label>
+                <select id="saqueChaveTipo">
+                    <option value="cpf">CPF</option>
+                    <option value="email">E-mail</option>
+                    <option value="telefone">Telefone</option>
+                    <option value="aleatoria">Chave Aleatória</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Chave PIX</label>
+                <input type="text" id="saqueChave" placeholder="Digite sua chave PIX">
+            </div>
+            <div class="form-group">
+                <label>Observações (opcional)</label>
+                <textarea id="saqueObs" placeholder="Informações adicionais..." rows="3"></textarea>
+            </div>
+            <button class="btn btn-success" onclick="confirmarSaque()">💰 Solicitar Saque</button>
+            <button class="btn-secondary" onclick="closeSaqueModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMg4OBM5Cu7c_U-DuIkzNTL4EI7ISegPo",
+            authDomain: "cliente-teste-app.firebaseapp.com",
+            databaseURL: "https://cliente-teste-app-default-rtdb.firebaseio.com",
+            projectId: "cliente-teste-app",
+            storageBucket: "cliente-teste-app.firebasestorage.app",
+            messagingSenderId: "661675693566",
+            appId: "1:661675693566:web:558154c62aa6d929859caf"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Global Variables
+        let currentUser = null;
+        let selectedMesa = null;
+        let mesas = {};
+        let currentPixCode = '';
+
+        // Initialize App
+        setTimeout(() => {
+            document.getElementById('splashScreen').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+        }, 2500);
+
+        // Utility Functions
+        function showScreen(screenId) {
+            document.querySelectorAll('#app > div').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        function formatCurrency(value) {
+            return value.toFixed(2).replace('.', ',');
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('pt-BR');
+        }
+
+        // Navigation Functions
+        function showLogin() {
+            showScreen('loginScreen');
+        }
+
+        function showRegister() {
+            showScreen('registerScreen');
+        }
+
+        function showClientHome() {
+            showScreen('clientHome');
+            if (currentUser) {
+                document.getElementById('clientWelcome').textContent = `Bem-vindo, ${currentUser.nome}!`;
+            }
+        }
+
+        function showAdminHome() {
+            showScreen('adminHome');
+            loadAdminStats();
+            if (currentUser) {
+                document.getElementById('adminWelcome').textContent = `Admin: ${currentUser.nome}`;
+            }
+        }
+
+        function showPromoterHome() {
+            showScreen('promoterHome');
+            loadPromoterData();
+            if (currentUser) {
+                document.getElementById('promoterWelcome').textContent = `Afiliado: ${currentUser.nome}`;
+            }
+        }
+
+        function showMesas() {
+            showScreen('mesasScreen');
+            loadMesas();
+        }
+
+        function showCarrinho() {
+            showScreen('carrinhoScreen');
+            updateCarrinhoDisplay();
+        }
+
+        function showMeusIngressos() {
+            showScreen('meusIngressosScreen');
+            loadMeusIngressos();
+        }
+
+        function showAdminMesas() {
+            showScreen('adminMesasScreen');
+            loadAdminMesas();
+        }
+
+        function showAdminIngressos() {
+            showScreen('adminIngressosScreen');
+            loadAdminIngressos();
+        }
+
+        function showAdminSaques() {
+            showScreen('adminSaquesScreen');
+            loadAdminSaques();
+        }
+
+        function showVendasAfiliadas() {
+            showScreen('vendasAfiliadasScreen');
+            loadVendasAfiliadas();
+        }
+
+        function showMeusSaques() {
+            showScreen('meusSaquesScreen');
+            loadMeusSaques();
+        }
+
+        // Authentication Functions
+        async function login() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showAlert('Por favor, preencha todos os campos.', 'error');
+                return;
+            }
+
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                const snapshot = await database.ref(`usuarios/${user.uid}`).once('value');
+                const userData = snapshot.val();
+                
+                if (userData) {
+                    currentUser = { ...userData, uid: user.uid };
+                    
+                    switch (userData.tipo) {
+                        case 'cliente':
+                            showClientHome();
+                            break;
+                        case 'admin':
+                            showAdminHome();
+                            break;
+                        case 'promoter':
+                            showPromoterHome();
+                            break;
+                        default:
+                            showClientHome();
+                    }
+                } else {
+                    showAlert('Dados do usuário não encontrados.', 'error');
+                }
+            } catch (error) {
+                showAlert('Erro no login: ' + error.message, 'error');
+            }
+        }
+
+        async function register() {
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const phone = document.getElementById('registerPhone').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            if (!name || !email || !phone || !password || !confirmPassword) {
+                showAlert('Por favor, preencha todos os campos.', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showAlert('As senhas não coincidem.', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('A senha deve ter pelo menos 6 caracteres.', 'error');
+                return;
+            }
+
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                await database.ref(`usuarios/${user.uid}`).set({
+                    nome: name,
+                    email: email,
+                    telefone: phone,
+                    tipo: 'cliente',
+                    criadoEm: new Date().toISOString()
+                });
+
+                showAlert('Conta criada com sucesso!');
+                showLogin();
+            } catch (error) {
+                showAlert('Erro no cadastro: ' + error.message, 'error');
+            }
+        }
+
+        function logout() {
+            auth.signOut();
+            currentUser = null;
+            showLogin();
+        }
+
+        // Table Functions
+        async function loadMesas() {
+            try {
+                const snapshot = await database.ref('mesas').once('value');
+                mesas = snapshot.val() || {};
+                
+                if (Object.keys(mesas).length === 0) {
+                    await initializeMesas();
+                    const newSnapshot = await database.ref('mesas').once('value');
+                    mesas = newSnapshot.val() || {};
+                }
+                
+                renderMesas();
+                updateCarrinhoCount();
+            } catch (error) {
+                console.error('Erro ao carregar mesas:', error);
+            }
+        }
+
+        async function initializeMesas() {
+            const mesasData = {};
+            
+            for (let i = 1; i <= 48; i++) {
+                const mesaId = `M${i.toString().padStart(3, '0')}`;
+                mesasData[mesaId] = {
+                    id: mesaId,
+                    localizacao: `Setor ${Math.ceil(i/8)} - Mesa ${i}`,
+                    valor: Math.random() > 0.6 ? 180 : 220,
+                    cadeiras: 4,
+                    status: Math.random() > 0.8 ? 'ocupada' : 'livre'
+                };
+            }
+            
+            await database.ref('mesas').set(mesasData);
+        }
+
+        function renderMesas() {
+            const grid = document.getElementById('mesaGrid');
+            grid.innerHTML = '';
+            
+            Object.values(mesas).forEach(mesa => {
+                const mesaElement = document.createElement('div');
+                mesaElement.className = `mesa ${mesa.status}`;
+                mesaElement.innerHTML = `<div class="mesa-numero">${mesa.id}</div>`;
+                
+                if (mesa.status === 'livre') {
+                    mesaElement.onclick = () => openMesaModal(mesa);
+                }
+                
+                grid.appendChild(mesaElement);
+            });
+        }
+
+        function openMesaModal(mesa) {
+            selectedMesa = mesa;
+            document.getElementById('modalMesaTitle').textContent = `Mesa ${mesa.id}`;
+            document.getElementById('modalMesaInfo').innerHTML = `
+                <p><strong>Localização:</strong> ${mesa.localizacao}</p>
+                <p><strong>Valor:</strong> R$ ${formatCurrency(mesa.valor)}</p>
+                <p><strong>Cadeiras:</strong> ${mesa.cadeiras} lugares</p>
+            `;
+            document.getElementById('mesaModal').classList.remove('hidden');
+        }
+
+        function closeMesaModal() {
+            document.getElementById('mesaModal').classList.add('hidden');
+            selectedMesa = null;
+        }
+
+        async function addToCarrinho() {
+            if (!selectedMesa || !currentUser) return;
+            
+            try {
+                const promoterRef = sessionStorage.getItem('promoterRef');
+                
+                await database.ref(`carrinhos/${currentUser.uid}/${selectedMesa.id}`).set({
+                    mesaId: selectedMesa.id,
+                    valor: selectedMesa.valor,
+                    localizacao: selectedMesa.localizacao,
+                    cadeiras: selectedMesa.cadeiras,
+                    adicionadoEm: new Date().toISOString(),
+                    promoterRef: promoterRef || null
+                });
+                
+                await database.ref(`mesas/${selectedMesa.id}/status`).set('reservada');
+                
+                closeMesaModal();
+                loadMesas();
+                showAlert('Mesa adicionada ao carrinho!');
+            } catch (error) {
+                showAlert('Erro ao adicionar mesa: ' + error.message, 'error');
+            }
+        }
+
+        async function updateCarrinhoDisplay() {
+            if (!currentUser) return;
+            
+            try {
+                const snapshot = await database.ref(`carrinhos/${currentUser.uid}`).once('value');
+                const carrinhoData = snapshot.val() || {};
+                
+                const itensContainer = document.getElementById('carrinhoItens');
+                itensContainer.innerHTML = '';
+                
+                let total = 0;
+                
+                if (Object.keys(carrinhoData).length === 0) {
+                    itensContainer.innerHTML = '<p style="text-align: center; color: #666;">Carrinho vazio</p>';
+                } else {
+                    Object.values(carrinhoData).forEach(item => {
+                        total += item.valor;
+                        
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'carrinho-item';
+                        itemElement.innerHTML = `
+                            <div class="carrinho-item-info">
+                                <strong>Mesa ${item.mesaId}</strong><br>
+                                <small>${item.localizacao}</small>
+                            </div>
+                            <div class="carrinho-item-valor">R$ ${formatCurrency(item.valor)}</div>
+                        `;
+                        itensContainer.appendChild(itemElement);
+                    });
+                }
+                
+                document.getElementById('totalCarrinho').textContent = formatCurrency(total);
+            } catch (error) {
+                console.error('Erro ao atualizar carrinho:', error);
+            }
+        }
+
+        async function updateCarrinhoCount() {
+            if (!currentUser) return;
+            
+            try {
+                const snapshot = await database.ref(`carrinhos/${currentUser.uid}`).once('value');
+                const carrinhoData = snapshot.val() || {};
+                document.getElementById('carrinhoCount').textContent = Object.keys(carrinhoData).length;
+            } catch (error) {
+                console.error('Erro ao contar carrinho:', error);
+            }
+        }
+
+        // PIX Functions
+        function generatePixCode(valor) {
+            const chavePix = 'kancholoja@gmail.com';
+            const nome = 'Alirio Lauriano de Azevedo Neto';
+            const cidade = 'BOCA DO ACRE';
+            const identificador = 'YORYZE01';
+            
+            const valorStr = valor.toFixed(2);
+            const nomeFormatted = nome.length <= 25 ? nome : nome.substring(0, 25);
+            const cidadeFormatted = cidade.length <= 15 ? cidade : cidade.substring(0, 15);
+            
+            let payload = '00020126';
+            payload += '58' + (14 + chavePix.length).toString().padStart(2, '0') + '14BR.GOV.BCB.PIX01' + chavePix.length.toString().padStart(2, '0') + chavePix;
+            payload += '5204000053039865404' + valorStr;
+            payload += '5802BR59' + nomeFormatted.length.toString().padStart(2, '0') + nomeFormatted;
+            payload += '60' + cidadeFormatted.length.toString().padStart(2, '0') + cidadeFormatted;
+            payload += '62' + (4 + identificador.length).toString().padStart(2, '0') + '05' + identificador.length.toString().padStart(2, '0') + identificador;
+            payload += '6304';
+            
+            const crc = calculateCRC16(payload);
+            return payload + crc.toString(16).toUpperCase().padStart(4, '0');
+        }
+
+        function calculateCRC16(data) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < data.length; i++) {
+                crc ^= data.charCodeAt(i) << 8;
+                for (let j = 0; j < 8; j++) {
+                    if (crc & 0x8000) {
+                        crc = (crc << 1) ^ 0x1021;
+                    } else {
+                        crc <<= 1;
+                    }
+                    crc &= 0xFFFF;
+                }
+            }
+            return crc;
+        }
+
+        async function finalizarCompra() {
+            if (!currentUser) return;
+            
+            try {
+                const snapshot = await database.ref(`carrinhos/${currentUser.uid}`).once('value');
+                const carrinhoData = snapshot.val() || {};
+                
+                if (Object.keys(carrinhoData).length === 0) {
+                    showAlert('Carrinho vazio!', 'error');
+                    return;
+                }
+                
+                let total = 0;
+                Object.values(carrinhoData).forEach(item => {
+                    total += item.valor;
+                });
+                
+                currentPixCode = generatePixCode(total);
+                
+                const qrContainer = document.getElementById('pixQRCode');
+                qrContainer.innerHTML = '';
+                
+                QRCode.toCanvas(qrContainer, currentPixCode, {
+                    width: 280,
+                    height: 280,
+                    margin: 2,
+                    color: {
+                        dark: '#000000',
+                        light: '#FFFFFF'
+                    }
+                }, (error) => {
+                    if (error) console.error(error);
+                });
+                
+                document.getElementById('pixCode').textContent = currentPixCode;
+                showScreen('pixScreen');
+            } catch (error) {
+                showAlert('Erro ao gerar PIX: ' + error.message, 'error');
+            }
+        }
+
+        function copyPixCode() {
+            navigator.clipboard.writeText(currentPixCode).then(() => {
+                showAlert('Código PIX copiado!');
+            });
+        }
+
+        async function confirmarPagamento() {
+            if (!currentUser) return;
+            
+            try {
+                const snapshot = await database.ref(`carrinhos/${currentUser.uid}`).once('value');
+                const carrinhoData = snapshot.val() || {};
+                
+                for (const item of Object.values(carrinhoData)) {
+                    const ingressoId = `ING_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                    
+                    await database.ref(`ingressos/${currentUser.uid}/${ingressoId}`).set({
+                        ingressoId: ingressoId,
+                        mesaId: item.mesaId,
+                        valor: item.valor,
+                        status: 'confirmado',
+                        checkin: false,
+                        criadoEm: new Date().toISOString(),
+                        dadosQR: {
+                            ingressoId: ingressoId,
+                            uid: currentUser.uid,
+                            mesa: item.mesaId,
+                            valor: item.valor,
+                            checkin: false,
+                            nome: currentUser.nome,
+                            tipo: currentUser.tipo
+                        }
+                    });
+                    
+                    await database.ref(`mesas/${item.mesaId}/status`).set('ocupada');
+                    
+                    if (item.promoterRef) {
+                        const vendaId = `VENDA_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                        await database.ref(`vendasAfiliadas/${item.promoterRef}/${vendaId}`).set({
+                            compradorUid: currentUser.uid,
+                            mesaId: item.mesaId,
+                            valor: item.valor,
+                            comissao: item.valor * 0.1,
+                            dataVenda: new Date().toISOString(),
+                            ingressoId: ingressoId
+                        });
+                    }
+                }
+                
+                await database.ref(`carrinhos/${currentUser.uid}`).remove();
+                
+                showAlert('Pagamento confirmado! Seus ingressos foram gerados.');
+                showClientHome();
+            } catch (error) {
+                showAlert('Erro ao confirmar pagamento: ' + error.message, 'error');
+            }
+        }
+
+        // Tickets Functions
+        async function loadMeusIngressos() {
+            if (!currentUser) return;
+            
+            try {
+                const snapshot = await database.ref(`ingressos/${currentUser.uid}`).once('value');
+                const ingressos = snapshot.val() || {};
+                
+                const container = document.getElementById('ingressosList');
+                container.innerHTML = '';
+                
+                if (Object.keys(ingressos).length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">Nenhum ingresso encontrado.</p>';
+                    return;
+                }
+                
+                Object.values(ingressos).forEach(ingresso => {
+                    const ingressoElement = document.createElement('div');
+                    ingressoElement.className = 'ingresso-card';
+                    ingressoElement.innerHTML = `
+                        <h3>Mesa ${ingresso.mesaId}</h3>
+                        <p>Valor: R$ ${formatCurrency(ingresso.valor)}</p>
+                        <p>Status: ${ingresso.status}</p>
+                        <p>Check-in: ${ingresso.checkin ? '✅ Realizado' : '⏳ Pendente'}</p>
+                        <button class="btn-secondary" onclick="showQRCode('${ingresso.ingressoId}')">📱 Ver QR Code</button>
+                    `;
+                    container.appendChild(ingressoElement);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar ingressos:', error);
+            }
+        }
+
+        async function showQRCode(ingressoId) {
+            try {
+                const snapshot = await database.ref(`ingressos/${currentUser.uid}/${ingressoId}`).once('value');
+                const ingresso = snapshot.val();
+                
+                if (ingresso && ingresso.dadosQR) {
+                    const qrContainer = document.getElementById('qrCodeDisplay');
+                    qrContainer.innerHTML = '';
+                    
+                    const qrData = JSON.stringify(ingresso.dadosQR);
+                    
+                    QRCode.toCanvas(qrContainer, qrData, {
+                        width: 280,
+                        height: 280,
+                        margin: 2,
+                        color: {
+                            dark: '#000000',
+                            light: '#FFFFFF'
+                        }
+                    }, (error) => {
+                        if (error) console.error(error);
+                    });
+                    
+                    document.getElementById('qrModal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Erro ao gerar QR Code:', error);
+            }
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').classList.add('hidden');
+        }
+
+        // Admin Functions
+        async function loadAdminStats() {
+            try {
+                const ingressosSnapshot = await database.ref('ingressos').once('value');
+                const ingressosData = ingressosSnapshot.val() || {};
+                
+                const mesasSnapshot = await database.ref('mesas').once('value');
+                const mesasData = mesasSnapshot.val() || {};
+
+                const saquesSnapshot = await database.ref('saques').once('value');
+                const saquesData = saquesSnapshot.val() || {};
+                
+                let totalIngressos = 0;
+                let totalCheckins = 0;
+                
+                Object.values(ingressosData).forEach(userIngressos => {
+                    Object.values(userIngressos).forEach(ingresso => {
+                        totalIngressos++;
+                        if (ingresso.checkin) totalCheckins++;
+                    });
+                });
+                
+                let mesasLivres = 0;
+                Object.values(mesasData).forEach(mesa => {
+                    if (mesa.status === 'livre') mesasLivres++;
+                });
+
+                let saquesPendentes = 0;
+                Object.values(saquesData).forEach(userSaques => {
+                    Object.values(userSaques).forEach(saque => {
+                        if (saque.status === 'pendente') saquesPendentes++;
+                    });
+                });
+                
+                document.getElementById('totalIngressos').textContent = totalIngressos;
+                document.getElementById('totalCheckins').textContent = totalCheckins;
+                document.getElementById('mesasLivres').textContent = mesasLivres;
+                document.getElementById('totalSaques').textContent = saquesPendentes;
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        async function loadAdminMesas() {
+            try {
+                const snapshot = await database.ref('mesas').once('value');
+                const mesasData = snapshot.val() || {};
+                
+                const container = document.getElementById('adminMesasList');
+                container.innerHTML = '';
+                
+                const table = document.createElement('table');
+                table.className = 'table';
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Mesa</th>
+                            <th>Localização</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminMesasTableBody"></tbody>
+                `;
+                
+                const tbody = table.querySelector('#adminMesasTableBody');
+                
+                Object.values(mesasData).forEach(mesa => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${mesa.id}</td>
+                        <td>${mesa.localizacao}</td>
+                        <td>R$ ${formatCurrency(mesa.valor)}</td>
+                        <td><span class="badge badge-${mesa.status === 'livre' ? 'success' : 'danger'}">${mesa.status}</span></td>
+                        <td>
+                            <select onchange="updateMesaStatus('${mesa.id}', this.value)" class="btn-small">
+                                <option value="livre" ${mesa.status === 'livre' ? 'selected' : ''}>Livre</option>
+                                <option value="reservada" ${mesa.status === 'reservada' ? 'selected' : ''}>Reservada</option>
+                                <option value="ocupada" ${mesa.status === 'ocupada' ? 'selected' : ''}>Ocupada</option>
+                            </select>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                container.appendChild(table);
+            } catch (error) {
+                console.error('Erro ao carregar mesas admin:', error);
+            }
+        }
+
+        async function updateMesaStatus(mesaId, newStatus) {
+            try {
+                await database.ref(`mesas/${mesaId}/status`).set(newStatus);
+                showAlert('Status da mesa atualizado!');
+            } catch (error) {
+                showAlert('Erro ao atualizar status: ' + error.message, 'error');
+            }
+        }
+
+        async function loadAdminIngressos() {
+            try {
+                const ingressosSnapshot = await database.ref('ingressos').once('value');
+                const ingressosData = ingressosSnapshot.val() || {};
+                
+                const usuariosSnapshot = await database.ref('usuarios').once('value');
+                const usuariosData = usuariosSnapshot.val() || {};
+                
+                const container = document.getElementById('adminIngressosList');
+                container.innerHTML = '';
+                
+                const table = document.createElement('table');
+                table.className = 'table';
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Mesa</th>
+                            <th>Valor</th>
+                            <th>Check-in</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminIngressosTableBody"></tbody>
+                `;
+                
+                const tbody = table.querySelector('#adminIngressosTableBody');
+                
+                Object.entries(ingressosData).forEach(([userId, userIngressos]) => {
+                    const usuario = usuariosData[userId];
+                    
+                    Object.values(userIngressos).forEach(ingresso => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${usuario ? usuario.nome : 'Usuario não encontrado'}</td>
+                            <td>${ingresso.mesaId}</td>
+                            <td>R$ ${formatCurrency(ingresso.valor)}</td>
+                            <td><span class="badge badge-${ingresso.checkin ? 'success' : 'warning'}">${ingresso.checkin ? 'Sim' : 'Não'}</span></td>
+                            <td>
+                                ${!ingresso.checkin ? 
+                                    `<button class="btn btn-small btn-success" onclick="confirmarCheckin('${userId}', '${ingresso.ingressoId}')">✓ Check-in</button>` : 
+                                    '✅ Confirmado'
+                                }
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                });
+                
+                container.appendChild(table);
+            } catch (error) {
+                console.error('Erro ao carregar ingressos admin:', error);
+            }
+        }
+
+        async function confirmarCheckin(userId, ingressoId) {
+            try {
+                await database.ref(`ingressos/${userId}/${ingressoId}/checkin`).set(true);
+                await database.ref(`checkins/${ingressoId}`).set({
+                    timestamp: new Date().toISOString(),
+                    confirmedBy: currentUser.uid
+                });
+                showAlert('Check-in confirmado!');
+                loadAdminIngressos();
+            } catch (error) {
+                showAlert('Erro ao confirmar check-in: ' + error.message, 'error');
+            }
+        }
+
+        async function loadAdminSaques() {
+            try {
+                const saquesSnapshot = await database.ref('saques').once('value');
+                const saquesData = saquesSnapshot.val() || {};
+                
+                const usuariosSnapshot = await database.ref('usuarios').once('value');
+                const usuariosData = usuariosSnapshot.val() || {};
+                
+                const container = document.getElementById('adminSaquesList');
+                container.innerHTML = '';
+                
+                if (Object.keys(saquesData).length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">Nenhum saque solicitado.</p>';
+                    return;
+                }
+                
+                Object.entries(saquesData).forEach(([userId, userSaques]) => {
+                    const usuario = usuariosData[userId];
+                    
+                    Object.values(userSaques).forEach(saque => {
+                        const saqueElement = document.createElement('div');
+                        saqueElement.className = 'saque-card';
+                        saqueElement.innerHTML = `
+                            <div class="saque-header">
+                                <div>
+                                    <strong>${usuario ? usuario.nome : 'Usuario não encontrado'}</strong><br>
+                                    <small>${formatDate(saque.solicitadoEm)}</small>
+                                </div>
+                                <div class="saque-valor">R$ ${formatCurrency(saque.valor)}</div>
+                            </div>
+                            <p><strong>Chave PIX:</strong> ${saque.chavePix} (${saque.tipoChave})</p>
+                            ${saque.observacoes ? `<p><strong>Obs:</strong> ${saque.observacoes}</p>` : ''}
+                            <p><strong>Status:</strong> <span class="badge badge-${saque.status === 'pendente' ? 'warning' : saque.status === 'aprovado' ? 'success' : 'danger'}">${saque.status}</span></p>
+                            ${saque.status === 'pendente' ? `
+                                <div style="margin-top: 15px;">
+                                    <button class="btn btn-small btn-success" onclick="aprovarSaque('${userId}', '${saque.saqueId}')">✓ Aprovar</button>
+                                    <button class="btn btn-small btn-danger" onclick="reprovarSaque('${userId}', '${saque.saqueId}')">✗ Reprovar</button>
+                                </div>
+                            ` : ''}
+                        `;
+                        container.appendChild(saqueElement);
+                    });
+                });
+            } catch (error) {
+                console.error('Erro ao carregar saques admin:', error);
+            }
+        }
+
+        async function aprovarSaque(userId, saqueId) {
+            try {
+                await database.ref(`saques/${userId}/${saqueId}/status`).set('aprovado');
+                await database.ref(`saques/${userId}/${saqueId}/processadoEm`).set(new Date().toISOString());
+                await database.ref(`saques/${userId}/${saqueId}/processadoPor`).set(currentUser.uid);
+                
+                showAlert('Saque aprovado com sucesso!');
+                loadAdminSaques();
+                loadAdminStats();
+            } catch (error) {
+                showAlert('Erro ao aprovar saque: ' + error.message, 'error');
+            }
+        }
+
+        async function reprovarSaque(userId, saqueId) {
+            const motivo = prompt('Motivo da reprovação (opcional):');
+            
+            try {
+                await database.ref(`saques/${userId}/${saqueId}/status`).set('reprovado');
+                await database.ref(`saques/${userId}/${saqueId}/processadoEm`).set(new Date().toISOString());
+                await database.ref(`saques/${userId}/${saqueId}/processadoPor`).set(currentUser.uid);
+                if (motivo) {
+                    await database.ref(`saques/${userId}/${saqueId}/motivoReprovacao`).set(motivo);
+                }
+                
+                showAlert('Saque reprovado.');
+                loadAdminSaques();
+                loadAdminStats();
+            } catch (error) {
+                showAlert('Erro ao reprovar saque: ' + error.message, 'error');
+            }
+        }
+
+        // Promoter Functions
+        async function loadPromoterData() {
+            if (!currentUser) return;
+            
+            try {
+                document.getElementById('promoterName').textContent = currentUser.nome;
+                document.getElementById('promoterLink').textContent = `https://yoryze.app/?ref=${currentUser.uid}`;
+                
+                const vendasSnapshot = await database.ref(`vendasAfiliadas/${currentUser.uid}`).once('value');
+                const vendas = vendasSnapshot.val() || {};
+
+                const saquesSnapshot = await database.ref(`saques/${currentUser.uid}`).once('value');
+                const saques = saquesSnapshot.val() || {};
+                
+                let totalComissao = 0;
+                let comissaoSacada = 0;
+
+                Object.values(vendas).forEach(venda => {
+                    totalComissao += venda.comissao || (venda.valor * 0.1);
+                });
+
+                Object.values(saques).forEach(saque => {
+                    if (saque.status === 'aprovado') {
+                        comissaoSacada += saque.valor;
+                    }
+                });
+
+                const comissaoDisponivel = totalComissao - comissaoSacada;
+                
+                document.getElementById('commissionValue').textContent = `R$ ${formatCurrency(comissaoDisponivel)}`;
+                
+                // Enable/disable withdrawal button
+                const saqueBtn = document.getElementById('saqueBtn');
+                if (comissaoDisponivel >= 10) {
+                    saqueBtn.disabled = false;
+                    saqueBtn.textContent = '💰 Solicitar Saque';
+                } else {
+                    saqueBtn.disabled = true;
+                    saqueBtn.textContent = 'Mínimo R$ 10,00';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do promoter:', error);
+            }
+        }
+
+        function copyPromoterLink() {
+            const link = `https://yoryze.app/?ref=${currentUser.uid}`;
+            navigator.clipboard.writeText(link).then(() => {
+                showAlert('Link copiado!');
+            });
+        }
+
+        function sharePromoterLink() {
+            const link = `https://yoryze.app/?ref=${currentUser.uid}`;
+            const message = `🎉 Garanta já seu ingresso para o evento! Compre pelo meu link e tenha desconto especial:\n\n${link}\n\n#Yoryze #Evento`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Yoryze - Ingressos',
+                    text: message,
+                });
+            } else {
+                navigator.clipboard.writeText(message).then(() => {
+                    showAlert('Mensagem copiada! Cole no WhatsApp ou onde desejar.');
+                });
+            }
+        }
+
+        async function loadVendasAfiliadas() {
+            if (!currentUser) return;
+            
+            try {
+                const vendasSnapshot = await database.ref(`vendasAfiliadas/${currentUser.uid}`).once('value');
+                const vendas = vendasSnapshot.val() || {};
+                
+                const usuariosSnapshot = await database.ref('usuarios').once('value');
+                const usuarios = usuariosSnapshot.val() || {};
+                
+                const container = document.getElementById('vendasList');
+                container.innerHTML = '';
+                
+                if (Object.keys(vendas).length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666; margin: 40px 0;">Nenhuma venda realizada ainda.</p>';
+                    return;
+                }
+                
+                Object.values(vendas).forEach(venda => {
+                    const cliente = usuarios[venda.compradorUid];
+                    const comissao = venda.comissao || (venda.valor * 0.1);
+                    
+                    const vendaElement = document.createElement('div');
+                    vendaElement.className = 'card';
+                    vendaElement.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <strong>${cliente ? cliente.nome : 'Cliente não encontrado'}</strong>
+                            <span style="color: var(--primary); font-weight: bold;">R$ ${formatCurrency(venda.valor)}</span>
+                        </div>
+                        <p style="color: var(--gray); font-size: 0.9rem;">
+                            Mesa: ${venda.mesaId} | Data: ${formatDate(venda.dataVenda)}
+                        </p>
+                        <div style="background: var(--success); color: white; padding: 8px; border-radius: 6px; text-align: center; margin-top: 10px;">
+                            <strong>Comissão: R$ ${formatCurrency(comissao)}</strong>
+                        </div>
+                    `;
+                    container.appendChild(vendaElement);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar vendas afiliadas:', error);
+            }
+        }
+
+        // Withdrawal Functions
+        function showSolicitarSaque() {
+            loadPromoterData().then(() => {
+                const commissionText = document.getElementById('commissionValue').textContent;
+                const valor = parseFloat(commissionText.replace('R$ ', '').replace(',', '.'));
+                
+                if (valor < 10) {
+                    showAlert('Valor mínimo para saque é R$ 10,00', 'error');
+                    return;
+                }
+                
+                document.getElementById('saqueValor').value = valor.toFixed(2);
+                document.getElementById('saqueModal').classList.remove('hidden');
+            });
+        }
+
+        function closeSaqueModal() {
+            document.getElementById('saqueModal').classList.add('hidden');
+            document.getElementById('saqueChave').value = '';
+            document.getElementById('saqueObs').value = '';
+        }
+
+        async function confirmarSaque() {
+            const valor = parseFloat(document.getElementById('saqueValor').value);
+            const tipoChave = document.getElementById('saqueChaveTipo').value;
+            const chavePix = document.getElementById('saqueChave').value.trim();
+            const observacoes = document.getElementById('saqueObs').value.trim();
+
+            if (!chavePix) {
+                showAlert('Por favor, informe sua chave PIX.', 'error');
+                return;
+            }
+
+            if (valor < 10) {
+                showAlert('Valor mínimo para saque é R$ 10,00', 'error');
+                return;
+            }
+
+            try {
+                const saqueId = `SAQ_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                
+                await database.ref(`saques/${currentUser.uid}/${saqueId}`).set({
+                    saqueId: saqueId,
+                    valor: valor,
+                    tipoChave: tipoChave,
+                    chavePix: chavePix,
+                    observacoes: observacoes,
+                    status: 'pendente',
+                    solicitadoEm: new Date().toISOString()
+                });
+                
+                closeSaqueModal();
+                showAlert('Solicitação de saque enviada! Aguarde a análise do administrador.');
+                loadPromoterData();
+            } catch (error) {
+                showAlert('Erro ao solicitar saque: ' + error.message, 'error');
+            }
+        }
+
+        async function loadMeusSaques() {
+            if (!currentUser) return;
+            
+            try {
+                const snapshot = await database.ref(`saques/${currentUser.uid}`).once('value');
+                const saques = snapshot.val() || {};
+                
+                const container = document.getElementById('saquesList');
+                container.innerHTML = '';
+                
+                if (Object.keys(saques).length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666; margin: 40px 0;">Nenhum saque solicitado ainda.</p>';
+                    return;
+                }
+                
+                Object.values(saques).sort((a, b) => new Date(b.solicitadoEm) - new Date(a.solicitadoEm)).forEach(saque => {
+                    const saqueElement = document.createElement('div');
+                    saqueElement.className = 'saque-card';
+                    saqueElement.innerHTML = `
+                        <div class="saque-header">
+                            <div>
+                                <strong>Saque #${saque.saqueId.split('_')[1]}</strong><br>
+                                <small>${formatDate(saque.solicitadoEm)}</small>
+                            </div>
+                            <div class="saque-valor">R$ ${formatCurrency(saque.valor)}</div>
+                        </div>
+                        <p><strong>Chave PIX:</strong> ${saque.chavePix} (${saque.tipoChave})</p>
+                        ${saque.observacoes ? `<p><strong>Observações:</strong> ${saque.observacoes}</p>` : ''}
+                        <p><strong>Status:</strong> <span class="badge badge-${saque.status === 'pendente' ? 'warning' : saque.status === 'aprovado' ? 'success' : 'danger'}">${saque.status}</span></p>
+                        ${saque.status === 'reprovado' && saque.motivoReprovacao ? `<p style="color: var(--danger);"><strong>Motivo:</strong> ${saque.motivoReprovacao}</p>` : ''}
+                        ${saque.processadoEm ? `<p><small>Processado em: ${formatDate(saque.processadoEm)}</small></p>` : ''}
+                    `;
+                    container.appendChild(saqueElement);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar saques:', error);
+            }
+        }
+
+        // Auth State Observer
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const snapshot = await database.ref(`usuarios/${user.uid}`).once('value');
+                    const userData = snapshot.val();
+                    
+                    if (userData) {
+                        currentUser = { ...userData, uid: user.uid };
+                        
+                        switch (userData.tipo) {
+                            case 'cliente':
+                                showClientHome();
+                                break;
+                            case 'admin':
+                                showAdminHome();
+                                break;
+                            case 'promoter':
+                                showPromoterHome();
+                                break;
+                            default:
+                                showClientHome();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar usuário:', error);
+                    showLogin();
+                }
+            } else {
+                showLogin();
+            }
+        });
+
+        // Affiliate Link Tracking
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('ref');
+            if (ref) {
+                sessionStorage.setItem('promoterRef', ref);
+                showAlert('Link de afiliado detectado! Você terá desconto especial.', 'success');
+            }
+        });
+
+        // Prevent right-click and F12 (optional security)
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
