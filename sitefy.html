@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitefy - Criador de Sites Visual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Auth Forms */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .project-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .project-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+        }
+
+        /* Editor */
+        .editor {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .element-btn {
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .element-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .canvas-container {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            min-height: 500px;
+            padding: 20px;
+            background: white;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .canvas {
+            min-height: 400px;
+            position: relative;
+        }
+
+        .canvas-element {
+            position: relative;
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            cursor: move;
+            transition: all 0.3s ease;
+        }
+
+        .canvas-element:hover {
+            border-color: #667eea;
+        }
+
+        .canvas-element.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .element-controls {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .canvas-element:hover .element-controls {
+            opacity: 1;
+        }
+
+        /* Code Viewer */
+        .code-viewer {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .code-tab {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .code-tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .code-content {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 400px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Properties Panel */
+        .properties-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .properties-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .property-group {
+            margin-bottom: 15px;
+        }
+
+        .property-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .property-group input,
+        .property-group select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e1e5e9;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .auth-buttons {
+                justify-content: center;
+            }
+
+            .editor-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .editor-toolbar {
+                justify-content: center;
+            }
+
+            .toolbar-section {
+                justify-content: center;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        .notification.info {
+            background: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Carregando...</p>
+        </div>
+
+        <!-- Header -->
+        <div class="header" id="header">
+            <div class="logo">Sitefy</div>
+            <div class="auth-buttons" id="authButtons">
+                <button class="btn btn-primary" onclick="showLogin()">Entrar</button>
+                <button class="btn btn-secondary" onclick="showRegister()">Cadastrar</button>
+            </div>
+        </div>
+
+        <!-- Auth Container -->
+        <div class="auth-container" id="authContainer" style="display: none;">
+            <h2 class="form-title" id="authTitle">Entrar</h2>
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+            </form>
+            <p style="text-align: center; margin-top: 20px;">
+                <a href="#" id="authToggle" onclick="toggleAuth()">Não tem conta? Cadastre-se</a>
+            </p>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <div>
+                        <h2>Bem-vindo, <span id="userName">Usuário</span>!</h2>
+                        <p>Crie e gerencie seus projetos de sites</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="createNewProject()">Novo Projeto</button>
+                        <button class="btn btn-secondary" onclick="logout()">Sair</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Editor -->
+        <div class="editor" id="editor">
+            <div class="editor-header">
+                <div>
+                    <h2 id="projectTitle">Novo Projeto</h2>
+                    <input type="text" id="projectNameInput" placeholder="Nome do projeto" style="margin-top: 10px; width: 300px;">
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="saveProject()">Salvar Projeto</button>
+                    <button class="btn btn-secondary" onclick="showCode()">Ver Código</button>
+                    <button class="btn btn-secondary" onclick="backToDashboard()">Voltar</button>
+                </div>
+            </div>
+
+            <div class="editor-toolbar">
+                <div class="toolbar-section">
+                    <span>Elementos:</span>
+                    <button class="element-btn" onclick="addElement('header')">Header</button>
+                    <button class="element-btn" onclick="addElement('text')">Texto</button>
+                    <button class="element-btn" onclick="addElement('button')">Botão</button>
+                    <button class="element-btn" onclick="addElement('image')">Imagem</button>
+                    <button class="element-btn" onclick="addElement('divider')">Divisor</button>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <div class="canvas" id="canvas">
+                    <!-- Elements will be added here -->
+                </div>
+            </div>
+
+            <div class="properties-panel" id="propertiesPanel" style="display: none;">
+                <h3 class="properties-title">Propriedades</h3>
+                <div class="property-group">
+                    <label for="elementText">Texto</label>
+                    <input type="text" id="elementText" onchange="updateElementProperty('text')">
+                </div>
+                <div class="property-group">
+                    <label for="elementColor">Cor do Texto</label>
+                    <input type="color" id="elementColor" onchange="updateElementProperty('color')">
+                </div>
+                <div class="property-group">
+                    <label for="elementSize">Tamanho da Fonte</label>
+                    <input type="number" id="elementSize" min="12" max="72" value="16" onchange="updateElementProperty('fontSize')">
+                </div>
+                <div class="property-group">
+                    <label for="elementAlign">Alinhamento</label>
+                    <select id="elementAlign" onchange="updateElementProperty('textAlign')">
+                        <option value="left">Esquerda</option>
+                        <option value="center">Centro</option>
+                        <option value="right">Direita</option>
+                    </select>
+                </div>
+                <div class="property-group">
+                    <label for="elementBgColor">Cor de Fundo</label>
+                    <input type="color" id="elementBgColor" onchange="updateElementProperty('backgroundColor')">
+                </div>
+                <div class="property-group">
+                    <label for="elementPadding">Padding</label>
+                    <input type="number" id="elementPadding" min="0" max="50" value="10" onchange="updateElementProperty('padding')">
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Viewer -->
+        <div class="code-viewer" id="codeViewer">
+            <div class="editor-header">
+                <h2>Código Gerado</h2>
+                <button class="btn btn-secondary" onclick="backToEditor()">Voltar ao Editor</button>
+            </div>
+
+            <div class="code-tabs">
+                <button class="code-tab active" onclick="showCodeTab('html')">HTML</button>
+                <button class="code-tab" onclick="showCodeTab('css')">CSS</button>
+                <button class="code-tab" onclick="showCodeTab('js')">JavaScript</button>
+            </div>
+
+            <div class="code-content" id="codeContent">
+                <button class="copy-btn" onclick="copyCode()">Copiar</button>
+                <pre id="htmlCode"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            authDomain: "sitefy-app.firebaseapp.com",
+            projectId: "sitefy-app",
+            storageBucket: "sitefy-app.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456",
+            databaseURL: "https://sitefy-app.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Global variables
+        let currentUser = null;
+        let currentProject = null;
+        let selectedElement = null;
+        let elements = [];
+        let projectId = null;
+
+        // API Configuration
+        const API_BASE_URL = 'https://sitefy-api.onrender.com';
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('authForm').addEventListener('submit', handleAuth);
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('canvas-element')) {
+                    selectElement(e.target);
+                }
+            });
+        }
+
+        function checkAuthState() {
+            auth.onAuthStateChanged(function(user) {
+                if (user) {
+                    currentUser = user;
+                    showDashboard();
+                    loadProjects();
+                } else {
+                    showAuth();
+                }
+            });
+        }
+
+        function showAuth() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('editor').style.display = 'none';
+            document.getElementById('codeViewer').style.display = 'none';
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('header').style.display = 'flex';
+        }
+
+        function showDashboard() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('editor').style.display = 'none';
+            document.getElementById('codeViewer').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('header').style.display = 'none';
+            document.getElementById('userName').textContent = currentUser.email;
+        }
+
+        function showLogin() {
+            document.getElementById('authTitle').textContent = 'Entrar';
+            document.getElementById('authToggle').textContent = 'Não tem conta? Cadastre-se';
+            document.getElementById('authToggle').onclick = showRegister;
+            document.getElementById('authContainer').style.display = 'block';
+        }
+
+        function showRegister() {
+            document.getElementById('authTitle').textContent = 'Cadastrar';
+            document.getElementById('authToggle').textContent = 'Já tem conta? Entre';
+            document.getElementById('authToggle').onclick = showLogin;
+            document.getElementById('authContainer').style.display = 'block';
+        }
+
+        function toggleAuth() {
+            if (document.getElementById('authTitle').textContent === 'Entrar') {
+                showRegister();
+            } else {
+                showLogin();
+            }
+        }
+
+        async function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const isLogin = document.getElementById('authTitle').textContent === 'Entrar';
+
+            try {
+                showLoading(true);
+                if (isLogin) {
+                    await auth.signInWithEmailAndPassword(email, password);
+                } else {
+                    await auth.createUserWithEmailAndPassword(email, password);
+                }
+                showNotification('Sucesso!', 'success');
+            } catch (error) {
+                showNotification(error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function logout() {
+            auth.signOut();
+            showNotification('Desconectado com sucesso', 'info');
+        }
+
+        async function loadProjects() {
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE_URL}/api/projetos/${currentUser.uid}`);
+                const projects = await response.json();
+                
+                const projectsGrid = document.getElementById('projectsGrid');
+                projectsGrid.innerHTML = '';
+
+                projects.forEach(project => {
+                    const projectCard = createProjectCard(project);
+                    projectsGrid.appendChild(projectCard);
+                });
+            } catch (error) {
+                showNotification('Erro ao carregar projetos', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function createProjectCard(project) {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+            card.innerHTML = `
+                <div class="project-title">${project.nome}</div>
+                <div class="project-date">Criado em: ${new Date(project.criadoEm).toLocaleDateString()}</div>
+                <div class="project-actions">
+                    <button class="btn btn-primary btn-small" onclick="openProject('${project.id}')">Editar</button>
+                    <button class="btn btn-danger btn-small" onclick="deleteProject('${project.id}')">Excluir</button>
+                </div>
+            `;
+            return card;
+        }
+
+        function createNewProject() {
+            currentProject = {
+                nome: 'Novo Projeto',
+                elementos: [],
+                html: '',
+                css: '',
+                js: ''
+            };
+            projectId = null;
+            elements = [];
+            showEditor();
+        }
+
+        async function openProject(id) {
+            try {
+                showLoading(true);
+                const response = await fetch(`${API_BASE_URL}/api/projetos/${currentUser.uid}/${id}`);
+                const project = await response.json();
+                
+                currentProject = project;
+                projectId = id;
+                elements = project.elementos || [];
+                showEditor();
+                renderElements();
+            } catch (error) {
+                showNotification('Erro ao abrir projeto', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('Tem certeza que deseja excluir este projeto?')) return;
+
+            try {
+                showLoading(true);
+                await fetch(`${API_BASE_URL}/api/projetos/${currentUser.uid}/${id}`, {
+                    method: 'DELETE'
+                });
+                showNotification('Projeto excluído com sucesso', 'success');
+                loadProjects();
+            } catch (error) {
+                showNotification('Erro ao excluir projeto', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showEditor() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('codeViewer').style.display = 'none';
+            document.getElementById('editor').style.display = 'block';
+            document.getElementById('projectTitle').textContent = currentProject.nome;
+            document.getElementById('projectNameInput').value = currentProject.nome;
+            renderElements();
+        }
+
+        function addElement(type) {
+            const element = {
+                id: Date.now(),
+                type: type,
+                text: getDefaultText(type),
+                color: '#333333',
+                fontSize: 16,
+                textAlign: 'left',
+                backgroundColor: 'transparent',
+                padding: 10,
+                position: { x: 0, y: 0 }
+            };
+
+            elements.push(element);
+            renderElements();
+            showNotification(`Elemento ${type} adicionado`, 'success');
+        }
+
+        function getDefaultText(type) {
+            const defaults = {
+                header: 'Título Principal',
+                text: 'Texto de exemplo',
+                button: 'Clique Aqui',
+                image: 'https://via.placeholder.com/300x200',
+                divider: ''
+            };
+            return defaults[type] || 'Elemento';
+        }
+
+        function renderElements() {
+            const canvas = document.getElementById('canvas');
+            canvas.innerHTML = '';
+
+            elements.forEach(element => {
+                const elementDiv = document.createElement('div');
+                elementDiv.className = 'canvas-element';
+                elementDiv.setAttribute('data-id', element.id);
+                elementDiv.style.color = element.color;
+                elementDiv.style.fontSize = element.fontSize + 'px';
+                elementDiv.style.textAlign = element.textAlign;
+                elementDiv.style.backgroundColor = element.backgroundColor;
+                elementDiv.style.padding = element.padding + 'px';
+
+                let content = '';
+                switch (element.type) {
+                    case 'header':
+                        content = `<h1>${element.text}</h1>`;
+                        break;
+                    case 'text':
+                        content = `<p>${element.text}</p>`;
+                        break;
+                    case 'button':
+                        content = `<button style="padding: 10px 20px; border: none; border-radius: 5px; background: #667eea; color: white; cursor: pointer;">${element.text}</button>`;
+                        break;
+                    case 'image':
+                        content = `<img src="${element.text}" alt="Imagem" style="max-width: 100%; height: auto;">`;
+                        break;
+                    case 'divider':
+                        content = `<hr style="border: none; height: 2px; background: #ddd; margin: 20px 0;">`;
+                        break;
+                }
+
+                elementDiv.innerHTML = content + '<div class="element-controls">×</div>';
+                canvas.appendChild(elementDiv);
+            });
+        }
+
+        function selectElement(element) {
+            if (selectedElement) {
+                selectedElement.classList.remove('selected');
+            }
+            selectedElement = element;
+            element.classList.add('selected');
+
+            const elementId = parseInt(element.getAttribute('data-id'));
+            const elementData = elements.find(el => el.id === elementId);
+            
+            if (elementData) {
+                document.getElementById('elementText').value = elementData.text;
+                document.getElementById('elementColor').value = elementData.color;
+                document.getElementById('elementSize').value = elementData.fontSize;
+                document.getElementById('elementAlign').value = elementData.textAlign;
+                document.getElementById('elementBgColor').value = elementData.backgroundColor;
+                document.getElementById('elementPadding').value = elementData.padding;
+                document.getElementById('propertiesPanel').style.display = 'block';
+            }
+        }
+
+        function updateElementProperty(property) {
+            if (!selectedElement) return;
+
+            const elementId = parseInt(selectedElement.getAttribute('data-id'));
+            const elementIndex = elements.findIndex(el => el.id === elementId);
+            
+            if (elementIndex !== -1) {
+                const value = document.getElementById('element' + property.charAt(0).toUpperCase() + property.slice(1)).value;
+                elements[elementIndex][property] = value;
+                renderElements();
+            }
+        }
+
+        async function saveProject() {
+            try {
+                showLoading(true);
+                
+                const projectName = document.getElementById('projectNameInput').value;
+                const { html, css, js } = generateCode();
+
+                const projectData = {
+                    nome: projectName,
+                    elementos: elements,
+                    html: html,
+                    css: css,
+                    js: js,
+                    atualizadoEm: new Date().toISOString()
+                };
+
+                if (projectId) {
+                    // Update existing project
+                    await fetch(`${API_BASE_URL}/api/projetos/${currentUser.uid}/${projectId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(projectData)
+                    });
+                } else {
+                    // Create new project
+                    projectData.uid = currentUser.uid;
+                    projectData.criadoEm = new Date().toISOString();
+                    
+                    const response = await fetch(`${API_BASE_URL}/api/projetos`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(projectData)
+                    });
+                    
+                    const result = await response.json();
+                    projectId = result.id;
+                }
+
+                showNotification('Projeto salvo com sucesso!', 'success');
+            } catch (error) {
+                showNotification('Erro ao salvar projeto', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function generateCode() {
+            let html = '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Site Gerado</title>\n    <style>\n';
+            let css = '';
+            let js = '';
+
+            elements.forEach((element, index) => {
+                const elementId = `element-${index}`;
+                
+                // HTML
+                switch (element.type) {
+                    case 'header':
+                        html += `        <h1 id="${elementId}">${element.text}</h1>\n`;
+                        break;
+                    case 'text':
+                        html += `        <p id="${elementId}">${element.text}</p>\n`;
+                        break;
+                    case 'button':
+                        html += `        <button id="${elementId}">${element.text}</button>\n`;
+                        break;
+                    case 'image':
+                        html += `        <img id="${elementId}" src="${element.text}" alt="Imagem">\n`;
+                        break;
+                    case 'divider':
+                        html += `        <hr id="${elementId}">\n`;
+                        break;
+                }
+
+                // CSS
+                css += `#${elementId} {\n`;
+                css += `    color: ${element.color};\n`;
+                css += `    font-size: ${element.fontSize}px;\n`;
+                css += `    text-align: ${element.textAlign};\n`;
+                css += `    background-color: ${element.backgroundColor};\n`;
+                css += `    padding: ${element.padding}px;\n`;
+                css += `}\n\n`;
+            });
+
+            html += '    </style>\n</head>\n<body>\n';
+            html += '    <script>\n';
+            html += js;
+            html += '    </script>\n</body>\n</html>';
+
+            return { html, css, js };
+        }
+
+        function showCode() {
+            const { html, css, js } = generateCode();
+            
+            document.getElementById('htmlCode').textContent = html;
+            document.getElementById('codeContent').innerHTML = `
+                <button class="copy-btn" onclick="copyCode()">Copiar</button>
+                <pre id="htmlCode">${html}</pre>
+            `;
+            
+            document.getElementById('editor').style.display = 'none';
+            document.getElementById('codeViewer').style.display = 'block';
+        }
+
+        function showCodeTab(tab) {
+            const { html, css, js } = generateCode();
+            const tabs = document.querySelectorAll('.code-tab');
+            const content = document.getElementById('codeContent');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let code = '';
+            switch (tab) {
+                case 'html':
+                    code = html;
+                    break;
+                case 'css':
+                    code = css;
+                    break;
+                case 'js':
+                    code = js;
+                    break;
+            }
+
+            content.innerHTML = `
+                <button class="copy-btn" onclick="copyCode()">Copiar</button>
+                <pre>${code}</pre>
+            `;
+        }
+
+        function copyCode() {
+            const codeElement = document.querySelector('#codeContent pre');
+            const textArea = document.createElement('textarea');
+            textArea.value = codeElement.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showNotification('Código copiado!', 'success');
+        }
+
+        function backToDashboard() {
+            if (confirm('Deseja sair sem salvar?')) {
+                showDashboard();
+            }
+        }
+
+        function backToEditor() {
+            document.getElementById('codeViewer').style.display = 'none';
+            document.getElementById('editor').style.display = 'block';
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Drag and drop functionality
+        let isDragging = false;
+        let draggedElement = null;
+
+        document.addEventListener('mousedown', function(e) {
+            if (e.target.classList.contains('canvas-element')) {
+                isDragging = true;
+                draggedElement = e.target;
+                draggedElement.style.opacity = '0.5';
+            }
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging && draggedElement) {
+                const rect = draggedElement.getBoundingClientRect();
+                const canvas = document.getElementById('canvas');
+                const canvasRect = canvas.getBoundingClientRect();
+                
+                const x = e.clientX - canvasRect.left;
+                const y = e.clientY - canvasRect.top;
+                
+                draggedElement.style.position = 'absolute';
+                draggedElement.style.left = x + 'px';
+                draggedElement.style.top = y + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (isDragging && draggedElement) {
+                isDragging = false;
+                draggedElement.style.opacity = '1';
+                draggedElement = null;
+            }
+        });
+    </script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+</body>
+</html>
