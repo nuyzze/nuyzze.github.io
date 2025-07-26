@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitefy - Crie Sites Visualmente</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Auth Styles */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .auth-switch a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            min-height: 100vh;
+            background: #f5f7fa;
+        }
+
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .projects-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .new-project-btn {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .project-date {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .edit-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #ff4757;
+            color: white;
+        }
+
+        /* Editor Styles */
+        .editor {
+            display: flex;
+            height: 100vh;
+            background: #f5f7fa;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .element-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: grab;
+            border: 2px solid transparent;
+        }
+
+        .element-item:hover {
+            border-color: #667eea;
+        }
+
+        .element-item.dragging {
+            opacity: 0.5;
+        }
+
+        .main-editor {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .canvas-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .canvas {
+            background: white;
+            min-height: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            position: relative;
+        }
+
+        .canvas.dropzone-active {
+            border: 2px dashed #667eea;
+        }
+
+        .element {
+            position: relative;
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .element:hover {
+            border-color: #667eea;
+        }
+
+        .element.selected {
+            border-color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .element-controls {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            display: none;
+            gap: 5px;
+        }
+
+        .element.selected .element-controls {
+            display: flex;
+        }
+
+        .control-btn {
+            width: 24px;
+            height: 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .properties-panel {
+            width: 300px;
+            background: white;
+            padding: 20px;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .code-view {
+            background: #2d3748;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .editor {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .properties-panel {
+                width: 100%;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Section -->
+    <div id="auth-container" class="auth-container">
+        <div class="auth-card">
+            <h2 id="auth-title">Login - Sitefy</h2>
+            <form id="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn" id="auth-submit">Entrar</button>
+            </form>
+            <div class="auth-switch">
+                <p>Não tem conta? <a href="#" id="toggle-auth">Cadastre-se</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard" class="dashboard hidden">
+        <div class="header">
+            <div class="logo">Sitefy</div>
+            <div class="user-info">
+                <span id="user-email"></span>
+                <button class="logout-btn" onclick="logout()">Sair</button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="projects-header">
+                <h2>Meus Projetos</h2>
+                <button class="new-project-btn" onclick="createNewProject()">Novo Projeto</button>
+            </div>
+            <div id="projects-grid" class="projects-grid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Editor Section -->
+    <div id="editor" class="editor hidden">
+        <div class="sidebar">
+            <h3>Elementos</h3>
+            <div class="element-item" draggable="true" data-type="header">
+                <i class="fas fa-heading"></i>
+                <span>Cabeçalho</span>
+            </div>
+            <div class="element-item" draggable="true" data-type="text">
+                <i class="fas fa-font"></i>
+                <span>Texto</span>
+            </div>
+            <div class="element-item" draggable="true" data-type="button">
+                <i class="fas fa-square"></i>
+                <span>Botão</span>
+            </div>
+            <div class="element-item" draggable="true" data-type="image">
+                <i class="fas fa-image"></i>
+                <span>Imagem</span>
+            </div>
+            <div class="element-item" draggable="true" data-type="container">
+                <i class="fas fa-square-full"></i>
+                <span>Container</span>
+            </div>
+        </div>
+
+        <div class="main-editor">
+            <div class="editor-header">
+                <div class="editor-tabs">
+                    <button class="tab-btn active" onclick="switchTab('visual')">Visual</button>
+                    <button class="tab-btn" onclick="switchTab('code')">Código</button>
+                </div>
+                <div class="editor-actions">
+                    <button class="btn" onclick="saveProject()">Salvar</button>
+                    <button class="btn" onclick="previewProject()">Visualizar</button>
+                    <button class="btn" onclick="backToDashboard()">Voltar</button>
+                </div>
+            </div>
+
+            <div id="visual-tab" class="canvas-container">
+                <div id="canvas" class="canvas">
+                    <p style="text-align: center; color: #666; margin-top: 50px;">
+                        Arraste elementos da barra lateral para começar a criar seu site
+                    </p>
+                </div>
+            </div>
+
+            <div id="code-tab" class="canvas-container hidden">
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <h3>HTML</h3>
+                        <button class="copy-btn" onclick="copyCode('html')">Copiar HTML</button>
+                        <div id="html-code" class="code-view"></div>
+                    </div>
+                    <div style="flex: 1; min-width: 300px;">
+                        <h3>CSS</h3>
+                        <button class="copy-btn" onclick="copyCode('css')">Copiar CSS</button>
+                        <div id="css-code" class="code-view"></div>
+                    </div>
+                    <div style="flex: 1; min-width: 300px;">
+                        <h3>JavaScript</h3>
+                        <button class="copy-btn" onclick="copyCode('js')">Copiar JS</button>
+                        <div id="js-code" class="code-view"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="properties-panel">
+            <h3>Propriedades</h3>
+            <div id="properties-content">
+                <p>Selecione um elemento para editar suas propriedades</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Project Modal -->
+    <div id="new-project-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Novo Projeto</h3>
+                <button class="close-btn" onclick="closeModal('new-project-modal')">&times;</button>
+            </div>
+            <form id="new-project-form">
+                <div class="form-group">
+                    <label for="project-name">Nome do Projeto</label>
+                    <input type="text" id="project-name" required>
+                </div>
+                <button type="submit" class="btn">Criar Projeto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 90%; height: 80%;">
+            <div class="modal-header">
+                <h3>Preview do Site</h3>
+                <button class="close-btn" onclick="closeModal('preview-modal')">&times;</button>
+            </div>
+            <iframe id="preview-frame" style="width: 100%; height: calc(100% - 60px); border: none;"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "SEU_DOMINIO.firebaseapp.com",
+            projectId: "SEU_ID",
+            storageBucket: "SEU_BUCKET.appspot.com",
+            messagingSenderId: "SEU_SENDER_ID",
+            appId: "SEU_APP_ID",
+            databaseURL: "https://SEU_ID.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Backend API URL
+        const API_BASE_URL = 'https://sua-api.render.com/api';
+
+        // Global variables
+        let currentUser = null;
+        let currentProject = null;
+        let selectedElement = null;
+        let projects = [];
+        let isLogin = true;
+
+        // Auth State Observer
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                showDashboard();
+                loadProjects();
+            } else {
+                currentUser = null;
+                showAuth();
+            }
+        });
+
+        // Auth functions
+        function showAuth() {
+            document.getElementById('auth-container').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('editor').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('editor').classList.add('hidden');
+            document.getElementById('user-email').textContent = currentUser.email;
+        }
+
+        function showEditor() {
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('editor').classList.remove('hidden');
+        }
+
+        function backToDashboard() {
+            showDashboard();
+            currentProject = null;
+            selectedElement = null;
+        }
+
+        // Toggle between login and register
+        document.getElementById('toggle-auth').addEventListener('click', (e) => {
+            e.preventDefault();
+            isLogin = !isLogin;
+            const title = document.getElementById('auth-title');
+            const submit = document.getElementById('auth-submit');
+            const toggle = document.getElementById('toggle-auth');
+            
+            if (isLogin) {
+                title.textContent = 'Login - Sitefy';
+                submit.textContent = 'Entrar';
+                toggle.parentElement.innerHTML = 'Não tem conta? <a href="#" id="toggle-auth">Cadastre-se</a>';
+            } else {
+                title.textContent = 'Cadastro - Sitefy';
+                submit.textContent = 'Cadastrar';
+                toggle.parentElement.innerHTML = 'Já tem conta? <a href="#" id="toggle-auth">Faça login</a>';
+            }
+            
+            document.getElementById('toggle-auth').addEventListener('click', arguments.callee);
+        });
+
+        // Auth form submit
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                if (isLogin) {
+                    await auth.signInWithEmailAndPassword(email, password);
+                } else {
+                    await auth.createUserWithEmailAndPassword(email, password);
+                }
+            } catch (error) {
+                alert('Erro: ' + error.message);
+            }
+        });
+
+        // Logout
+        function logout() {
+            auth.signOut();
+        }
+
+        // Projects functions
+        async function loadProjects() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/projetos/${currentUser.uid}`);
+                projects = await response.json();
+                displayProjects();
+            } catch (error) {
+                console.error('Erro ao carregar projetos:', error);
+                projects = [];
+                displayProjects();
+            }
+        }
+
+        function displayProjects() {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = '';
+
+            projects.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML = `
+                    <div class="project-title">${project.nome}</div>
+                    <div class="project-date">${new Date(project.criadoEm).toLocaleDateString()}</div>
+                    <div class="project-actions">
+                        <button class="action-btn edit-btn" onclick="editProject('${project.id}')">Editar</button>
+                        <button class="action-btn delete-btn" onclick="deleteProject('${project.id}')">Excluir</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function createNewProject() {
+            document.getElementById('new-project-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('new-project-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('project-name').value;
+
+            const newProject = {
+                nome: name,
+                elementos: [],
+                html: '',
+                css: '',
+                js: ''
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/projetos`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uid: currentUser.uid,
+                        ...newProject
+                    })
+                });
+
+                const project = await response.json();
+                currentProject = project;
+                closeModal('new-project-modal');
+                showEditor();
+                initializeCanvas();
+            } catch (error) {
+                alert('Erro ao criar projeto: ' + error.message);
+            }
+        });
+
+        async function editProject(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (project) {
+                currentProject = project;
+                showEditor();
+                loadProjectIntoCanvas();
+            }
+        }
+
+        async function deleteProject(projectId) {
+            if (confirm('Tem certeza que deseja excluir este projeto?')) {
+                try {
+                    await fetch(`${API_BASE_URL}/projetos/${currentUser.uid}/${projectId}`, {
+                        method: 'DELETE'
+                    });
+                    loadProjects();
+                } catch (error) {
+                    alert('Erro ao excluir projeto: ' + error.message);
+                }
+            }
+        }
+
+        // Editor functions
+        function switchTab(tab) {
+            const visualTab = document.getElementById('visual-tab');
+            const codeTab = document.getElementById('code-tab');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+
+            if (tab === 'visual') {
+                visualTab.classList.remove('hidden');
+                codeTab.classList.add('hidden');
+                document.querySelector('.tab-btn').classList.add('active');
+            } else {
+                visualTab.classList.add('hidden');
+                codeTab.classList.remove('hidden');
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                generateCode();
+            }
+        }
+
+        function initializeCanvas() {
+            const canvas = document.getElementById('canvas');
+            canvas.innerHTML = '<p style="text-align: center; color: #666; margin-top: 50px;">Arraste elementos da barra lateral para começar a criar seu site</p>';
+            selectedElement = null;
+            updatePropertiesPanel();
+        }
+
+        function loadProjectIntoCanvas() {
+            const canvas = document.getElementById('canvas');
+            canvas.innerHTML = '';
+            
+            if (currentProject.elementos && currentProject.elementos.length > 0) {
+                currentProject.elementos.forEach(element => {
+                    const elementNode = createElement(element);
+                    canvas.appendChild(elementNode);
+                });
+            } else {
+                initializeCanvas();
+            }
+        }
+
+        // Drag and Drop functionality
+        let draggedElement = null;
+
+        document.querySelectorAll('.element-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedElement = e.target.dataset.type;
+                e.target.classList.add('dragging');
+            });
+
+            item.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+            });
+        });
+
+        const canvas = document.getElementById('canvas');
+
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            canvas.classList.add('dropzone-active');
+        });
+
+        canvas.addEventListener('dragleave', (e) => {
+            if (!canvas.contains(e.relatedTarget)) {
+                canvas.classList.remove('dropzone-active');
+            }
+        });
+
+        canvas.addEventListener('drop', (e) => {
+            e.preventDefault();
+            canvas.classList.remove('dropzone-active');
+
+            if (draggedElement) {
+                const elementData = {
+                    type: draggedElement,
+                    id: 'element_' + Date.now(),
+                    content: getDefaultContent(draggedElement),
+                    styles: getDefaultStyles(draggedElement)
+                };
+
+                const element = createElement(elementData);
+                
+                // Remove placeholder text if exists
+                const placeholder = canvas.querySelector('p');
+                if (placeholder && placeholder.textContent.includes('Arraste elementos')) {
+                    placeholder.remove();
+                }
+
+                canvas.appendChild(element);
+                draggedElement = null;
+            }
+        });
+
+        function getDefaultContent(type) {
+            switch (type) {
+                case 'header':
+                    return 'Seu Título Aqui';
+                case 'text':
+                    return 'Seu texto aqui. Clique para editar.';
+                case 'button':
+                    return 'Clique Aqui';
+                case 'image':
+                    return 'https://via.placeholder.com/300x200';
+                case 'container':
+                    return '';
+                default:
+                    return '';
+            }
+        }
+
+        function getDefaultStyles(type) {
+            switch (type) {
+                case 'header':
+                    return {
+                        fontSize: '32px',
+                        fontWeight: 'bold',
+                        color: '#333',
+                        textAlign: 'center',
+                        margin: '20px 0'
+                    };
+                case 'text':
+                    return {
+                        fontSize: '16px',
+                        color: '#666',
+                        lineHeight: '1.6',
+                        margin: '10px 0'
+                    };
+                case 'button':
+                    return {
+                        padding: '12px 24px',
+                        backgroundColor: '#667eea',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '16px',
+                        margin: '10px 0'
+                    };
+                case 'image':
+                    return {
+                        maxWidth: '100%',
+                        height: 'auto',
+                        margin: '10px 0'
+                    };
+                case 'container':
+                    return {
+                        padding: '20px',
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: '8px',
+                        margin: '10px 0',
+                        minHeight: '100px'
+                    };
+                default:
+                    return {};
+            }
+        }
+
+        function createElement(elementData) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'element';
+            wrapper.dataset.id = elementData.id;
+            wrapper.dataset.type = elementData.type;
+
+            let element;
+            switch (elementData.type) {
+                case 'header':
+                    element = document.createElement('h1');
+                    element.textContent = elementData.content;
+                    break;
+                case 'text':
+                    element = document.createElement('p');
+                    element.textContent = elementData.content;
+                    break;
+                case 'button':
+                    element = document.createElement('button');
+                    element.textContent = elementData.content;
+                    break;
+                case 'image':
+                    element = document.createElement('img');
+                    element.src = elementData.content;
+                    element.alt = 'Imagem';
+                    break;
+                case 'container':
+                    element = document.createElement('div');
+                    element.innerHTML = elementData.content || '<p style="text-align: center; color: #999;">Container vazio - adicione elementos aqui</p>';
+                    break;
+                default:
+                    element = document.createElement('div');
+                    element.textContent = elementData.content;
+            }
+
+            // Apply styles
+            Object.assign(element.style, elementData.styles);
+
+            // Add controls
+            const controls = document.createElement('div');
+            controls.className = 'element-controls';
+            controls.innerHTML = `
+                <button class="control-btn" onclick="editElement('${elementData.id}')" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="control-btn" onclick="deleteElement('${elementData.id}')" title="Excluir">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+
+            wrapper.appendChild(element);
+            wrapper.appendChild(controls);
+
+            // Click to select
+            wrapper.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectElement(wrapper);
+            });
+
+            return wrapper;
+        }
+
+        function selectElement(element) {
+            // Remove previous selection
+            document.querySelectorAll('.element.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Select current element
+            element.classList.add('selected');
+            selectedElement = element;
+            updatePropertiesPanel();
+        }
+
+        function editElement(elementId) {
+            const element = document.querySelector(`[data-id="${elementId}"]`);
+            if (element) {
+                selectElement(element);
+                // Focus on properties panel for editing
+                document.querySelector('.properties-panel').scrollIntoView();
+            }
+        }
+
+        function deleteElement(elementId) {
+            const element = document.querySelector(`[data-id="${elementId}"]`);
+            if (element && confirm('Excluir este elemento?')) {
+                element.remove();
+                selectedElement = null;
+                updatePropertiesPanel();
+            }
+        }
+
+        function updatePropertiesPanel() {
+            const panel = document.getElementById('properties-content');
+            
+            if (!selectedElement) {
+                panel.innerHTML = '<p>Selecione um elemento para editar suas propriedades</p>';
+                return;
+            }
+
+            const elementType = selectedElement.dataset.type;
+            const childElement = selectedElement.querySelector('h1, p, button, img, div');
+            
+            panel.innerHTML = `
+                <h4>Editando: ${elementType}</h4>
+                <div class="form-group">
+                    <label>Conteúdo</label>
+                    <input type="text" id="prop-content" value="${getElementContent(childElement)}" onchange="updateElementProperty('content', this.value)">
+                </div>
+                <div class="form-group">
+                    <label>Cor do Texto</label>
+                    <input type="color" id="prop-color" value="${childElement.style.color || '#333333'}" onchange="updateElementProperty('color', this.value)">
+                </div>
+                <div class="form-group">
+                    <label>Tamanho da Fonte</label>
+                    <input type="range" min="12" max="48" value="${parseInt(childElement.style.fontSize) || 16}" onchange="updateElementProperty('fontSize', this.value + 'px')">
+                </div>
+                <div class="form-group">
+                    <label>Alinhamento</label>
+                    <select onchange="updateElementProperty('textAlign', this.value)">
+                        <option value="left" ${childElement.style.textAlign === 'left' ? 'selected' : ''}>Esquerda</option>
+                        <option value="center" ${childElement.style.textAlign === 'center' ? 'selected' : ''}>Centro</option>
+                        <option value="right" ${childElement.style.textAlign === 'right' ? 'selected' : ''}>Direita</option>
+                    </select>
+                </div>
+                ${elementType === 'button' ? `
+                <div class="form-group">
+                    <label>Cor de Fundo</label>
+                    <input type="color" value="${childElement.style.backgroundColor || '#667eea'}" onchange="updateElementProperty('backgroundColor', this.value)">
+                </div>
+                ` : ''}
+                ${elementType === 'image' ? `
+                <div class="form-group">
+                    <label>URL da Imagem</label>
+                    <input type="url" value="${childElement.src || ''}" onchange="updateElementProperty('src', this.value)">
+                </div>
+                ` : ''}
+            `;
+        }
+
+        function getElementContent(element) {
+            if (element.tagName === 'IMG') {
+                return element.src;
+            }
+            return element.textContent || element.innerHTML;
+        }
+
+        function updateElementProperty(property, value) {
+            if (!selectedElement) return;
+
+            const childElement = selectedElement.querySelector('h1, p, button, img, div');
+            
+            if (property === 'content') {
+                if (childElement.tagName === 'IMG') {
+                    childElement.src = value;
+                } else {
+                    childElement.textContent = value;
+                }
+            } else if (property === 'src') {
+                childElement.src = value;
+            } else {
+                childElement.style[property] = value;
+            }
+        }
+
+        // Code generation
+        function generateCode() {
+            const elements = Array.from(document.querySelectorAll('.element'));
+            
+            let html = '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Meu Site</title>\n    <link rel="stylesheet" href="style.css">\n</head>\n<body>\n';
+            
+            let css = `* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+`;
+
+            elements.forEach(element => {
+                const childElement = element.querySelector('h1, p, button, img, div');
+                const elementId = element.dataset.id;
+                
+                // Generate HTML
+                html += `    <${childElement.tagName.toLowerCase()} class="${elementId}"`;
+                if (childElement.tagName === 'IMG') {
+                    html += ` src="${childElement.src}" alt="Imagem"`;
+                }
+                html += `>`;
+                
+                if (childElement.tagName !== 'IMG') {
+                    html += childElement.textContent;
+                }
+                
+                html += `</${childElement.tagName.toLowerCase()}>\n`;
+                
+                // Generate CSS
+                css += `.${elementId} {\n`;
+                const styles = window.getComputedStyle(childElement);
+                const importantStyles = ['color', 'fontSize', 'fontWeight', 'textAlign', 'backgroundColor', 'padding', 'margin', 'borderRadius', 'border', 'maxWidth', 'height'];
+                
+                importantStyles.forEach(style => {
+                    const value = childElement.style[style] || styles[style];
+                    if (value && value !== '' && value !== 'initial') {
+                        css += `    ${style.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value};\n`;
+                    }
+                });
+                css += '}\n\n';
+            });
+
+            html += '</body>\n</html>';
+
+            const js = `// JavaScript do seu site
+document.addEventListener('DOMContentLoaded', function() {
+    // Adicione sua lógica JavaScript aqui
+    console.log('Site carregado!');
+    
+    // Exemplo: adicionar eventos aos botões
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            alert('Botão clicado!');
+        });
+    });
+});`;
+
+            document.getElementById('html-code').textContent = html;
+            document.getElementById('css-code').textContent = css;
+            document.getElementById('js-code').textContent = js;
+        }
+
+        function copyCode(type) {
+            const codeElement = document.getElementById(`${type}-code`);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Código copiado para a área de transferência!');
+            });
+        }
+
+        async function saveProject() {
+            if (!currentProject) return;
+
+            const elements = Array.from(document.querySelectorAll('.element')).map(element => {
+                const childElement = element.querySelector('h1, p, button, img, div');
+                return {
+                    type: element.dataset.type,
+                    id: element.dataset.id,
+                    content: getElementContent(childElement),
+                    styles: Object.fromEntries(
+                        Object.entries(childElement.style).filter(([_, value]) => value !== '')
+                    )
+                };
+            });
+
+            // Generate code
+            generateCode();
+            const html = document.getElementById('html-code').textContent;
+            const css = document.getElementById('css-code').textContent;
+            const js = document.getElementById('js-code').textContent;
+
+            const projectData = {
+                nome: currentProject.nome,
+                elementos: elements,
+                html: html,
+                css: css,
+                js: js
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/projetos/${currentUser.uid}/${currentProject.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(projectData)
+                });
+
+                if (response.ok) {
+                    alert('Projeto salvo com sucesso!');
+                } else {
+                    throw new Error('Erro ao salvar projeto');
+                }
+            } catch (error) {
+                alert('Erro ao salvar projeto: ' + error.message);
+            }
+        }
+
+        function previewProject() {
+            generateCode();
+            const html = document.getElementById('html-code').textContent;
+            const css = document.getElementById('css-code').textContent;
+            const js = document.getElementById('js-code').textContent;
+
+            const previewHTML = html.replace('<link rel="stylesheet" href="style.css">', `<style>${css}</style>`);
+            const fullHTML = previewHTML.replace('</body>', `<script>${js}</script></body>`);
+
+            const iframe = document.getElementById('preview-frame');
+            iframe.srcdoc = fullHTML;
+            
+            document.getElementById('preview-modal').classList.remove('hidden');
+        }
+
+        // Modal functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            if (modalId === 'new-project-modal') {
+                document.getElementById('project-name').value = '';
+            }
+        }
+
+        // Click outside canvas to deselect
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.element') && !e.target.closest('.properties-panel')) {
+                document.querySelectorAll('.element.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                selectedElement = null;
+                updatePropertiesPanel();
+            }
+        });
+
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
