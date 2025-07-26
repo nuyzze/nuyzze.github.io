@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sitefy – Visual Website Builder</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Firebase V9 modules (compat) – substitua SUAS chaves abaixo ou carregue via .env no backend -->    
+    <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <!-- Ace Editor para o modo código -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.24.0/ace.js" integrity="sha512-5YHkFqTQ9wql1i6mIWeO+7M+xYgpOmPdi6iB3d2GRUoeGE/vqirDB30WTFckBi+oPeuUyHmClc6xMmn/4UeUPw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        /* ===================== RESET & BASE ===================== */
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {font-family: 'Poppins', sans-serif; color: #222; background:#f5f7fb; height:100vh; display:flex; flex-direction:column;}
+        button, input, select {font-family: inherit; cursor: pointer;}
+        a {text-decoration: none; color: inherit;}
+        ul {list-style: none;}
+
+        /* ===================== UTILS ===================== */
+        .hidden {display:none!important;}
+        .btn {padding: .6rem 1.2rem; border:none; border-radius:4px; background:#007bff; color:#fff; font-size:.9rem; transition: background .2s;}
+        .btn:hover {background:#0069d9;}
+        .btn-danger {background:#dc3545;}
+        .btn-danger:hover {background:#c82333;}
+        .btn-secondary {background:#6c757d;}
+        .btn-secondary:hover {background:#5a6268;}
+        .container {width:100%; max-width: 1200px; margin:0 auto; padding:1rem;}
+        .flex {display:flex;}
+        .flex-between {display:flex; justify-content:space-between; align-items:center;}
+        .mt-1 {margin-top:1rem;}
+        .mb-1 {margin-bottom:1rem;}
+
+        /* ===================== AUTH FORMS ===================== */
+        #auth-section {flex:1; display:flex; align-items:center; justify-content:center;}
+        #auth-section form {width:100%; max-width:380px; background:#fff; padding:2rem; border-radius:6px; box-shadow:0 4px 10px rgba(0,0,0,.05);}
+        #auth-section h2 {margin-bottom:1rem; text-align:center; font-weight:600;}
+        #auth-section label {display:block; margin-top:1rem;}
+        #auth-section input {width:100%; padding:.5rem .8rem; margin-top:.3rem; border:1px solid #ccc; border-radius:4px;}
+
+        /* ===================== MAIN APP LAYOUT ===================== */
+        #app-section {flex:1; display:flex; flex-direction:column;}
+        header {background:#fff; box-shadow:0 2px 4px rgba(0,0,0,.05);}
+        header .container {display:flex; justify-content:space-between; align-items:center; height:64px;}
+        header h1 {font-size:1.4rem; color:#007bff; font-weight:600;}
+        nav button {margin-left:.5rem;}
+
+        #workspace {flex:1; display:flex; overflow:hidden;}
+        /* sidebar */
+        #sidebar {width:240px; background:#fff; border-right:1px solid #e0e0e0; padding:1rem; overflow-y:auto;}
+        #sidebar h3 {font-size:1rem; margin-bottom:.5rem;}
+        #elements-list div {padding:.4rem .6rem; background:#f1f1f1; margin-bottom:.4rem; border-radius:4px; cursor:grab;}
+        #projects-list li {padding:.4rem .6rem; background:#f1f1f1; border-radius:4px; margin-bottom:.4rem; display:flex; justify-content:space-between; align-items:center;}
+        #projects-list li span {flex:1; cursor:pointer;}
+
+        /* canvas */
+        #canvas-wrapper {flex:1; background:#fafafa; overflow:auto; position:relative; padding:1rem;}
+        #canvas {min-height:600px; background:#fff; border:2px dashed #ccc; position:relative;}
+        #canvas .draggable {border:1px solid transparent; position:relative;}
+        #canvas .draggable.selected {border:1px dashed #007bff;}
+
+        /* property panel */
+        #properties {width:260px; background:#fff; border-left:1px solid #e0e0e0; padding:1rem; overflow-y:auto;}
+        #properties input, #properties select, #properties textarea {width:100%; padding:.4rem .6rem; margin-top:.3rem; border:1px solid #ccc; border-radius:4px; font-size:.85rem;}
+
+        /* code modal */
+        #code-modal {position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index:9999;}
+        #code-content {width:90%; max-width:900px; background:#fff; border-radius:6px; overflow:hidden; display:flex; flex-direction:column;}
+        #code-tabs {display:flex; border-bottom:1px solid #e0e0e0;}
+        #code-tabs button {flex:1; padding:.8rem; border:none; background:#f8f8f8; cursor:pointer;}
+        #code-tabs button.active {background:#fff; border-bottom:2px solid #007bff;}
+        #code-editor {flex:1; min-height:300px;}
+        #code-actions {padding:.8rem; border-top:1px solid #e0e0e0; display:flex; justify-content:space-between;}
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            #sidebar {display:none;}
+            #properties {display:none;}
+        }
+    </style>
+</head>
+<body>
+    <!-- ===================== AUTH SECTION ===================== -->
+    <section id="auth-section">
+        <form id="auth-form">
+            <h2 id="auth-title">Login</h2>
+            <label>Email
+                <input type="email" id="email" required />
+            </label>
+            <label>Senha
+                <input type="password" id="password" required />
+            </label>
+            <button type="submit" class="btn mt-1" id="submit-btn">Entrar</button>
+            <p class="mt-1" style="text-align:center; font-size:.85rem;">
+                <span id="toggle-auth" style="color:#007bff; cursor:pointer;">Criar conta</span>
+            </p>
+        </form>
+    </section>
+
+    <!-- ===================== APP SECTION ===================== -->
+    <section id="app-section" class="hidden">
+        <header>
+            <div class="container">
+                <h1>Sitefy</h1>
+                <nav>
+                    <button class="btn-secondary" id="btn-view-projects">Meus Projetos</button>
+                    <button class="btn" id="btn-new-project">Novo Projeto</button>
+                    <button class="btn-danger" id="btn-logout">Sair</button>
+                </nav>
+            </div>
+        </header>
+        <div id="workspace">
+            <!-- Sidebar -->
+            <aside id="sidebar">
+                <h3>Elementos</h3>
+                <div id="elements-list">
+                    <div data-type="header">Header</div>
+                    <div data-type="paragraph">Parágrafo</div>
+                    <div data-type="image">Imagem</div>
+                    <div data-type="button">Botão</div>
+                </div>
+                <button class="btn mt-1" id="btn-save-project">Salvar Projeto</button>
+                <button class="btn-secondary mt-1" id="btn-view-code">Ver Código</button>
+            </aside>
+
+            <!-- Canvas -->
+            <main id="canvas-wrapper">
+                <div id="canvas"></div>
+            </main>
+
+            <!-- Properties Panel -->
+            <aside id="properties">
+                <h3>Propriedades</h3>
+                <div id="properties-content">
+                    <p style="font-size:.85rem; color:#666;">Selecione um elemento</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- ===================== CODE MODAL ===================== -->
+    <div id="code-modal" class="hidden">
+        <div id="code-content">
+            <div id="code-tabs">
+                <button data-tab="html" class="active">HTML</button>
+                <button data-tab="css">CSS</button>
+                <button data-tab="js">JS</button>
+            </div>
+            <div id="code-editor"></div>
+            <div id="code-actions">
+                <button class="btn-secondary" id="btn-close-code">Fechar</button>
+                <div>
+                    <button class="btn" id="btn-copy-code">Copiar</button>
+                    <button class="btn" id="btn-run-code">Executar ↗</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SCRIPTS ===================== -->
+    <script>
+    // ===================== CONFIGURAÇÃO =====================
+    const firebaseConfig = {
+        apiKey: "SUA_API_KEY",
+        authDomain: "SEU_DOMINIO.firebaseapp.com",
+        projectId: "SEU_ID",
+        storageBucket: "SEU_BUCKET.appspot.com",
+        messagingSenderId: "SEU_SENDER_ID",
+        appId: "SEU_APP_ID",
+        databaseURL: "https://SEU_ID.firebaseio.com"
+    };
+    const apiBase = "https://seu-backend-render.com"; // << substitua pelo seu domínio backend
+
+    // ===================== ESTADO DA APLICAÇÃO =====================
+    let currentUser = null;
+    let currentProject = null; // objeto completo
+    let currentElement = null; // elemento selecionado no canvas DOM
+
+    // ===================== INICIALIZAÇÃO FIREBASE =====================
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // ===================== ELEMENTOS DOM =====================
+    const authSection = document.getElementById('auth-section');
+    const appSection  = document.getElementById('app-section');
+
+    const authForm = document.getElementById('auth-form');
+    const authTitle = document.getElementById('auth-title');
+    const submitBtn = document.getElementById('submit-btn');
+    const toggleAuth = document.getElementById('toggle-auth');
+
+    const btnLogout = document.getElementById('btn-logout');
+    const btnNewProject = document.getElementById('btn-new-project');
+    const btnSaveProject = document.getElementById('btn-save-project');
+    const btnViewCode = document.getElementById('btn-view-code');
+    const btnViewProjects = document.getElementById('btn-view-projects');
+
+    const elementsList = document.getElementById('elements-list');
+    const canvas = document.getElementById('canvas');
+    const propertiesContent = document.getElementById('properties-content');
+
+    const codeModal = document.getElementById('code-modal');
+    const codeEditorDiv = document.getElementById('code-editor');
+    const codeTabs = document.getElementById('code-tabs');
+    const btnCloseCode = document.getElementById('btn-close-code');
+    const btnCopyCode = document.getElementById('btn-copy-code');
+    const btnRunCode = document.getElementById('btn-run-code');
+
+    // ===================== ACE EDITOR SETUP =====================
+    let aceEditors = {};
+    function initCodeEditors() {
+        const modes = { html: 'html', css: 'css', js: 'javascript' };
+        for (const tab in modes) {
+            const ed = ace.edit(document.createElement('div'));
+            ed.session.setMode(`ace/mode/${modes[tab]}`);
+            ed.setTheme('ace/theme/textmate');
+            ed.setFontSize(14);
+            ed.getSession().setUseWrapMode(true);
+            ed.container.style.height = '100%';
+            ed.container.style.width = '100%';
+            aceEditors[tab] = ed;
+        }
+        showTab('html');
+    }
+
+    function showTab(tab) {
+        // clear children
+        codeEditorDiv.innerHTML = '';
+        codeEditorDiv.appendChild(aceEditors[tab].container);
+        // activate button
+        Array.from(codeTabs.children).forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+    }
+
+    // ===================== AUTH HANDLERS =====================
+    let isLoginMode = true;
+    toggleAuth.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        authTitle.textContent = isLoginMode ? 'Login' : 'Criar Conta';
+        submitBtn.textContent = isLoginMode ? 'Entrar' : 'Cadastrar';
+        toggleAuth.textContent = isLoginMode ? 'Criar conta' : 'Já tenho conta';
+    });
+
+    authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        try {
+            if (isLoginMode) {
+                await auth.signInWithEmailAndPassword(email, password);
+            } else {
+                await auth.createUserWithEmailAndPassword(email, password);
+            }
+        } catch (err) {
+            alert(err.message);
+        }
+    });
+
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            currentUser = user;
+            authSection.classList.add('hidden');
+            appSection.classList.remove('hidden');
+            await loadProjectsList();
+        } else {
+            currentUser = null;
+            authSection.classList.remove('hidden');
+            appSection.classList.add('hidden');
+        }
+    });
+
+    btnLogout.addEventListener('click', () => auth.signOut());
+
+    // ===================== DRAG & DROP ELEMENTS =====================
+    elementsList.addEventListener('dragstart', (e) => {
+        if (e.target.dataset.type) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.type);
+        }
+    });
+
+    // allow drop
+    canvas.addEventListener('dragover', (e) => e.preventDefault());
+    canvas.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const type = e.dataTransfer.getData('text/plain');
+        addElementToCanvas(type, { x: e.offsetX, y: e.offsetY });
+    });
+
+    // make palette items draggable
+    Array.from(elementsList.children).forEach(el => {
+        el.setAttribute('draggable', true);
+    });
+
+    function addElementToCanvas(type, position) {
+        let el;
+        switch (type) {
+            case 'header':
+                el = document.createElement('h1');
+                el.textContent = 'Título';
+                break;
+            case 'paragraph':
+                el = document.createElement('p');
+                el.textContent = 'Lorem ipsum dolor sit amet';
+                break;
+            case 'image':
+                el = document.createElement('img');
+                el.src = 'https://via.placeholder.com/300x150';
+                el.style.width = '300px';
+                el.style.height = '150px';
+                break;
+            case 'button':
+                el = document.createElement('button');
+                el.textContent = 'Clique';
+                break;
+        }
+        if (!el) return;
+        el.classList.add('draggable');
+        el.style.position = 'absolute';
+        el.style.left = position.x + 'px';
+        el.style.top = position.y + 'px';
+        // Enable dragging inside canvas
+        enableDragWithinCanvas(el);
+        canvas.appendChild(el);
+        selectElement(el);
+    }
+
+    function enableDragWithinCanvas(el) {
+        let offsetX, offsetY, isDragging=false;
+        el.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.offsetX;
+            offsetY = e.offsetY;
+            selectElement(el);
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const rect = canvas.getBoundingClientRect();
+            el.style.left = (e.clientX - rect.left - offsetX) + 'px';
+            el.style.top = (e.clientY - rect.top - offsetY) + 'px';
+        });
+        document.addEventListener('mouseup', () => isDragging=false);
+    }
+
+    // ===================== PROPERTIES PANEL =====================
+    function selectElement(el) {
+        if (currentElement) currentElement.classList.remove('selected');
+        currentElement = el;
+        el.classList.add('selected');
+        renderProperties(el);
+    }
+
+    function renderProperties(el) {
+        propertiesContent.innerHTML = '';
+        const type = el.tagName.toLowerCase();
+        // Position
+        propertiesContent.appendChild(createNumberField('X', parseInt(el.style.left) || 0, v => el.style.left = v + 'px'));
+        propertiesContent.appendChild(createNumberField('Y', parseInt(el.style.top) || 0, v => el.style.top = v + 'px'));
+
+        if (type === 'h1' || type === 'p' || type === 'button') {
+            propertiesContent.appendChild(createTextField('Texto', el.textContent, v => el.textContent = v));
+            propertiesContent.appendChild(createColorField('Cor', rgb2hex(el.style.color || '#000000'), v => el.style.color = v));
+            propertiesContent.appendChild(createNumberField('Font size', parseInt(window.getComputedStyle(el).fontSize), v => el.style.fontSize = v + 'px'));
+        }
+        if (type === 'img') {
+            propertiesContent.appendChild(createTextField('URL', el.src, v => el.src = v));
+            propertiesContent.appendChild(createNumberField('Largura', parseInt(el.style.width) || 300, v => el.style.width = v + 'px'));
+            propertiesContent.appendChild(createNumberField('Altura', parseInt(el.style.height) || 150, v => el.style.height = v + 'px'));
+        }
+        // common alignment
+        propertiesContent.appendChild(createSelectField('Alinhamento', ['left','center','right'], el.style.textAlign || 'left', v => el.style.textAlign = v));
+    }
+
+    function createTextField(label, value, onChange) {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('mb-1');
+        wrapper.innerHTML = `<label>${label}<input type="text" value="${value}"></label>`;
+        wrapper.querySelector('input').addEventListener('input', e => onChange(e.target.value));
+        return wrapper;
+    }
+    function createNumberField(label, value, onChange) {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('mb-1');
+        wrapper.innerHTML = `<label>${label}<input type="number" value="${value}"></label>`;
+        wrapper.querySelector('input').addEventListener('input', e => onChange(e.target.value));
+        return wrapper;
+    }
+    function createColorField(label, value, onChange) {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('mb-1');
+        wrapper.innerHTML = `<label>${label}<input type="color" value="${value}"></label>`;
+        wrapper.querySelector('input').addEventListener('input', e => onChange(e.target.value));
+        return wrapper;
+    }
+    function createSelectField(label, options, value, onChange) {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('mb-1');
+        const opts = options.map(o=>`<option value="${o}" ${o===value?'selected':''}>${o}</option>`).join('');
+        wrapper.innerHTML = `<label>${label}<select>${opts}</select></label>`;
+        wrapper.querySelector('select').addEventListener('change', e => onChange(e.target.value));
+        return wrapper;
+    }
+
+    function rgb2hex(rgb) {
+        if (rgb.startsWith('#')) return rgb; // already hex
+        const result = rgb.match(/\d+/g);
+        if (!result) return '#000000';
+        return '#' + result.slice(0,3).map(x=>('0'+parseInt(x).toString(16)).slice(-2)).join('');
+    }
+
+    // ===================== PROJECT CRUD VIA API =====================
+
+    async function getAuthHeaders() {
+        const token = await currentUser.getIdToken();
+        return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+    }
+
+    async function loadProjectsList() {
+        const uid = currentUser.uid;
+        try {
+            const res = await fetch(`${apiBase}/api/projetos/${uid}`, {
+                headers: await getAuthHeaders()
+            });
+            const projects = await res.json();
+            showProjectsModal(projects);
+        } catch (err) {
+            console.error(err);
+            alert('Erro ao carregar projetos');
+        }
+    }
+
+    function showProjectsModal(projects) {
+        // create a simple modal inside sidebar for selection
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed'; modal.style.inset = '0'; modal.style.background='rgba(0,0,0,.6)'; modal.style.display='flex'; modal.style.justifyContent='center'; modal.style.alignItems='center'; modal.style.zIndex='9999';
+        modal.innerHTML = `<div style="background:#fff; padding:1rem; max-width:400px; width:90%; border-radius:6px;">
+            <h3 style="margin-bottom:1rem;">Meus Projetos</h3>
+            <ul id="projects-list"></ul>
+            <button class="btn-secondary mt-1" id="close-projects">Fechar</button>
+        </div>`;
+        document.body.appendChild(modal);
+        const list = modal.querySelector('#projects-list');
+        projects.forEach(p => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${p.nome}</span> <button class="btn-danger btn-sm">X</button>`;
+            li.querySelector('span').onclick = ()=>{ modal.remove(); loadProject(p); };
+            li.querySelector('button').onclick = ()=> deleteProject(p);
+            list.appendChild(li);
+        });
+        modal.querySelector('#close-projects').onclick = () => modal.remove();
+    }
+
+    async function loadProject(project) {
+        currentProject = project;
+        canvas.innerHTML = project.html || '';
+        // re-enable drag for loaded elements
+        canvas.querySelectorAll('.draggable').forEach(el => enableDragWithinCanvas(el));
+    }
+
+    async function deleteProject(project) {
+        if (!confirm('Excluir projeto permanentemente?')) return;
+        try {
+            await fetch(`${apiBase}/api/projetos/${currentUser.uid}/${project.id}`, { method:'DELETE', headers: await getAuthHeaders() });
+            alert('Excluído');
+            document.getElementById('projects-list').innerHTML = '';
+            await loadProjectsList();
+        } catch(err) { alert('Erro'); }
+    }
+
+    btnNewProject.addEventListener('click', () => {
+        currentProject = null;
+        canvas.innerHTML = '';
+    });
+
+    btnSaveProject.addEventListener('click', async () => {
+        const nome = prompt('Nome do projeto', currentProject? currentProject.nome : 'Meu site');
+        if (!nome) return;
+        const payload = {
+            nome,
+            elementos: serializeElements(),
+            html: canvas.innerHTML,
+            css: '', // estilos inline já presentes
+            js: ''
+        };
+        try {
+            let url = `${apiBase}/api/projetos`;
+            let method = 'POST';
+            if (currentProject) { // update
+                url = `${apiBase}/api/projetos/${currentUser.uid}/${currentProject.id}`;
+                method = 'PUT';
+            }
+            const res = await fetch(url, {
+                method,
+                headers: await getAuthHeaders(),
+                body: JSON.stringify(payload)
+            });
+            const saved = await res.json();
+            currentProject = saved;
+            alert('Salvo com sucesso');
+        } catch(err) { console.error(err); alert('Erro ao salvar'); }
+    });
+
+    function serializeElements() {
+        return Array.from(canvas.children).map(el => ({
+            tag: el.tagName.toLowerCase(),
+            text: el.textContent,
+            src: el.src,
+            style: el.getAttribute('style')
+        }));
+    }
+
+    // ===================== CODE VIEWER =====================
+    btnViewCode.addEventListener('click', () => {
+        generateCodeEditors();
+        codeModal.classList.remove('hidden');
+    });
+
+    btnCloseCode.addEventListener('click', () => codeModal.classList.add('hidden'));
+
+    codeTabs.addEventListener('click', (e) => {
+        if (e.target.dataset.tab) showTab(e.target.dataset.tab);
+    });
+
+    btnCopyCode.addEventListener('click', () => {
+        const tab = document.querySelector('#code-tabs button.active').dataset.tab;
+        navigator.clipboard.writeText(aceEditors[tab].getValue()).then(()=>alert('Copiado!'));
+    });
+
+    btnRunCode.addEventListener('click', () => {
+        const html = aceEditors.html.getValue();
+        const css  = aceEditors.css.getValue();
+        const js   = aceEditors.js.getValue();
+        const win = window.open();
+        win.document.write(`<style>${css}</style>${html}<script>${js}<\/script>`);
+    });
+
+    function generateCodeEditors() {
+        if (!Object.keys(aceEditors).length) initCodeEditors();
+        aceEditors.html.setValue(canvas.innerHTML, -1);
+        // extract CSS/JS if any (future)
+        aceEditors.css.setValue('/* css gerado */', -1);
+        aceEditors.js.setValue('// js gerado', -1);
+        showTab('html');
+    }
+    </script>
+</body>
+</html>
