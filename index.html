@@ -3,1674 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yoryze</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-app-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-auth-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-database-compat.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            overflow-x: hidden;
-        }
-
-        .splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .splash-logo {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            object-fit: cover;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        .header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 30px;
-        }
-
-        .header img {
-            height: 60px;
-            object-fit: contain;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #E06800;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: #E06800;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 15px;
-        }
-
-        .btn:hover {
-            background: #c55a00;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: #E06800;
-            border: 2px solid #E06800;
-        }
-
-        .btn-secondary:hover {
-            background: #E06800;
-            color: white;
-        }
-
-        .link-text {
-            text-align: center;
-            color: #E06800;
-            cursor: pointer;
-            text-decoration: underline;
-            margin-top: 15px;
-        }
-
-        .home-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .home-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
-
-        .home-card svg {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 10px;
-            fill: #E06800;
-        }
-
-        .mesa-grid {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 10px;
-            padding: 20px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            margin: 20px 0;
-        }
-
-        .mesa {
-            width: 40px;
-            height: 40px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .mesa.livre {
-            background-image: url('https://i.imgur.com/SyYJs71.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .mesa.ocupada,
-        .mesa.reservada {
-            background-image: url('https://i.imgur.com/ESNKFIg.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .mesa:hover {
-            transform: scale(1.1);
-        }
-
-        .mesa-numero {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 90%;
-            text-align: center;
-        }
-
-        .carrinho-item {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .ingresso-card {
-            background: linear-gradient(135deg, #E06800, #ff8533);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(224, 104, 0, 0.3);
-        }
-
-        .qr-container {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .admin-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .stat-number {
-            font-size: 32px;
-            font-weight: bold;
-            color: #E06800;
-            margin-bottom: 5px;
-        }
-
-        .table {
-            width: 100%;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .table th,
-        .table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        .table th {
-            background: #f8f9fa;
-            font-weight: 600;
-        }
-
-        .scanner-container {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            margin: 20px 0;
-        }
-
-        .promoter-card {
-            background: linear-gradient(135deg, #E06800, #ff8533);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .promoter-name {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .promoter-link {
-            background: rgba(255,255,255,0.2);
-            padding: 10px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 12px;
-            margin: 10px 0;
-            word-break: break-all;
-        }
-
-        .commission-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .commission-value {
-            font-size: 36px;
-            font-weight: bold;
-            color: #E06800;
-            margin-bottom: 5px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .nav-back {
-            color: #E06800;
-            cursor: pointer;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-back:hover {
-            text-decoration: underline;
-        }
-
-        .pix-container {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            text-align: center;
-            border: 2px solid #E06800;
-        }
-
-        .pix-code {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 12px;
-            word-break: break-all;
-            margin: 15px 0;
-        }
-
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-        }
-
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 14px;
-            margin: 0 5px;
-        }
-
-        .venda-item {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .venda-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .venda-cliente {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .venda-valor {
-            color: #E06800;
-            font-weight: bold;
-        }
-
-        .venda-details {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .comissao-highlight {
-            background: #e8f5e8;
-            padding: 5px 10px;
-            border-radius: 4px;
-            color: #2e7d32;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 5px;
-        }
-    </style>
+    <title>Sitefy - Criador de Sites Visual</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="splashScreen" class="splash-screen">
-        <img src="https://i.imgur.com/K9YzkJz.jpeg" alt="Yoryze" class="splash-logo">
-    </div>
-
-    <div id="app" class="container hidden">
-        <div id="loginScreen">
-            <div class="header">
-                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="logo">
+                <i class="fas fa-palette"></i>
+                <h1>Sitefy</h1>
             </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="loginEmail" placeholder="Digite seu email">
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="loginPassword" placeholder="Digite sua senha">
-            </div>
-            <button class="btn" onclick="login()">Entrar</button>
-            <div class="link-text" onclick="showRegister()">Cadastre-se</div>
-        </div>
-
-        <div id="registerScreen" class="hidden">
-            <div class="nav-back" onclick="showLogin()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
-            </div>
-            <div class="form-group">
-                <label>Nome</label>
-                <input type="text" id="registerName" placeholder="Digite seu nome">
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="registerEmail" placeholder="Digite seu email">
-            </div>
-            <div class="form-group">
-                <label>Telefone</label>
-                <input type="tel" id="registerPhone" placeholder="Digite seu telefone">
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="registerPassword" placeholder="Digite sua senha">
-            </div>
-            <div class="form-group">
-                <label>Confirmar Senha</label>
-                <input type="password" id="registerConfirmPassword" placeholder="Confirme sua senha">
-            </div>
-            <button class="btn" onclick="register()">Cadastrar</button>
-        </div>
-
-        <div id="userHome" class="hidden">
-            <div class="header">
-                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
-            </div>
-            <div class="home-card" onclick="showMesas()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M22,10V6a2,2 0 0,0 -2,-2H4A2,2 0 0,0 2,6V10C3.11,10 4,10.9 4,12A2,2 0 0,1 2,14V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V14A2,2 0 0,1 20,12A2,2 0 0,1 22,10Z"/>
-                </svg>
-                <h3>Comprar Ingressos</h3>
-                <p>Escolha sua mesa</p>
-            </div>
-            <div class="home-card" onclick="showMeusIngressos()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M22,10V6a2,2 0 0,0 -2,-2H4A2,2 0 0,0 2,6V10C3.11,10 4,10.9 4,12A2,2 0 0,1 2,14V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V14A2,2 0 0,1 20,12A2,2 0 0,1 22,10M13,17.5H11V16.5H13V17.5M13,15.5H11V14.5H13V15.5M13,13.5H11V12.5H13V13.5M13,11.5H11V10.5H13V11.5M13,9.5H11V8.5H13V9.5M13,7.5H11V6.5H13V7.5Z"/>
-                </svg>
-                <h3>Meus Ingressos</h3>
-                <p>Visualizar QR Codes</p>
-            </div>
-            <div class="home-card" onclick="logout()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
-                </svg>
-                <h3>Sair</h3>
-                <p>Fazer logout</p>
-            </div>
-        </div>
-
-        <div id="mesasScreen" class="hidden">
-            <div class="nav-back" onclick="showUserHome()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
-                <h3>Escolha sua mesa</h3>
-            </div>
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-image: url('https://i.imgur.com/SyYJs71.png'); background-size: cover;"></div>
-                    <span>Livre</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-image: url('https://i.imgur.com/ESNKFIg.png'); background-size: cover;"></div>
-                    <span>Ocupada/Reservada</span>
-                </div>
-            </div>
-            <div id="mesaGrid" class="mesa-grid"></div>
-            <button class="btn" onclick="showCarrinho()">Ver Carrinho (<span id="carrinhoCount">0</span>)</button>
-        </div>
-
-        <div id="carrinhoScreen" class="hidden">
-            <div class="nav-back" onclick="showMesas()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
-                <h3>Carrinho de Compras</h3>
-            </div>
-            <div id="carrinhoItens"></div>
-            <div style="text-align: center; margin: 20px 0;">
-                <h3>Total: R$ <span id="totalCarrinho">0,00</span></h3>
-            </div>
-            <button class="btn" onclick="finalizarCompra()">Finalizar Compra</button>
-        </div>
-
-        <div id="pixScreen" class="hidden">
-            <div class="nav-back" onclick="showCarrinho()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
-                <h3>Pagamento via PIX</h3>
-            </div>
-            <div class="pix-container">
-                <h4>Escaneie o QR Code</h4>
-                <div id="pixQRCode"></div>
-                <h4>Ou copie o código PIX</h4>
-                <div id="pixCode" class="pix-code"></div>
-                <button class="btn-secondary" onclick="copyPixCode()">Copiar Código</button>
-            </div>
-            <button class="btn" onclick="confirmarPagamento()">Já Paguei</button>
-        </div>
-
-        <div id="meusIngressosScreen" class="hidden">
-            <div class="nav-back" onclick="showUserHome()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
-                <h3>Meus Ingressos</h3>
-            </div>
-            <div id="ingressosList"></div>
-        </div>
-
-        <div id="adminHome" class="hidden">
-            <div class="header">
-                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
-                <h3>Painel Administrativo</h3>
-            </div>
-            <div class="admin-stats" id="adminStats">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalIngressos">0</div>
-                    <div>Ingressos Vendidos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalCheckins">0</div>
-                    <div>Check-ins</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="mesasLivres">0</div>
-                    <div>Mesas Livres</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="mesasOcupadas">0</div>
-                    <div>Mesas Ocupadas</div>
-                </div>
-            </div>
-            <div class="home-card" onclick="showAdminMesas()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
-                </svg>
-                <h3>Gerenciar Mesas</h3>
-                <p>Editar status e preços</p>
-            </div>
-            <div class="home-card" onclick="showAdminIngressos()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M22,10V6a2,2 0 0,0 -2,-2H4A2,2 0 0,0 2,6V10C3.11,10 4,10.9 4,12A2,2 0 0,1 2,14V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V14A2,2 0 0,1 20,12A2,2 0 0,1 22,10Z"/>
-                </svg>
-                <h3>Lista de Ingressos</h3>
-                <p>Verificar vendas</p>
-            </div>
-            <div class="home-card" onclick="showScanner()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M9.5,2A0.5,0.5 0 0,1 10,2.5V4H14V2.5A0.5,0.5 0 0,1 14.5,2A0.5,0.5 0 0,1 15,2.5V4H16A1,1 0 0,1 17,5V6.5A0.5,0.5 0 0,1 16.5,7A0.5,0.5 0 0,1 16,6.5V5H15V6.5A0.5,0.5 0 0,1 14.5,7A0.5,0.5 0 0,1 14,6.5V5H10V6.5A0.5,0.5 0 0,1 9.5,7A0.5,0.5 0 0,1 9,6.5V5H8A1,1 0 0,0 7,6V18A1,1 0 0,0 8,19H16A1,1 0 0,0 17,18V17.5A0.5,0.5 0 0,1 17.5,17A0.5,0.5 0 0,1 18,17.5V18A2,2 0 0,1 16,20H8A2,2 0 0,1 6,18V6A2,2 0 0,1 8,4H9V2.5A0.5,0.5 0 0,1 9.5,2Z"/>
-                </svg>
-                <h3>Scanner QR</h3>
-                <p>Check-in de ingressos</p>
-            </div>
-            <div class="home-card" onclick="showConvidados()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
-                </svg>
-                <h3>Convidados</h3>
-                <p>Lista VIP</p>
-            </div>
-            <div class="home-card" onclick="logout()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
-                </svg>
-                <h3>Sair</h3>
-                <p>Fazer logout</p>
-            </div>
-        </div>
-
-        <div id="adminMesasScreen" class="hidden">
-            <div class="nav-back" onclick="showAdminHome()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <h3>Gerenciar Mesas</h3>
-            </div>
-            <div id="adminMesasList"></div>
-        </div>
-
-        <div id="adminIngressosScreen" class="hidden">
-            <div class="nav-back" onclick="showAdminHome()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <h3>Lista de Ingressos</h3>
-            </div>
-            <div id="adminIngressosList"></div>
-        </div>
-
-        <div id="scannerScreen" class="hidden">
-            <div class="nav-back" onclick="showAdminHome()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <h3>Scanner QR Code</h3>
-            </div>
-            <div class="scanner-container">
-                <p>Escaneie o QR Code do ingresso</p>
-                <button class="btn" onclick="simulateQRScan()">Simular Escaneamento</button>
-                <div id="scanResult"></div>
-            </div>
-        </div>
-
-        <div id="convidadosScreen" class="hidden">
-            <div class="nav-back" onclick="showAdminHome()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <h3>Lista de Convidados</h3>
-            </div>
-            <div class="form-group">
-                <label>Nome</label>
-                <input type="text" id="convidadoNome" placeholder="Nome do convidado">
-            </div>
-            <div class="form-group">
-                <label>Documento</label>
-                <input type="text" id="convidadoDoc" placeholder="CPF ou RG">
-            </div>
-            <div class="form-group">
-                <label>Tipo</label>
-                <select id="convidadoTipo">
-                    <option value="VIP">VIP</option>
-                    <option value="Staff">Staff</option>
-                    <option value="Imprensa">Imprensa</option>
-                </select>
-            </div>
-            <button class="btn" onclick="adicionarConvidado()">Adicionar Convidado</button>
-            <div id="convidadosList"></div>
-        </div>
-
-        <div id="promoterHome" class="hidden">
-            <div class="header">
-                <img src="https://i.imgur.com/mD9vOBI.png" alt="Yoryze">
-            </div>
-            <div class="promoter-card">
-                <div class="promoter-name" id="promoterName">Promoter</div>
-                <div>Seu link de vendas:</div>
-                <div class="promoter-link" id="promoterLink">https://yoryze.app/?ref=</div>
-                <button class="btn-secondary" onclick="copyPromoterLink()">Copiar Link</button>
-                <button class="btn-secondary" onclick="sharePromoterLink()">Compartilhar</button>
-            </div>
-            <div class="commission-card">
-                <div class="commission-value" id="commissionValue">R$ 0,00</div>
-                <div>Comissão Acumulada (10%)</div>
-            </div>
-            <div class="home-card" onclick="showVendasAfiliadas()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
-                </svg>
-                <h3>Vendas Realizadas</h3>
-                <p>Histórico de vendas</p>
-            </div>
-            <div class="home-card" onclick="logout()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
-                </svg>
-                <h3>Sair</h3>
-                <p>Fazer logout</p>
-            </div>
-        </div>
-
-        <div id="vendasAfiliadasScreen" class="hidden">
-            <div class="nav-back" onclick="showPromoterHome()">
-                ← Voltar
-            </div>
-            <div class="header">
-                <h3>Vendas Realizadas</h3>
-            </div>
-            <div id="vendasList"></div>
+            <div class="spinner"></div>
+            <p>Carregando...</p>
         </div>
     </div>
 
-    <div id="mesaModal" class="modal hidden">
+    <!-- Auth Container -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo">
+                    <i class="fas fa-palette"></i>
+                    <h1>Sitefy</h1>
+                </div>
+                <p>Crie sites de forma visual e obtenha o código automaticamente</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Entrar</button>
+                <button class="tab-btn" data-tab="register">Cadastrar</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn-primary">Entrar</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPasswordConfirm">Confirmar Senha</label>
+                    <input type="password" id="registerPasswordConfirm" required>
+                </div>
+                <button type="submit" class="btn-primary">Cadastrar</button>
+            </form>
+
+            <div id="authError" class="auth-error"></div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="appContainer" class="app-container hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-palette"></i>
+                    <h2>Sitefy</h2>
+                </div>
+            </div>
+            <div class="header-center">
+                <button id="saveProjectBtn" class="btn-secondary">
+                    <i class="fas fa-save"></i> Salvar Projeto
+                </button>
+                <button id="viewCodeBtn" class="btn-secondary">
+                    <i class="fas fa-code"></i> Ver Código
+                </button>
+                <button id="previewBtn" class="btn-primary">
+                    <i class="fas fa-eye"></i> Visualizar
+                </button>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="userEmail"></span>
+                    <button id="logoutBtn" class="btn-text">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Elementos</h3>
+                    <div class="elements-grid">
+                        <div class="element-item" data-type="header">
+                            <i class="fas fa-heading"></i>
+                            <span>Header</span>
+                        </div>
+                        <div class="element-item" data-type="text">
+                            <i class="fas fa-font"></i>
+                            <span>Texto</span>
+                        </div>
+                        <div class="element-item" data-type="button">
+                            <i class="fas fa-square"></i>
+                            <span>Botão</span>
+                        </div>
+                        <div class="element-item" data-type="image">
+                            <i class="fas fa-image"></i>
+                            <span>Imagem</span>
+                        </div>
+                        <div class="element-item" data-type="container">
+                            <i class="fas fa-box"></i>
+                            <span>Container</span>
+                        </div>
+                        <div class="element-item" data-type="form">
+                            <i class="fas fa-wpforms"></i>
+                            <span>Formulário</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Propriedades</h3>
+                    <div id="propertiesPanel" class="properties-panel">
+                        <p class="no-selection">Selecione um elemento para editar suas propriedades</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Canvas Area -->
+            <div class="canvas-area">
+                <div class="canvas-header">
+                    <div class="canvas-controls">
+                        <button id="undoBtn" class="btn-icon" title="Desfazer">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                        <button id="redoBtn" class="btn-icon" title="Refazer">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button id="clearBtn" class="btn-icon" title="Limpar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="canvas-info">
+                        <span id="elementCount">0 elementos</span>
+                    </div>
+                </div>
+                
+                <div id="canvas" class="canvas">
+                    <div class="canvas-placeholder">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <p>Arraste elementos aqui para começar</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Projects Modal -->
+    <div id="projectsModal" class="modal hidden">
         <div class="modal-content">
-            <h3 id="modalMesaTitle">Mesa</h3>
-            <p id="modalMesaInfo"></p>
-            <button class="btn" id="modalAddCarrinho" onclick="addToCarrinho()">Adicionar ao Carrinho</button>
-            <button class="btn-secondary" onclick="closeMesaModal()">Fechar</button>
-        </div>
-    </div>
-
-    <div id="qrModal" class="modal hidden">
-        <div class="modal-content">
-            <h3>QR Code do Ingresso</h3>
-            <div class="qr-container">
-                <div id="qrCodeDisplay"></div>
+            <div class="modal-header">
+                <h3>Meus Projetos</h3>
+                <button class="modal-close">&times;</button>
             </div>
-            <button class="btn-secondary" onclick="closeQRModal()">Fechar</button>
+            <div class="modal-body">
+                <div class="projects-header">
+                    <button id="newProjectBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Novo Projeto
+                    </button>
+                </div>
+                <div id="projectsList" class="projects-list">
+                    <!-- Projects will be loaded here -->
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDhvp8g1rT1PwUcFGo1ZtWQ0xtN68I3y4Q",
-            authDomain: "cliente-teste-app.firebaseapp.com",
-            databaseURL: "https://cliente-teste-app-default-rtdb.firebaseio.com",
-            projectId: "cliente-teste-app",
-            storageBucket: "cliente-teste-app.appspot.com"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        let currentUser = null;
-        let carrinho = [];
-        let selectedMesa = null;
-        let mesas = {};
-        let currentPixCode = '';
-
-        setTimeout(() => {
-            document.getElementById('splashScreen').classList.add('hidden');
-            document.getElementById('app').classList.remove('hidden');
-        }, 2000);
-
-        function showScreen(screenId) {
-            document.querySelectorAll('#app > div').forEach(screen => {
-                screen.classList.add('hidden');
-            });
-            document.getElementById(screenId).classList.remove('hidden');
-        }
-
-        function showLogin() {
-            showScreen('loginScreen');
-        }
-
-        function showRegister() {
-            showScreen('registerScreen');
-        }
-
-        function showUserHome() {
-            showScreen('userHome');
-        }
-
-        function showAdminHome() {
-            showScreen('adminHome');
-            loadAdminStats();
-        }
-
-        function showPromoterHome() {
-            showScreen('promoterHome');
-            loadPromoterData();
-        }
-
-        function showMesas() {
-            showScreen('mesasScreen');
-            loadMesas();
-        }
-
-        function showCarrinho() {
-            showScreen('carrinhoScreen');
-            updateCarrinhoDisplay();
-        }
-
-        function showMeusIngressos() {
-            showScreen('meusIngressosScreen');
-            loadMeusIngressos();
-        }
-
-        function showAdminMesas() {
-            showScreen('adminMesasScreen');
-            loadAdminMesas();
-        }
-
-        function showAdminIngressos() {
-            showScreen('adminIngressosScreen');
-            loadAdminIngressos();
-        }
-
-        function showScanner() {
-            showScreen('scannerScreen');
-        }
-
-        function showConvidados() {
-            showScreen('convidadosScreen');
-            loadConvidados();
-        }
-
-        function showVendasAfiliadas() {
-            showScreen('vendasAfiliadasScreen');
-            loadVendasAfiliadas();
-        }
-
-        async function login() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            try {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                const snapshot = await database.ref(`usuarios/${user.uid}`).once('value');
-                const userData = snapshot.val();
-                
-                if (userData) {
-                    currentUser = { ...userData, uid: user.uid };
-                    
-                    switch (userData.tipo) {
-                        case 'usuario':
-                            showUserHome();
-                            break;
-                        case 'colaborador':
-                            showAdminHome();
-                            break;
-                        case 'promoter':
-                            showPromoterHome();
-                            break;
-                        default:
-                            alert('Tipo de usuário não reconhecido');
-                    }
-                } else {
-                    alert('Dados do usuário não encontrados');
-                }
-            } catch (error) {
-                alert('Erro no login: ' + error.message);
-            }
-        }
-
-        async function register() {
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const phone = document.getElementById('registerPhone').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('registerConfirmPassword').value;
-
-            if (password !== confirmPassword) {
-                alert('Senhas não coincidem');
-                return;
-            }
-
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-
-                await database.ref(`usuarios/${user.uid}`).set({
-                    nome: name,
-                    email: email,
-                    telefone: phone,
-                    tipo: 'usuario',
-                    criadoEm: new Date().toISOString()
-                });
-
-                alert('Cadastro realizado com sucesso!');
-                showLogin();
-            } catch (error) {
-                alert('Erro no cadastro: ' + error.message);
-            }
-        }
-
-        function logout() {
-            auth.signOut();
-            currentUser = null;
-            carrinho = [];
-            showLogin();
-        }
-
-        async function loadMesas() {
-            try {
-                const snapshot = await database.ref('mesas').once('value');
-                mesas = snapshot.val() || {};
-                
-                if (Object.keys(mesas).length === 0) {
-                    await initializeMesas();
-                    const newSnapshot = await database.ref('mesas').once('value');
-                    mesas = newSnapshot.val() || {};
-                }
-                
-                renderMesas();
-                updateCarrinhoCount();
-            } catch (error) {
-                console.error('Erro ao carregar mesas:', error);
-            }
-        }
-
-        async function initializeMesas() {
-            const mesasData = {};
-            
-            for (let i = 1; i <= 40; i++) {
-                const mesaId = `M${i.toString().padStart(2, '0')}`;
-                mesasData[mesaId] = {
-                    id: mesaId,
-                    localizacao: `Setor A - Fila ${Math.ceil(i/8)}`,
-                    valor: Math.random() > 0.5 ? 150 : 200,
-                    cadeiras: 4,
-                    status: Math.random() > 0.7 ? 'ocupada' : 'livre'
-                };
-            }
-            
-            await database.ref('mesas').set(mesasData);
-        }
-
-        function renderMesas() {
-            const grid = document.getElementById('mesaGrid');
-            grid.innerHTML = '';
-            
-            Object.values(mesas).forEach(mesa => {
-                const mesaElement = document.createElement('div');
-                mesaElement.className = `mesa ${mesa.status}`;
-                mesaElement.innerHTML = `<div class="mesa-numero">${mesa.id}</div>`;
-                
-                if (mesa.status === 'livre') {
-                    mesaElement.onclick = () => openMesaModal(mesa);
-                }
-                
-                grid.appendChild(mesaElement);
-            });
-        }
-
-        function openMesaModal(mesa) {
-            selectedMesa = mesa;
-            document.getElementById('modalMesaTitle').textContent = `Mesa ${mesa.id}`;
-            document.getElementById('modalMesaInfo').innerHTML = `
-                <strong>Localização:</strong> ${mesa.localizacao}<br>
-                <strong>Valor:</strong> R$ ${mesa.valor},00<br>
-                <strong>Cadeiras:</strong> ${mesa.cadeiras}
-            `;
-            document.getElementById('mesaModal').classList.remove('hidden');
-        }
-
-        function closeMesaModal() {
-            document.getElementById('mesaModal').classList.add('hidden');
-            selectedMesa = null;
-        }
-
-        async function addToCarrinho() {
-            if (!selectedMesa || !currentUser) return;
-            
-            try {
-                const promoterRef = sessionStorage.getItem('promoterRef');
-                
-                await database.ref(`carrinhos/${currentUser.uid}/${selectedMesa.id}`).set({
-                    mesaId: selectedMesa.id,
-                    valor: selectedMesa.valor,
-                    localizacao: selectedMesa.localizacao,
-                    cadeiras: selectedMesa.cadeiras,
-                    adicionadoEm: new Date().toISOString(),
-                    promoterRef: promoterRef || null
-                });
-                
-                await database.ref(`mesas/${selectedMesa.id}/status`).set('reservada');
-                
-                carrinho.push(selectedMesa);
-                closeMesaModal();
-                loadMesas();
-                alert('Mesa adicionada ao carrinho!');
-            } catch (error) {
-                alert('Erro ao adicionar mesa: ' + error.message);
-            }
-        }
-
-        async function updateCarrinhoDisplay() {
-            if (!currentUser) return;
-            
-            try {
-                const snapshot = await database.ref(`carrinhos/${currentUser.uid}`).once('value');
-                const carrinhoData = snapshot.val() || {};
-                
-                const itensContainer = document.getElementById('carrinhoItens');
-                itensContainer.innerHTML = '';
-                
-                let total = 0;
-                
-                Object.values(carrinhoData).forEach(item => {
-                    total += item.valor;
-                    
-                    const itemElement = document.createElement('div');
-                    itemElement.className = 'carrinho-item';
-                    itemElement.innerHTML = `
-                        <div>
-                            <strong>Mesa ${item.mesaId}</strong><br>
-                            ${item.localizacao}
-                        </div>
-                        <div>R$ ${item.valor},00</div>
-                    `;
-                    itensContainer.appendChild(itemElement);
-                });
-                
-                document.getElementById('totalCarrinho').textContent = total.toFixed(2).replace('.', ',');
-            } catch (error) {
-                console.error('Erro ao atualizar carrinho:', error);
-            }
-        }
-
-        async function updateCarrinhoCount() {
-            if (!currentUser) return;
-            
-            try {
-                const snapshot = await database.ref(`carrinhos/${currentUser.uid}`).once('value');
-                const carrinhoData = snapshot.val() || {};
-                document.getElementById('carrinhoCount').textContent = Object.keys(carrinhoData).length;
-            } catch (error) {
-                console.error('Erro ao contar carrinho:', error);
-            }
-        }
-
-        function generatePixCode(valor) {
-            const chavePix = 'kancholoja@gmail.com';
-            const nome = 'Alirio Lauriano de Azevedo Neto';
-            const cidade = 'BOCA DO ACRE';
-            const identificador = 'YORYZE01';
-            
-            const valorStr = valor.toFixed(2);
-            const nomeFormatted = nome.length <= 25 ? nome : nome.substring(0, 25);
-            const cidadeFormatted = cidade.length <= 15 ? cidade : cidade.substring(0, 15);
-            
-            let payload = '00020126';
-            payload += '58' + (14 + chavePix.length).toString().padStart(2, '0') + '14BR.GOV.BCB.PIX01' + chavePix.length.toString().padStart(2, '0') + chavePix;
-            payload += '5204000053039865404' + valorStr;
-            payload += '5802BR59' + nomeFormatted.length.toString().padStart(2, '0') + nomeFormatted;
-            payload += '60' + cidadeFormatted.length.toString().padStart(2, '0') + cidadeFormatted;
-            payload += '62' + (4 + identificador.length).toString().padStart(2, '0') + '05' + identificador.length.toString().padStart(2, '0') + identificador;
-            payload += '6304';
-            
-            const crc = calculateCRC16(payload);
-            return payload + crc.toString(16).toUpperCase().padStart(4, '0');
-        }
-
-        function calculateCRC16(data) {
-            let crc = 0xFFFF;
-            for (let i = 0; i < data.length; i++) {
-                crc ^= data.charCodeAt(i) << 8;
-                for (let j = 0; j < 8; j++) {
-                    if (crc & 0x8000) {
-                        crc = (crc << 1) ^ 0x1021;
-                    } else {
-                        crc <<= 1;
-                    }
-                    crc &= 0xFFFF;
-                }
-            }
-            return crc;
-        }
-
-        async function finalizarCompra() {
-            if (!currentUser) return;
-            
-            try {
-                const snapshot = await database.ref(`carrinhos/${currentUser.uid}`).once('value');
-                const carrinhoData = snapshot.val() || {};
-                
-                if (Object.keys(carrinhoData).length === 0) {
-                    alert('Carrinho vazio!');
-                    return;
-                }
-                
-                let total = 0;
-                Object.values(carrinhoData).forEach(item => {
-                    total += item.valor;
-                });
-                
-                currentPixCode = generatePixCode(total);
-                
-                const qrContainer = document.getElementById('pixQRCode');
-                qrContainer.innerHTML = '';
-                
-                QRCode.toCanvas(qrContainer, currentPixCode, {
-                    width: 256,
-                    height: 256,
-                    margin: 2,
-                    color: {
-                        dark: '#000000',
-                        light: '#FFFFFF'
-                    }
-                }, (error) => {
-                    if (error) console.error(error);
-                });
-                
-                document.getElementById('pixCode').textContent = currentPixCode;
-                showScreen('pixScreen');
-            } catch (error) {
-                alert('Erro ao gerar PIX: ' + error.message);
-            }
-        }
-
-        function copyPixCode() {
-            navigator.clipboard.writeText(currentPixCode).then(() => {
-                alert('Código PIX copiado!');
-            });
-        }
-
-        async function confirmarPagamento() {
-            if (!currentUser) return;
-            
-            try {
-                const snapshot = await database.ref(`carrinhos/${currentUser.uid}`).once('value');
-                const carrinhoData = snapshot.val() || {};
-                
-                for (const item of Object.values(carrinhoData)) {
-                    const ingressoId = `ING_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                    
-                    await database.ref(`ingressos/${currentUser.uid}/${ingressoId}`).set({
-                        ingressoId: ingressoId,
-                        mesaId: item.mesaId,
-                        valor: item.valor,
-                        status: 'confirmado',
-                        checkin: false,
-                        criadoEm: new Date().toISOString(),
-                        dadosQR: {
-                            ingressoId: ingressoId,
-                            uid: currentUser.uid,
-                            mesa: item.mesaId,
-                            valor: item.valor,
-                            checkin: false,
-                            nome: currentUser.nome,
-                            tipo: currentUser.tipo
-                        }
-                    });
-                    
-                    await database.ref(`mesas/${item.mesaId}/status`).set('ocupada');
-                    
-                    if (item.promoterRef) {
-                        const vendaId = `VENDA_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                        await database.ref(`vendasAfiliadas/${item.promoterRef}/${vendaId}`).set({
-                            compradorUid: currentUser.uid,
-                            mesaId: item.mesaId,
-                            valor: item.valor,
-                            comissao: item.valor * 0.1,
-                            dataVenda: new Date().toISOString(),
-                            ingressoId: ingressoId
-                        });
-                    }
-                }
-                
-                await database.ref(`carrinhos/${currentUser.uid}`).remove();
-                
-                alert('Pagamento confirmado! Seus ingressos foram gerados.');
-                showUserHome();
-            } catch (error) {
-                alert('Erro ao confirmar pagamento: ' + error.message);
-            }
-        }
-
-        async function loadMeusIngressos() {
-            if (!currentUser) return;
-            
-            try {
-                const snapshot = await database.ref(`ingressos/${currentUser.uid}`).once('value');
-                const ingressos = snapshot.val() || {};
-                
-                const container = document.getElementById('ingressosList');
-                container.innerHTML = '';
-                
-                if (Object.keys(ingressos).length === 0) {
-                    container.innerHTML = '<p>Nenhum ingresso encontrado.</p>';
-                    return;
-                }
-                
-                Object.values(ingressos).forEach(ingresso => {
-                    const ingressoElement = document.createElement('div');
-                    ingressoElement.className = 'ingresso-card';
-                    ingressoElement.innerHTML = `
-                        <h4>Mesa ${ingresso.mesaId}</h4>
-                        <p>Valor: R$ ${ingresso.valor},00</p>
-                        <p>Status: ${ingresso.status}</p>
-                        <p>Check-in: ${ingresso.checkin ? 'Realizado' : 'Pendente'}</p>
-                        <button class="btn-secondary" onclick="showQRCode('${ingresso.ingressoId}')">Ver QR Code</button>
-                    `;
-                    container.appendChild(ingressoElement);
-                });
-            } catch (error) {
-                console.error('Erro ao carregar ingressos:', error);
-            }
-        }
-
-        async function showQRCode(ingressoId) {
-            try {
-                const snapshot = await database.ref(`ingressos/${currentUser.uid}/${ingressoId}`).once('value');
-                const ingresso = snapshot.val();
-                
-                if (ingresso && ingresso.dadosQR) {
-                    const qrContainer = document.getElementById('qrCodeDisplay');
-                    qrContainer.innerHTML = '';
-                    
-                    const qrData = JSON.stringify(ingresso.dadosQR);
-                    
-                    QRCode.toCanvas(qrContainer, qrData, {
-                        width: 256,
-                        height: 256,
-                        margin: 2,
-                        color: {
-                            dark: '#000000',
-                            light: '#FFFFFF'
-                        }
-                    }, (error) => {
-                        if (error) console.error(error);
-                    });
-                    
-                    document.getElementById('qrModal').classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error('Erro ao gerar QR Code:', error);
-            }
-        }
-
-        function closeQRModal() {
-            document.getElementById('qrModal').classList.add('hidden');
-        }
-
-        async function loadAdminStats() {
-            try {
-                const ingressosSnapshot = await database.ref('ingressos').once('value');
-                const ingressosData = ingressosSnapshot.val() || {};
-                
-                const mesasSnapshot = await database.ref('mesas').once('value');
-                const mesasData = mesasSnapshot.val() || {};
-                
-                let totalIngressos = 0;
-                let totalCheckins = 0;
-                
-                Object.values(ingressosData).forEach(userIngressos => {
-                    Object.values(userIngressos).forEach(ingresso => {
-                        totalIngressos++;
-                        if (ingresso.checkin) totalCheckins++;
-                    });
-                });
-                
-                let mesasLivres = 0;
-                let mesasOcupadas = 0;
-                
-                Object.values(mesasData).forEach(mesa => {
-                    if (mesa.status === 'livre') mesasLivres++;
-                    else mesasOcupadas++;
-                });
-                
-                document.getElementById('totalIngressos').textContent = totalIngressos;
-                document.getElementById('totalCheckins').textContent = totalCheckins;
-                document.getElementById('mesasLivres').textContent = mesasLivres;
-                document.getElementById('mesasOcupadas').textContent = mesasOcupadas;
-            } catch (error) {
-                console.error('Erro ao carregar estatísticas:', error);
-            }
-        }
-
-        async function loadAdminMesas() {
-            try {
-                const snapshot = await database.ref('mesas').once('value');
-                const mesasData = snapshot.val() || {};
-                
-                const container = document.getElementById('adminMesasList');
-                container.innerHTML = '';
-                
-                const table = document.createElement('table');
-                table.className = 'table';
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>Mesa</th>
-                            <th>Localização</th>
-                            <th>Valor</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminMesasTableBody"></tbody>
-                `;
-                
-                const tbody = table.querySelector('#adminMesasTableBody');
-                
-                Object.values(mesasData).forEach(mesa => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${mesa.id}</td>
-                        <td>${mesa.localizacao}</td>
-                        <td>R$ ${mesa.valor},00</td>
-                        <td>${mesa.status}</td>
-                        <td>
-                            <select onchange="updateMesaStatus('${mesa.id}', this.value)">
-                                <option value="livre" ${mesa.status === 'livre' ? 'selected' : ''}>Livre</option>
-                                <option value="reservada" ${mesa.status === 'reservada' ? 'selected' : ''}>Reservada</option>
-                                <option value="ocupada" ${mesa.status === 'ocupada' ? 'selected' : ''}>Ocupada</option>
-                            </select>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-                
-                container.appendChild(table);
-            } catch (error) {
-                console.error('Erro ao carregar mesas admin:', error);
-            }
-        }
-
-        async function updateMesaStatus(mesaId, newStatus) {
-            try {
-                await database.ref(`mesas/${mesaId}/status`).set(newStatus);
-                alert('Status da mesa atualizado!');
-            } catch (error) {
-                alert('Erro ao atualizar status: ' + error.message);
-            }
-        }
-
-        async function loadAdminIngressos() {
-            try {
-                const ingressosSnapshot = await database.ref('ingressos').once('value');
-                const ingressosData = ingressosSnapshot.val() || {};
-                
-                const usuariosSnapshot = await database.ref('usuarios').once('value');
-                const usuariosData = usuariosSnapshot.val() || {};
-                
-                const container = document.getElementById('adminIngressosList');
-                container.innerHTML = '';
-                
-                const table = document.createElement('table');
-                table.className = 'table';
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Mesa</th>
-                            <th>Valor</th>
-                            <th>Check-in</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminIngressosTableBody"></tbody>
-                `;
-                
-                const tbody = table.querySelector('#adminIngressosTableBody');
-                
-                Object.entries(ingressosData).forEach(([userId, userIngressos]) => {
-                    const usuario = usuariosData[userId];
-                    
-                    Object.values(userIngressos).forEach(ingresso => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${usuario ? usuario.nome : 'Usuario não encontrado'}</td>
-                            <td>${ingresso.mesaId}</td>
-                            <td>R$ ${ingresso.valor},00</td>
-                            <td>${ingresso.checkin ? 'Sim' : 'Não'}</td>
-                            <td>
-                                ${!ingresso.checkin ? 
-                                    `<button class="btn btn-small" onclick="confirmarCheckin('${userId}', '${ingresso.ingressoId}')">Confirmar Check-in</button>` : 
-                                    'Check-in confirmado'
-                                }
-                            </td>
-                        `;
-                        tbody.appendChild(row);
-                    });
-                });
-                
-                container.appendChild(table);
-            } catch (error) {
-                console.error('Erro ao carregar ingressos admin:', error);
-            }
-        }
-
-        async function confirmarCheckin(userId, ingressoId) {
-            try {
-                await database.ref(`ingressos/${userId}/${ingressoId}/checkin`).set(true);
-                await database.ref(`checkins/${ingressoId}`).set({
-                    timestamp: new Date().toISOString(),
-                    confirmedBy: currentUser.uid
-                });
-                alert('Check-in confirmado!');
-                loadAdminIngressos();
-            } catch (error) {
-                alert('Erro ao confirmar check-in: ' + error.message);
-            }
-        }
-
-        function simulateQRScan() {
-            const mockQRData = {
-                ingressoId: "ING001",
-                uid: "mockUID",
-                mesa: "M02",
-                valor: 200,
-                checkin: false,
-                nome: "João Silva",
-                tipo: "usuario"
-            };
-            
-            const scanResult = document.getElementById('scanResult');
-            scanResult.innerHTML = `
-                <div style="background: white; color: black; padding: 20px; border-radius: 8px; margin-top: 20px;">
-                    <h4>Dados do Ingresso:</h4>
-                    <p><strong>Nome:</strong> ${mockQRData.nome}</p>
-                    <p><strong>Mesa:</strong> ${mockQRData.mesa}</p>
-                    <p><strong>Valor:</strong> R$ ${mockQRData.valor},00</p>
-                    <p><strong>Check-in:</strong> ${mockQRData.checkin ? 'Realizado' : 'Pendente'}</p>
-                    <button class="btn" onclick="confirmarEntrada('${mockQRData.uid}', '${mockQRData.ingressoId}')">Confirmar Entrada</button>
+    <!-- Code Viewer Modal -->
+    <div id="codeModal" class="modal hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Código Gerado</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="code-tabs">
+                    <button class="code-tab active" data-tab="html">HTML</button>
+                    <button class="code-tab" data-tab="css">CSS</button>
+                    <button class="code-tab" data-tab="js">JavaScript</button>
                 </div>
-            `;
-        }
-
-        async function confirmarEntrada(userId, ingressoId) {
-            try {
-                await database.ref(`ingressos/${userId}/${ingressoId}/checkin`).set(true);
-                await database.ref(`checkins/${ingressoId}`).set({
-                    timestamp: new Date().toISOString(),
-                    confirmedBy: currentUser.uid
-                });
-                
-                alert('Entrada confirmada com sucesso!');
-                document.getElementById('scanResult').innerHTML = '<p style="color: green;">✓ Entrada confirmada!</p>';
-            } catch (error) {
-                alert('Erro ao confirmar entrada: ' + error.message);
-            }
-        }
-
-        async function loadConvidados() {
-            try {
-                const snapshot = await database.ref('convidados/evento01').once('value');
-                const convidados = snapshot.val() || {};
-                
-                const container = document.getElementById('convidadosList');
-                container.innerHTML = '';
-                
-                const table = document.createElement('table');
-                table.className = 'table';
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Documento</th>
-                            <th>Tipo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="convidadosTableBody"></tbody>
-                `;
-                
-                const tbody = table.querySelector('#convidadosTableBody');
-                
-                Object.values(convidados).forEach(convidado => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${convidado.nome}</td>
-                        <td>${convidado.documento}</td>
-                        <td>${convidado.tipo}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-                
-                container.appendChild(table);
-            } catch (error) {
-                console.error('Erro ao carregar convidados:', error);
-            }
-        }
-
-        async function adicionarConvidado() {
-            const nome = document.getElementById('convidadoNome').value;
-            const documento = document.getElementById('convidadoDoc').value;
-            const tipo = document.getElementById('convidadoTipo').value;
-            
-            if (!nome || !documento) {
-                alert('Preencha todos os campos');
-                return;
-            }
-            
-            try {
-                const convidadoId = `CONV_${Date.now()}`;
-                await database.ref(`convidados/evento01/${convidadoId}`).set({
-                    nome: nome,
-                    documento: documento,
-                    tipo: tipo,
-                    criadoEm: new Date().toISOString(),
-                    criadoPor: currentUser.uid
-                });
-                
-                document.getElementById('convidadoNome').value = '';
-                document.getElementById('convidadoDoc').value = '';
-                
-                alert('Convidado adicionado com sucesso!');
-                loadConvidados();
-            } catch (error) {
-                alert('Erro ao adicionar convidado: ' + error.message);
-            }
-        }
-
-        async function loadPromoterData() {
-            if (!currentUser) return;
-            
-            try {
-                document.getElementById('promoterName').textContent = currentUser.nome;
-                document.getElementById('promoterLink').textContent = `https://yoryze.app/?ref=${currentUser.uid}`;
-                
-                const vendasSnapshot = await database.ref(`vendasAfiliadas/${currentUser.uid}`).once('value');
-                const vendas = vendasSnapshot.val() || {};
-                
-                let totalComissao = 0;
-                Object.values(vendas).forEach(venda => {
-                    totalComissao += venda.comissao || (venda.valor * 0.1);
-                });
-                
-                document.getElementById('commissionValue').textContent = `R$ ${totalComissao.toFixed(2).replace('.', ',')}`;
-            } catch (error) {
-                console.error('Erro ao carregar dados do promoter:', error);
-            }
-        }
-
-        function copyPromoterLink() {
-            const link = `https://yoryze.app/?ref=${currentUser.uid}`;
-            navigator.clipboard.writeText(link).then(() => {
-                alert('Link copiado!');
-            });
-        }
-
-        function sharePromoterLink() {
-            const link = `https://yoryze.app/?ref=${currentUser.uid}`;
-            const message = `Garanta já seu ingresso para o evento! Compre pelo meu link 👇\n${link}`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Yoryze - Ingressos',
-                    text: message,
-                });
-            } else {
-                navigator.clipboard.writeText(message).then(() => {
-                    alert('Mensagem copiada! Cole no WhatsApp ou onde desejar.');
-                });
-            }
-        }
-
-        async function loadVendasAfiliadas() {
-            if (!currentUser) return;
-            
-            try {
-                const vendasSnapshot = await database.ref(`vendasAfiliadas/${currentUser.uid}`).once('value');
-                const vendas = vendasSnapshot.val() || {};
-                
-                const usuariosSnapshot = await database.ref('usuarios').once('value');
-                const usuarios = usuariosSnapshot.val() || {};
-                
-                const container = document.getElementById('vendasList');
-                container.innerHTML = '';
-                
-                if (Object.keys(vendas).length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: #666; margin: 40px 0;">Nenhuma venda realizada ainda.</p>';
-                    return;
-                }
-                
-                Object.values(vendas).forEach(venda => {
-                    const cliente = usuarios[venda.compradorUid];
-                    const comissao = venda.comissao || (venda.valor * 0.1);
-                    
-                    const vendaElement = document.createElement('div');
-                    vendaElement.className = 'venda-item';
-                    vendaElement.innerHTML = `
-                        <div class="venda-header">
-                            <div class="venda-cliente">${cliente ? cliente.nome : 'Cliente não encontrado'}</div>
-                            <div class="venda-valor">R$ ${venda.valor.toFixed(2).replace('.', ',')}</div>
+                <div class="code-content">
+                    <div id="htmlCode" class="code-panel active">
+                        <div class="code-header">
+                            <button class="copy-btn" data-target="htmlCode">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
                         </div>
-                        <div class="venda-details">
-                            Mesa: ${venda.mesaId} | Data: ${new Date(venda.dataVenda).toLocaleDateString('pt-BR')}
-                            <div class="comissao-highlight">Comissão: R$ ${comissao.toFixed(2).replace('.', ',')}</div>
+                        <pre><code id="htmlCodeContent"></code></pre>
+                    </div>
+                    <div id="cssCode" class="code-panel">
+                        <div class="code-header">
+                            <button class="copy-btn" data-target="cssCode">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
                         </div>
-                    `;
-                    container.appendChild(vendaElement);
-                });
-            } catch (error) {
-                console.error('Erro ao carregar vendas afiliadas:', error);
-            }
-        }
+                        <pre><code id="cssCodeContent"></code></pre>
+                    </div>
+                    <div id="jsCode" class="code-panel">
+                        <div class="code-header">
+                            <button class="copy-btn" data-target="jsCode">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                        <pre><code id="jsCodeContent"></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                try {
-                    const snapshot = await database.ref(`usuarios/${user.uid}`).once('value');
-                    const userData = snapshot.val();
-                    
-                    if (userData) {
-                        currentUser = { ...userData, uid: user.uid };
-                        
-                        switch (userData.tipo) {
-                            case 'usuario':
-                                showUserHome();
-                                break;
-                            case 'colaborador':
-                                showAdminHome();
-                                break;
-                            case 'promoter':
-                                showPromoterHome();
-                                break;
-                        }
-                    }
-                } catch (error) {
-                    console.error('Erro ao verificar usuário:', error);
-                }
-            } else {
-                showLogin();
-            }
-        });
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal hidden">
+        <div class="modal-content fullscreen">
+            <div class="modal-header">
+                <h3>Visualização do Site</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="previewFrame" class="preview-frame"></iframe>
+            </div>
+        </div>
+    </div>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const ref = urlParams.get('ref');
-            if (ref) {
-                sessionStorage.setItem('promoterRef', ref);
-            }
-        });
-    </script>
+    <!-- New Project Modal -->
+    <div id="newProjectModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Novo Projeto</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="newProjectForm">
+                    <div class="form-group">
+                        <label for="projectName">Nome do Projeto</label>
+                        <input type="text" id="projectName" required placeholder="Digite o nome do projeto">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary modal-close">Cancelar</button>
+                        <button type="submit" class="btn-primary">Criar Projeto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Main App Script -->
+    <script src="app.js"></script>
 </body>
 </html>
